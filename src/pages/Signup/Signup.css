@@ -11,6 +11,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+    margin-top: 84px;
 }
 
 .signup-image img {
@@ -92,9 +93,13 @@
 
   .signup-image {
     height: 250px;
+    width: 100%;
   }
 
   .signup-form-container {
     padding: 40px 20px;
+  }
+  .signup-form{
+    width: 100%;
   }
 }
