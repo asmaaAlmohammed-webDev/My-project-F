@@ -1,0 +1,19 @@
+ .popular-books-sec {
+    padding: 40px 20px;
+    background-color: #fff;
+    text-align: center;
+}
+
+.books-slider {
+    margin-top: 40px;
+    padding-bottom: 40px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #333;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #333;
+}

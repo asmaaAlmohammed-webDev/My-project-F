@@ -1,0 +1,25 @@
+
+ .newArrivals-sec {
+    padding: 40px 20px;
+    /* background-color: #f8f8f8; */
+    text-align: center;
+}
+
+.books-slider {
+    margin-top: 40px;
+    padding-bottom: 40px;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: var( --purple1);
+    width: 20px;
+}
+
+
+.swiper-pagination-bullet-active {
+    background-color: var(--purple1);
+}
+.swiper-button-prev{
+        left: var(--swiper-navigation-sides-offset, 5px) !important;
+}
