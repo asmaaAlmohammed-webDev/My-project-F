@@ -1,0 +1,141 @@
+/* Profile Container */
+.profile-container {
+  max-width: 800px;
+  margin: 10rem auto;
+  padding: 1rem;
+}
+
+/* Sections Styling */
+.profile-section,
+.password-section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Headers */
+.profile-header,
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Titles */
+.profile-container h1,
+.profile-container h2 {
+  color: black;
+  margin: 15px 0;
+}
+
+/* Buttons */
+.profile-container button {
+  background: var(--purple1);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.profile-container button:hover {
+  box-shadow: var(--purple1) 0px 22px 50px 4px;
+}
+
+/* Form Elements */
+.profile-container .form-group {
+  margin-bottom: 1rem;
+}
+
+.profile-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333333;
+}
+
+.profile-container input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.profile-container input:disabled {
+  background: #f5f5f5;
+}
+
+/* Profile Info */
+.profile-info p {
+  margin: 0.5rem 0;
+  color: #333333;
+}
+
+/* Messages */
+.profile-message {
+  padding: 0.5rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  background: #e6f7ff;
+  color: var(--purple1);
+}
+/* errors messages */
+.message {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.message.success {
+  color: #155724;
+}
+
+.message.error {
+  color: #721c24;
+}
+/* Media Queries */
+@media (max-width: 1919px) {
+  .profile-container {
+    max-width: 700px;
+  }
+
+  .profile-section,
+  .password-section {
+    padding: 1.3rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .profile-container {
+    padding: 1rem 1.5rem;
+  }
+
+  .profile-header,
+  .password-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+
+  .profile-section,
+  .password-section {
+    padding: 1rem;
+  }
+
+  .profile-container button {
+    width: 100%;
+  }
+}

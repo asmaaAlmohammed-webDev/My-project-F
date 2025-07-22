@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-    margin-top: 84px;
+  margin-top: 84px;
 }
 
 .signup-image img {
@@ -61,14 +61,11 @@
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
-    transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
-.signup-btn:hover{
-
+.signup-btn:hover {
   background-color: #e66;
-
 }
-
 
 .signup-links {
   margin-top: 20px;
@@ -78,13 +75,18 @@
   font-size: 14px;
   color: #333;
   text-decoration: underline;
-    transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 .signup-links a:hover {
   color: #e66;
 }
-
+.field-error {
+  color: rgba(255, 0, 0, 0.675);
+  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
 /* Responsive breakpoints */
 @media (max-width: 768px) {
   .signup-page {
@@ -99,7 +101,7 @@
   .signup-form-container {
     padding: 40px 20px;
   }
-  .signup-form{
+  .signup-form {
     width: 100%;
   }
 }

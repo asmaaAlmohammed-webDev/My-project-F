@@ -1,25 +1,25 @@
 .title-comp {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .title-comp .title {
-    color: var(--balck);
-    font-size: 30px;
-    margin-bottom: 25px;
+  color: var(--balck);
+  font-size: 30px;
+  margin-bottom: 25px;
 }
 
 .title-comp .title span {
-    color: var(--purple1);
+  color: var(--purple1);
+  margin-left: 10px;
 }
 
 .title-comp .desc {
-    color: var(--text2);
-    font-size: 20px;
-    width: 70%;
-    text-align: center;
-    margin: 30px 0 50px 0;
+  color: var(--text2);
+  font-size: 20px;
+  width: 70%;
+  text-align: center;
+  margin: 30px 0 50px 0;
 }

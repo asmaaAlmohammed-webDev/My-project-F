@@ -1,0 +1,53 @@
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.error-title {
+  font-size: 3rem;
+  color: #e74c3c;
+  margin-bottom: 1.5rem;
+}
+
+.error-message {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.error-details {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.home-link {
+  padding: 0.8rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.home-link:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .error-title {
+    font-size: 2.2rem;
+  }
+
+  .error-message {
+    font-size: 1.2rem;
+  }
+}

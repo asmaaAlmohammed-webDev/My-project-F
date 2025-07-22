@@ -4,8 +4,9 @@ import "./Navbar.css";
 import logo from "./../../assets/imgs/logo.png";
 import { TbHomeFilled } from "react-icons/tb";
 import { GiBookshelf } from "react-icons/gi";
-import { IoLogIn, IoMailOpen, IoPersonSharp } from "react-icons/io5";
+import { IoLogIn, IoMailOpen } from "react-icons/io5";
 import { FaCartFlatbedSuitcase } from "react-icons/fa6";
+import { FaUserCircle } from "react-icons/fa";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -18,8 +19,9 @@ const Navbar = () => {
         </div>
 
         <nav className={`nav ${menuOpen ? "open" : ""}`}>
-          <NavLink to="/" className="nav-link">
-            <TbHomeFilled />Home
+          <NavLink to="/home" className="nav-link">
+            <TbHomeFilled />
+            Home
           </NavLink>
           <NavLink to="/shop" className="nav-link">
             <GiBookshelf /> Shop
@@ -30,8 +32,12 @@ const Navbar = () => {
         </nav>
 
         <div className="actions">
+          <NavLink to="/profile" className="login-icon">
+            <FaUserCircle />
+          </NavLink>
           <NavLink to="/cart" className="cart-icon">
-            <FaCartFlatbedSuitcase /><span className="badge">0</span>
+            <FaCartFlatbedSuitcase />
+            {/* <span className="badge">0</span> */}
           </NavLink>
           <NavLink to="/login" className="login-icon">
             <IoLogIn />

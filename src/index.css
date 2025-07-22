@@ -1,20 +1,19 @@
 /* Google Fonts: Lexend*/
-@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Jaro:opsz@6..72&family=Lexend:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Jaro:opsz@6..72&family=Lexend:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Rajdhani:wght@300;400;500;600;700&display=swap");
 
 /*AOS (Animate On Scroll) Library*/
-@import 'aos/dist/aos.css';
+@import "aos/dist/aos.css";
 
 /* Start Global */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Lexend", sans-serif;
 }
 
-/* body{
-  background-color: #000;
-} */
+body {
+  font-family: Lexend, sans-serif;
+}
 
 :root {
   --balck: #000;
@@ -143,12 +142,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--purple1), var(--purple2), var(--purple4), #fdfcff);
+  background: linear-gradient(
+    to bottom,
+    var(--purple1),
+    var(--purple2),
+    var(--purple4),
+    #fdfcff
+  );
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, var(--purple2), var(--purple3)), var(--text2);
+  background: linear-gradient(to bottom, var(--purple2), var(--purple3)),
+    var(--text2);
 }
 
 /* End Scrollbar Customization */
@@ -169,52 +175,8 @@
 
 /* End Fade Effect */
 
-/** start style sweet Alert Model **/
-/* .swal2-modal {
-  background-color: var(--black11-color) !important;
-  border: 5px var(--gray15-color) solid;
-  border-radius: 14px;
-}
-
-.swal2-html-container, .swal2-title {
-  color: white !important;
-}
-
-div:where(.swal2-icon).swal2-success [class^=swal2-success-line],
-div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
-  background-color: var(--green60-color) !important;
-}
-
-div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
-  color: var(--black-color) !important;
-}
-
-div:where(.swal2-icon).swal2-success .swal2-success-ring,
-div:where(.swal2-icon).swal2-question {
-  border-color: var(--green60-color) !important;
-}
-
-div:where(.swal2-icon).swal2-question {
-  color: var(--green60-color) !important;
-}
-
-.swal2-container::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: inherit;
-  backdrop-filter: blur(3px);
-  z-index: -1;
-} */
-
-/** End style sweet Alert Model **/
-
 /*Start Responsive*/
 @media (max-width: 1919px) {
-
   /*edited*/
   .pb-150 {
     padding-bottom: 8.334%;
@@ -232,7 +194,6 @@ div:where(.swal2-icon).swal2-question {
 }
 
 @media (max-width: 992px) {
-
   .swal2-html-container,
   .swal2-title {
     font-size: 1.5em;

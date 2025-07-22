@@ -1,80 +1,80 @@
 .book-comp {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 270px;
-    margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 270px;
+  margin: 0 auto;
+  margin-bottom: 15px;
 }
 
 .book-comp:hover {
-    box-shadow: var(--purple2) 3px 3px, var(--purple3) 5px 5px, var(--purple4) 8px 8px;
-    transition: all .3s ease-in-out;
+  box-shadow: var(--purple2) 3px 3px, var(--purple3) 5px 5px,
+    var(--purple4) 8px 8px;
+  transition: all 0.3s ease-in-out;
 }
 
 .book-comp .cover-book {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--purple3);
-    width: 250px;
-    height: 340px;
-    border-radius: 10px;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--purple3);
+  width: 250px;
+  height: 340px;
+  border-radius: 10px;
 }
 
 .book-comp img {
-    width: 200px;
-    box-shadow: rgba(0, 0, 0, 0.586) 0px 5px 15px;
-    border-radius: 10px;
+  width: 200px;
+  box-shadow: rgba(0, 0, 0, 0.586) 0px 5px 15px;
+  border-radius: 10px;
 }
 
 .book-comp .deatils {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    padding: 15px 30px;
-    width: 290px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 15px 30px;
+  width: 290px;
 }
 
 .book-comp .deatils .book-header {
-    margin: 10px 0 15px 0;
+  margin: 10px 0 15px 0;
 }
 
 .book-comp .deatils .book-header .category {
-    color: var(--balck);
-    font-weight: bold;
-    font-size: 19px;
-
+  color: var(--balck);
+  font-weight: bold;
+  font-size: 19px;
 }
 
 .book-comp .deatils .book-header .icon {
-    font-size: 20px;
-    cursor: pointer;
-    vertical-align: middle;
+  font-size: 20px;
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 .book-comp .deatils .book-info .author {
-    color: var(--text2);
-    font-size: 18px;
+  color: var(--text2);
+  font-size: 18px;
 }
 
 .book-comp .deatils .book-info .price {
-    color: rgba(255, 0, 0, 0.74);
-    font-size: 18px;
+  color: rgba(255, 0, 0, 0.74);
+  font-size: 18px;
 }
 
 .book-comp .deatils .desc {
-    color: var(--text2);
-    font-size: 15px;
-    width: 105%;
-    margin-top: 12px;
-    text-align: start;
+  color: var(--text2);
+  font-size: 15px;
+  width: 105%;
+  margin-top: 12px;
+  text-align: start;
 }
 
 .book-comp .book-header,
 .book-comp .book-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
