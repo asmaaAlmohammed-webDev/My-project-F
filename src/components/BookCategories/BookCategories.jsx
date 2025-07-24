@@ -11,6 +11,7 @@ import "./BookCategories.css";
 import { TbShoppingBagPlus, TbSearch, TbArrowsSort } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
 import { mockBooks } from "../../data/CategoriesBooksData";
+import LoaderComponent from "../LoaderComponent/LoaderComponent";
 const BookCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState("Fiction");
   const [loading, setLoading] = useState(true);
@@ -159,10 +160,7 @@ const BookCategories = () => {
         </div>
 
         {loading ? (
-          <div className="books-loading">
-            <div className="loading-spinner"></div>
-            <p>Loading books...</p>
-          </div>
+          <LoaderComponent />
         ) : (
           <>
             {filteredBooks.length === 0 ? (

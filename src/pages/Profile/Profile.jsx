@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Profile.css";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [userData, setUserData] = useState({
@@ -21,6 +22,7 @@ const Profile = () => {
   const [isPasswordEditing, setIsPasswordEditing] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("error"); // 'error' or 'success'
+  const navigate = useNavigate();
 
   // Fetch user profile data
   useEffect(() => {
@@ -65,6 +67,7 @@ const Profile = () => {
       setEditMode(false);
       setMessage("✅ Profile updated successfully!");
       setMessageType("success");
+      navigate("/profile");
     } catch (error) {
       setMessage("❌ Failed to update profile");
       setMessageType("error");
@@ -96,6 +99,7 @@ const Profile = () => {
       setMessage("✅ Password updated successfully!");
       setMessageType("success");
       setIsPasswordEditing(false);
+
       setPasswordData({
         currentPassword: "",
         newPassword: "",
