@@ -45,10 +45,10 @@ const router = createBrowserRouter(
         },
       ],
     },
-  ],
-  {
-    basename: "/react-pro",
-  }
+  ]
+  // {
+  //   basename: "/react-pro",
+  // }
 );
 
 //loader...
