@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./ContactUsComp.css";
+// ADDED: Import centralized API configuration
+import { API_ENDPOINTS } from "../../config/api";
 
 const ContactUsComp = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -16,7 +18,7 @@ const ContactUsComp = () => {
     setSuccess("");
     setError("");
     try {
-      await axios.post("http://localhost:7000/api/v1.0.0/conacts", form);
+      await axios.post(API_ENDPOINTS.CONTACT, form); // CHANGED: Using centralized API configuration
       setSuccess("Your message has been sent successfully!");
       setForm({ name: "", email: "", message: "" });
     } catch (err) {

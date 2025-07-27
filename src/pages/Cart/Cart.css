@@ -295,6 +295,26 @@
   font-size: 1.1rem;
 }
 
+.loading-orders {
+  text-align: center;
+  padding: 30px;
+  color: #6c7b7f;
+  font-size: 1rem;
+}
+
+.loading-orders p {
+  margin: 0;
+  font-style: italic;
+}
+
+.no-items {
+  text-align: center;
+  padding: 15px;
+  color: #95a5a6;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 /* الأزرار */
 .btn {
   padding: 10px 18px;

@@ -3,6 +3,8 @@ import "./Login.css";
 import img from "../../assets/imgs/login.png";
 import axios from "axios";
 import { useState } from "react";
+// ADDED: Import centralized API configuration
+import { API_ENDPOINTS } from "../../config/api";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +32,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:7000/api/v1.0.0/users/login",
+        API_ENDPOINTS.LOGIN, // CHANGED: Using centralized API configuration instead of hardcoded URL
         formData,
         {
           headers: {

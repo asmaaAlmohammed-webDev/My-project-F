@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Layout from "./pages/Layout.jsx";
-import Auth from "./pages/Auth.jsx";
 import Signup from "./pages/Signup/Signup.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Home from "./pages/Home.jsx";
@@ -15,6 +14,16 @@ import ProtectedRoute from "./pages/ProtectedRoute.jsx";
 import LoaderComponent from "./components/LoaderComponent/LoaderComponent.jsx";
 import Shop from "./pages/Shop.jsx";
 import CartPage from "./pages/Cart/Cart.jsx";
+import AdminLayout from "./pages/Admin/AdminLayout.jsx";
+import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
+import AdminCategories from "./pages/Admin/AdminCategories.jsx";
+import AdminCategoryForm from "./pages/Admin/AdminCategoryForm.jsx";
+import AdminProducts from "./pages/Admin/AdminProducts.jsx";
+import AdminProductForm from "./pages/Admin/AdminProductForm.jsx";
+import AdminOrders from "./pages/Admin/AdminOrders.jsx";
+import AdminReviews from "./pages/Admin/AdminReviews.jsx";
+import AdminUsers from "./pages/Admin/AdminUsers.jsx";
+import AdminRequests from "./pages/Admin/AdminRequests.jsx";
 
 const router = createBrowserRouter(
   [
@@ -23,26 +32,44 @@ const router = createBrowserRouter(
       element: <Layout />,
       errorElement: <ErrorPage />,
       children: [
-        {
-          path: "",
-          element: <Auth />,
-          children: [
-            { path: "signup", element: <Signup /> },
-            { path: "login", element: <Login /> },
-            { path: "forgot-password", element: <ForgotPassword /> },
-          ],
-        },
+        // Public Routes (no authentication required)
+        { index: true, element: <Home /> },
+        { path: "home", element: <Home /> },
+        { path: "shop", element: <Shop /> },
+        { path: "contact", element: <ContactUs /> },
+        { path: "login", element: <Login /> },
+        { path: "signup", element: <Signup /> },
+        { path: "forgot-password", element: <ForgotPassword /> },
+        
+        // Protected Routes (authentication required)
         {
           element: <ProtectedRoute />,
           children: [
-            { index: true, element: <Home /> },
-            { path: "home", element: <Home /> },
-            { path: "shop", element: <Shop /> },
             { path: "profile", element: <Profile /> },
-            { path: "contact", element: <ContactUs /> },
             { path: "cart", element: <CartPage /> },
           ],
         },
+      ],
+    },
+    // Admin Routes - Separate from main layout
+    {
+      path: "/admin",
+      element: <AdminLayout />,
+      errorElement: <ErrorPage />,
+      children: [
+        { index: true, element: <AdminDashboard /> },
+        { path: "dashboard", element: <AdminDashboard /> },
+        // Real admin components
+        { path: "categories", element: <AdminCategories /> },
+        { path: "categories/new", element: <AdminCategoryForm /> },
+        { path: "products", element: <AdminProducts /> },
+        { path: "products/new", element: <AdminProductForm /> },
+        { path: "orders", element: <AdminOrders /> },
+        { path: "reviews", element: <AdminReviews /> },
+        { path: "users", element: <AdminUsers /> },
+        { path: "requests", element: <AdminRequests /> },
+        // Catch-all for any other admin sub-routes
+        { path: "*", element: <div style={{padding: '20px'}}><h2>Admin Page</h2><p>This admin feature is coming soon!</p></div> },
       ],
     },
   ]

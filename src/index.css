@@ -17,6 +17,7 @@ body {
 
 :root {
   --balck: #000;
+  --primary: #5a16bf; /* Using purple1 as primary */
   --purple1: #5a16bf;
   --purple2: #af7afe;
   --purple3: #f1f0f3e2;

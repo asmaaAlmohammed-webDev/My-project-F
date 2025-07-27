@@ -7,7 +7,10 @@
 
 /* Sections Styling */
 .profile-section,
-.password-section {
+.password-section,
+.admin-section,
+.review-section,
+.contact-section {
   background: #ffffff;
   border-radius: 8px;
   padding: 1.5rem;
@@ -17,7 +20,10 @@
 
 /* Headers */
 .profile-header,
-.password-header {
+.password-header,
+.admin-header,
+.review-header,
+.contact-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,6 +52,92 @@
   box-shadow: var(--purple1) 0px 22px 50px 4px;
 }
 
+/* Logout Button Specific Styling */
+.logout-button {
+  background: #dc2626 !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.6rem 1.5rem !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.logout-button:hover {
+  background: #b91c1c !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+}
+
+/* Profile Header Styling */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem !important;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.profile-header h1 {
+  margin: 0 !important;
+  color: black;
+  font-size: 2rem;
+}
+
+/* Admin Section Specific Styles */
+.admin-section {
+  border-left: 4px solid var(--purple1);
+}
+
+.dashboard-btn {
+  background: linear-gradient(135deg, var(--purple1), #8e44ad) !important;
+  color: white !important;
+  font-size: 1.1rem !important;
+  padding: 0.8rem 2rem !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  margin-bottom: 1.5rem !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 300px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s ease !important;
+}
+
+.dashboard-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(142, 68, 173, 0.3) !important;
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.quick-link-btn {
+  background: #f8f9fa !important;
+  color: var(--purple1) !important;
+  border: 2px solid var(--purple1) !important;
+  padding: 0.6rem 1rem !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  text-align: center !important;
+}
+
+.quick-link-btn:hover {
+  background: var(--purple1) !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 5px 15px rgba(142, 68, 173, 0.2) !important;
+}
+
 /* Form Elements */
 .profile-container .form-group {
   margin-bottom: 1rem;
@@ -68,6 +160,37 @@
 
 .profile-container input:disabled {
   background: #f5f5f5;
+}
+
+/* Textarea Styling */
+.profile-container textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  background: #ffffff;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.profile-container select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  background: #ffffff;
+  font-family: inherit;
+}
+
+/* Review Section Specific Styles */
+.review-section {
+  border-left: 4px solid #28a745;
+}
+
+/* Contact Section Specific Styles */
+.contact-section {
+  border-left: 4px solid #17a2b8;
 }
 
 /* Profile Info */
@@ -107,7 +230,10 @@
   }
 
   .profile-section,
-  .password-section {
+  .password-section,
+  .admin-section,
+  .review-section,
+  .contact-section {
     padding: 1.3rem;
   }
 }
@@ -118,7 +244,10 @@
   }
 
   .profile-header,
-  .password-header {
+  .password-header,
+  .admin-header,
+  .review-header,
+  .contact-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
@@ -131,11 +260,22 @@
   }
 
   .profile-section,
-  .password-section {
+  .password-section,
+  .admin-section,
+  .review-section,
+  .contact-section {
     padding: 1rem;
   }
 
   .profile-container button {
     width: 100%;
+  }
+
+  .quick-links {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-btn {
+    max-width: 100% !important;
   }
 }
