@@ -1,8 +1,14 @@
 import "./Hero.css";
 import img from "../../assets/imgs/bg.png";
 import img2 from "./../../assets/imgs/pencil.png";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleExploreClick = () => {
+    navigate("/shop");
+  };
   return (
     <section
       className="hero"
@@ -21,7 +27,7 @@ const Hero = () => {
           that ignite your imagination, broaden your perspective, and enrich
           your journey.
         </p>
-        <button className="explore-btn">Explore Now</button>
+        <button className="explore-btn" onClick={handleExploreClick}>Explore Now</button>
       </div>
 
       <div className="hero__image">

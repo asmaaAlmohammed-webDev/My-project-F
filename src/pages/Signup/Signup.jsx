@@ -3,6 +3,8 @@ import "./Signup.css";
 import img from "../../assets/imgs/login.png";
 import axios from "axios";
 import { useState } from "react";
+// ADDED: Import centralized API configuration
+import { API_ENDPOINTS } from "../../config/api";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -34,7 +36,7 @@ const Signup = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:7000/api/v1.0.0/users/signup",
+        API_ENDPOINTS.SIGNUP, // CHANGED: Using centralized API configuration
         formData
       );
 

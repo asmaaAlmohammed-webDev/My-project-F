@@ -7,71 +7,23 @@ import {
   FaShoppingCart,
   FaHistory,
 } from "react-icons/fa";
+import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
+import { getCartItems, updateCartItemQuantity, removeFromCart } from "../../utils/cartUtils";
 import "./Cart.css";
 
 const CartPage = () => {
-  // حالة سلة التسوق الحالية
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "رواية الظلال الماضية",
-      author: "ملرين هاد",
-      price: 15.0,
-      quantity: 2,
-      image:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
-    },
-    {
-      id: 2,
-      name: "الحب الأبدي",
-      author: "روبرت جاي",
-      price: 12.99,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1495640388908-05fa85288e61?q=80&w=1000",
-    },
-    {
-      id: 3,
-      name: "مغامرات في أرض الألعاب",
-      author: "روبرت جاي",
-      price: 10.99,
-      quantity: 3,
-      image:
-        "https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=1000",
-    },
-  ]);
+  // حالة سلة التسوق الحالية - will be populated from localStorage initially
+  const [cartItems, setCartItems] = useState([]);
 
-  // حالة الطلبات السابقة
-  const [pastOrders, setPastOrders] = useState([
-    {
-      id: "ORD-2023-001",
-      date: "2023-05-15",
-      total: 45.99,
-      status: "تم التوصيل",
-      items: [
-        { id: 4, name: "العقل اليقظ", quantity: 1, price: 19.99 },
-        { id: 5, name: "التغذية الأساسية", quantity: 2, price: 13.0 },
-      ],
-    },
-    {
-      id: "ORD-2023-002",
-      date: "2023-04-22",
-      total: 32.5,
-      status: "تم التوصيل",
-      items: [{ id: 6, name: "الفيزياء الكمية", quantity: 1, price: 32.5 }],
-    },
-    {
-      id: "ORD-2023-003",
-      date: "2023-03-10",
-      total: 67.25,
-      status: "تم التوصيل",
-      items: [
-        { id: 7, name: "ريادة الأعمال", quantity: 1, price: 22.99 },
-        { id: 8, name: "الحضارات القديمة", quantity: 1, price: 29.99 },
-        { id: 9, name: "الرحلة الروحية", quantity: 1, price: 14.27 },
-      ],
-    },
-  ]);
+  // حالة الطلبات السابقة - will be fetched from backend
+  const [pastOrders, setPastOrders] = useState([]);
+
+  // Loading and error states
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [orderHistoryLoading, setOrderHistoryLoading] = useState(false);
 
   // حالة لعرض/إخفاء الطلبات السابقة
   const [showPastOrders, setShowPastOrders] = useState(false);
@@ -79,6 +31,127 @@ const CartPage = () => {
   // حالة للتحرير
   const [editingItem, setEditingItem] = useState(null);
   const [editedQuantity, setEditedQuantity] = useState(1);
+
+  // Debounce timer for order history loading
+  const [orderLoadTimer, setOrderLoadTimer] = useState(null);
+
+  // Load cart from localStorage on component mount
+  useEffect(() => {
+    setCartItems(getCartItems());
+    
+    // Load user's order history with debouncing to prevent rate limiting
+    debouncedLoadOrderHistory();
+
+    // Listen for cart updates from other components
+    const handleCartUpdate = () => {
+      setCartItems(getCartItems());
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      // Clear any pending timer on cleanup
+      if (orderLoadTimer) {
+        clearTimeout(orderLoadTimer);
+      }
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Note: Cart items are managed by cartUtils, no need to save here
+  // localStorage management is handled in cartUtils.js functions
+
+  // Debounced version of loadOrderHistory to prevent rate limiting
+  const debouncedLoadOrderHistory = () => {
+    // Clear any existing timer
+    if (orderLoadTimer) {
+      clearTimeout(orderLoadTimer);
+    }
+
+    // Set a new timer
+    const newTimer = setTimeout(() => {
+      loadOrderHistory();
+    }, 1000);
+
+    setOrderLoadTimer(newTimer);
+  };
+  const loadOrderHistory = async () => {
+    // Prevent multiple simultaneous calls
+    if (orderHistoryLoading) {
+      console.log("Order history already loading, skipping...");
+      return;
+    }
+
+    setOrderHistoryLoading(true);
+    
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found, skipping order history load");
+        setOrderHistoryLoading(false);
+        return;
+      }
+
+      // Try using the /mien endpoint as defined in backend
+      const response = await axios.get(
+        `${API_ENDPOINTS.ORDERS}/mien`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      console.log("Order history response:", response.data);
+      // Ensure we handle different response structures and validate order data
+      const orders = response.data.doc || response.data.data || response.data || [];
+      // Filter and validate orders to ensure they have required properties
+      const validOrders = orders.filter(order => order && (order._id || order.id));
+      setPastOrders(validOrders);
+    } catch (err) {
+      console.error("Error loading order history:", err);
+      
+      // Handle rate limiting specifically
+      if (err.response?.status === 429) {
+        console.warn("Rate limited - will try again later");
+        setPastOrders([]);
+        setOrderHistoryLoading(false);
+        return;
+      }
+      
+      // If /mien doesn't work, try the regular orders endpoint
+      if (err.response?.status === 403 || err.response?.status === 404) {
+        try {
+          const token = localStorage.getItem("token");
+          const fallbackResponse = await axios.get(
+            API_ENDPOINTS.ORDERS,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          console.log("Fallback order response:", fallbackResponse.data);
+          // Ensure we handle different response structures and validate order data
+          const fallbackOrders = fallbackResponse.data.doc || fallbackResponse.data.data || fallbackResponse.data || [];
+          // Filter and validate orders to ensure they have required properties
+          const validFallbackOrders = fallbackOrders.filter(order => order && (order._id || order.id));
+          setPastOrders(validFallbackOrders);
+        } catch (fallbackErr) {
+          console.error("Fallback order loading also failed:", fallbackErr);
+          // Set empty array if both fail
+          setPastOrders([]);
+        }
+      } else {
+        // For other errors, just set empty array
+        setPastOrders([]);
+      }
+    } finally {
+      setOrderHistoryLoading(false);
+    }
+  };
 
   // حساب المجموع الفرعي
   const subtotal = cartItems.reduce(
@@ -94,7 +167,14 @@ const CartPage = () => {
 
   // دالة حذف عنصر من السلة
   const removeItem = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    const updatedCart = removeFromCart(id);
+    setCartItems(updatedCart);
+  };
+
+  // دالة تحديث الكمية
+  const updateQuantity = (id, newQuantity) => {
+    const updatedCart = updateCartItemQuantity(id, newQuantity);
+    setCartItems(updatedCart);
   };
 
   // دالة بدء التحرير
@@ -103,14 +183,11 @@ const CartPage = () => {
     setEditedQuantity(item.quantity);
   };
 
-  // دالة حفظ التعديل
+    // دالة حفظ التعديل
   const saveEdit = () => {
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === editingItem ? { ...item, quantity: editedQuantity } : item
-      )
-    );
+    updateQuantity(editingItem, editedQuantity);
     setEditingItem(null);
+    setEditedQuantity(1);
   };
 
   // دالة إلغاء التحرير
@@ -118,38 +195,125 @@ const CartPage = () => {
     setEditingItem(null);
   };
 
-  // دالة إتمام عملية الشراء
-  const checkout = () => {
-    alert("تمت عملية الشراء بنجاح! شكراً لثقتك.");
-    // هنا سيتم إضافة الطلب إلى الطلبات السابقة
-    const newOrder = {
-      id: `ORD-${new Date().getFullYear()}-${Math.floor(
-        1000 + Math.random() * 9000
-      )}`,
-      date: new Date().toISOString().split("T")[0],
-      total: total,
-      status: "قيد المعالجة",
-      items: cartItems.map(({ id, name, quantity, price }) => ({
-        id,
-        name,
-        quantity,
-        price,
-      })),
-    };
+    // دالة الدفع والطلب - Connect to backend
+  const checkout = async () => {
+    if (cartItems.length === 0) {
+      setError("Your cart is empty!");
+      return;
+    }
 
-    setPastOrders([newOrder, ...pastOrders]);
-    setCartItems([]);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Please login to place an order");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      // Prepare order data for backend
+      const orderData = {
+        items: cartItems.map(item => ({
+          productId: item.id || item._id,
+          quantity: item.quantity,
+          price: item.price,
+          name: item.name
+        })),
+        total: total,
+        subtotal: subtotal,
+        tax: tax,
+        status: "PENDING"
+      };
+
+      // Create order via API
+      const response = await axios.post(
+        API_ENDPOINTS.ORDERS,
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Success - clear cart and show message
+      setCartItems([]);
+      localStorage.removeItem("cart");
+      setMessage("✅ Order placed successfully!");
+      
+      // Reload order history to show the new order with debouncing to prevent rate limiting
+      debouncedLoadOrderHistory();
+
+    } catch (err) {
+      console.error("Checkout error:", err);
+      setError(
+        err.response?.data?.message || "❌ Failed to place order. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Utility function to add item to cart (can be called from other components)
+  const addToCart = (product, quantity = 1) => {
+    const existingItem = cartItems.find(item => 
+      (item.id || item._id) === (product.id || product._id)
+    );
+
+    if (existingItem) {
+      // Update quantity if item already exists
+      updateQuantity(existingItem.id || existingItem._id, existingItem.quantity + quantity);
+    } else {
+      // Add new item to cart
+      const cartItem = {
+        id: product.id || product._id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+        image: product.image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
+        author: product.author || "Unknown Author"
+      };
+      setCartItems([...cartItems, cartItem]);
+    }
   };
 
   return (
     <div className="cart-page">
       <div className="cart-container">
-        <h1 className="cart-title">
-          <FaShoppingCart /> Cart
-        </h1>
+        <div className="cart-header">
+          <h1>
+            <FaShoppingCart /> سلة التسوق
+          </h1>
+        </div>
 
-        {/* سلة التسوق الحالية */}
-        <div className="cart-section">
+        {/* Display messages */}
+        {message && (
+          <div className="success-message" style={{ 
+            background: '#d4edda', 
+            color: '#155724', 
+            padding: '1rem', 
+            borderRadius: '4px', 
+            marginBottom: '1rem' 
+          }}>
+            {message}
+          </div>
+        )}
+
+        {error && (
+          <div className="error-message" style={{ 
+            background: '#f8d7da', 
+            color: '#721c24', 
+            padding: '1rem', 
+            borderRadius: '4px', 
+            marginBottom: '1rem' 
+          }}>
+            {error}
+          </div>
+        )}
+
+        <div className="cart-content">
           <h2 className="section-title">Current Order</h2>
 
           {cartItems.length === 0 ? (
@@ -253,8 +417,8 @@ const CartPage = () => {
                   <span>${total.toFixed(2)}</span>
                 </div>
 
-                <button onClick={checkout} className="btn checkout-btn">
-                  Complete Purchase process
+                <button onClick={checkout} className="btn checkout-btn" disabled={loading || cartItems.length === 0}>
+                  {loading ? "Processing..." : "Complete Purchase process"}
                 </button>
               </div>
             </>
@@ -278,46 +442,55 @@ const CartPage = () => {
 
           {showPastOrders && (
             <div className="past-orders">
-              {pastOrders.length === 0 ? (
+              {orderHistoryLoading ? (
+                <div className="loading-orders">
+                  <p>Loading order history...</p>
+                </div>
+              ) : pastOrders.length === 0 ? (
                 <p className="no-orders">No previous orders</p>
               ) : (
                 pastOrders.map((order) => (
-                  <div key={order.id} className="past-order">
+                  <div key={order._id || order.id} className="past-order">
                     <div className="order-header">
                       <div>
                         <span className="order-id">
-                          Order number: {order.id}
+                          Order: {order._id || order.id}
                         </span>
-                        <span className="order-date">Date: {order.date}</span>
+                        <span className="order-date">
+                          Date: {new Date(order.createdAt || order.date).toLocaleDateString()}
+                        </span>
                       </div>
                       <div>
                         <span className="order-total">
-                          Total: ${order.total.toFixed(2)}
+                          Total: ${(order.total || 0).toFixed(2)}
                         </span>
                         <span
                           className={`order-status ${
-                            order.status === "تم التوصيل"
+                            order.status === "DELIVERED" || order.status === "تم التوصيل"
                               ? "delivered"
                               : "processing"
                           }`}
                         >
-                          {order.status}
+                          {order.status || "PENDING"}
                         </span>
                       </div>
                     </div>
 
                     <div className="order-items">
-                      {order.items.map((item) => (
-                        <div key={item.id} className="order-item">
-                          <span className="item-name">{item.name}</span>
+                      {(order.items || []).map((item, index) => (
+                        <div key={item.id || item._id || index} className="order-item">
+                          <span className="item-name">{item.name || 'Unknown Item'}</span>
                           <span className="item-quantity">
-                            amount: {item.quantity}
+                            amount: {item.quantity || 0}
                           </span>
                           <span className="item-price">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
                           </span>
                         </div>
                       ))}
+                      {(!order.items || order.items.length === 0) && (
+                        <div className="no-items">No items found for this order</div>
+                      )}
                     </div>
                   </div>
                 ))

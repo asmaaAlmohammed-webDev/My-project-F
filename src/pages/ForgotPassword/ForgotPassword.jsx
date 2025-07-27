@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "./ForgotPassword.css";
 import img from "../../assets/imgs/login.png";
+// ADDED: Import centralized API configuration
+import { API_ENDPOINTS } from "../../config/api";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +15,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:7000/api/v1.0.0/users/forgotPassword",
+        API_ENDPOINTS.FORGOT_PASSWORD, // CHANGED: Using centralized API configuration
         {
           email,
         }

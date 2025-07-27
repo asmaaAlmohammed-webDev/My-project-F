@@ -27,6 +27,12 @@
     align-items: center;
     gap: 0.4rem;
     color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.logo:hover {
+    color: var(--purple1);
 }
 
 .logo-icon {
@@ -38,32 +44,34 @@
     gap: 2rem;
 }
 
+/* Debug styles to ensure visibility */
 .nav-link {
-    color: var(--text);
+    color: #000000 !important;
     text-decoration: none;
     position: relative;
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 0.3rem;
-    font-weight: 500;
-    font-size: 1.1rem;
+    font-weight: 700 !important;
+    font-size: 1.3rem !important;
+    transition: color 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.nav-link:hover {
+    color: #5a16bf !important;
 }
 
 .nav-link.active {
-    color: var(--primary);
+    color: #5a16bf !important;
 }
 
 .actions {
     display: flex;
     align-items: center;
     gap: 1.2rem;
-}
-
-.cart-icon {
-    position: relative;
-    text-decoration: none;
-    font-size: 1.3rem;
-    color: var(--balck);
 }
 
 .badge {
@@ -78,13 +86,62 @@
 }
 
 .login-icon {
-    color: var(--balck);
-    /* text-decoration: none; */
+    color: #000000;
+    text-decoration: none;
     font-weight: 500;
     font-size: 25px;
-    /* display: flex; */
-    /* align-items: center; */
+    display: flex;
+    align-items: center;
     gap: 0.2rem;
+    transition: color 0.3s ease;
+}
+
+.login-icon:hover {
+    color: #5a16bf;
+}
+
+.cart-icon {
+    position: relative;
+    text-decoration: none;
+    font-size: 1.3rem;
+    color: #000000;
+    transition: color 0.3s ease;
+}
+
+.cart-icon:hover {
+    color: #5a16bf;
+}
+
+.profile-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+    color: #000000;
+    font-size: 25px;
+}
+
+.profile-btn:hover {
+    color: #5a16bf;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+    color: #000000;
+    font-size: 25px;
+}
+
+.logout-btn:hover {
+    color: #dc2626; /* Red color for logout */
 }
 
 .menu-toggle {
@@ -93,6 +150,12 @@
     border: none;
     font-size: 1.4rem;
     cursor: pointer;
+    color: #000000;
+    transition: color 0.3s ease;
+}
+
+.menu-toggle:hover {
+    color: #5a16bf;
 }
 
 /* Responsive */
