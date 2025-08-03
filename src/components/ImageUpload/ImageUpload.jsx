@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { uploadImage, validateImageFile, createImagePreview } from '../../utils/imageUpload';
+import { getImageUrl } from '../../utils/imageUtils';
 import './ImageUpload.css';
 
 const ImageUpload = ({ 
@@ -11,13 +12,7 @@ const ImageUpload = ({
   const [uploading, setUploading] = useState(false);
   // Construct proper image path for preview if currentImage is just a filename
   const getImagePath = (image) => {
-    if (!image) return '';
-    // If it's already a full URL or path, use as is
-    if (image.startsWith('http') || image.startsWith('/') || image.startsWith('data:')) {
-      return image;
-    }
-    // If it's just a filename, construct the full path
-    return `/src/assets/imgs/${image}`;
+    return getImageUrl(image);
   };
   
   const [preview, setPreview] = useState(getImagePath(currentImage));

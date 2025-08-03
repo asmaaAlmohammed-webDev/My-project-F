@@ -2,6 +2,7 @@ import "./PopularBooksSec.css";
 // REMOVED: import { PopularBooksData } from "../../data/PopularBooksData";
 // ADDED: Import real API service instead of mock data
 import { fetchPopularBooks } from "../../services/productService";
+import { getProductImageUrl } from "../../utils/imageUtils";
 import TitleComponent from "./../TitleComponent/TitleComponent";
 import BookComponent from "../BookComponent/BookComponent";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -98,7 +99,7 @@ const PopularBooksSec = () => {
               category={book.categoryId?.name || 'Unknown Category'}
               price={book.price}
               description={book.description}
-              coverImage={`/src/assets/imgs/${book.image}`} // Construct image path
+              coverImage={getProductImageUrl(book)} // Use proper image URL
               title={book.name} // Add book title
             />
           </SwiperSlide>

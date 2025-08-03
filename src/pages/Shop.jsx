@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Shop.css";
 import BookComponent from "../components/BookComponent/BookComponent";
 import { fetchProducts, fetchCategories } from "../services/productService";
+import { getProductImageUrl } from "../utils/imageUtils";
 import { FaSearch, FaFilter } from "react-icons/fa";
 
 const Shop = () => {
@@ -32,8 +33,8 @@ const Shop = () => {
           author: product.categoryId?.name || "Unknown Category",
           price: product.price,
           category: product.categoryId?.name || "Uncategorized",
-          coverImage: product.image ? `/src/assets/imgs/${product.image}` : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
-          image: product.image ? `/src/assets/imgs/${product.image}` : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
+          coverImage: getProductImageUrl(product),
+          image: getProductImageUrl(product),
           rating: 4.5,
           description: product.description
         }));

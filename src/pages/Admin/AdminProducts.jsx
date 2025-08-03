@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProducts, fetchCategories } from '../../services/productService';
+import { getProductImageUrl } from '../../utils/imageUtils';
 import { API_ENDPOINTS } from '../../config/api';
 import axios from 'axios';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
@@ -159,17 +160,9 @@ const AdminProducts = () => {
     return category ? category.name : 'Unknown';
   };
 
-  // Helper function to get the correct image path
+  // Helper function to get the correct image URL
   const getImageSrc = (imageValue) => {
-    if (!imageValue) return '';
-    
-    // If it's already a full URL (Cloudinary), use as is
-    if (imageValue.startsWith('http') || imageValue.startsWith('https')) {
-      return imageValue;
-    }
-    
-    // If it's a local filename, construct the path
-    return `/src/assets/imgs/${imageValue}`;
+    return getProductImageUrl({ image: imageValue });
   };
 
   if (loading) {

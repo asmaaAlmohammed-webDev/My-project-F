@@ -32,6 +32,16 @@ const CartPage = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [editedQuantity, setEditedQuantity] = useState(1);
 
+  // حالة عنوان التسليم
+  const [address, setAddress] = useState({
+    street: "",
+    region: "",
+    descreption: ""
+  });
+
+  // حالة طريقة الدفع
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+
   // Debounce timer for order history loading
   const [orderLoadTimer, setOrderLoadTimer] = useState(null);
 
@@ -202,6 +212,11 @@ const CartPage = () => {
       return;
     }
 
+    if (!address.street || !address.region || !address.descreption) {
+      setError("Please fill in all address fields!");
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
       setError("Please login to place an order");
@@ -212,18 +227,17 @@ const CartPage = () => {
     setError("");
 
     try {
-      // Prepare order data for backend
+      // Prepare order data for backend according to Order model schema
       const orderData = {
-        items: cartItems.map(item => ({
+        cart: cartItems.map(item => ({
           productId: item.id || item._id,
-          quantity: item.quantity,
-          price: item.price,
-          name: item.name
+          amount: item.quantity,
+          price: item.price
         })),
         total: total,
-        subtotal: subtotal,
-        tax: tax,
-        status: "PENDING"
+        status: "wating", // Use valid enum value instead of "PENDING"
+        methodePayment: paymentMethod, // Use selected payment method
+        address: address // Use the address from the form
       };
 
       // Create order via API
@@ -242,6 +256,13 @@ const CartPage = () => {
       setCartItems([]);
       localStorage.removeItem("cart");
       setMessage("✅ Order placed successfully!");
+      
+      // Clear address form
+      setAddress({
+        street: "",
+        region: "",
+        descreption: ""
+      });
       
       // Reload order history to show the new order with debouncing to prevent rate limiting
       debouncedLoadOrderHistory();
@@ -275,7 +296,12 @@ const CartPage = () => {
         image: product.image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
         author: product.author || "Unknown Author"
       };
-      setCartItems([...cartItems, cartItem]);
+      const newCartItems = [...cartItems, cartItem];
+      setCartItems(newCartItems);
+      localStorage.setItem("cart", JSON.stringify(newCartItems));
+      
+      // Dispatch cart update event
+      window.dispatchEvent(new CustomEvent('cartUpdated'));
     }
   };
 
@@ -415,6 +441,63 @@ const CartPage = () => {
                 <div className="summary-row total">
                   <span>Total:</span>
                   <span>${total.toFixed(2)}</span>
+                </div>
+
+                {/* Delivery Address Form */}
+                <div className="address-section">
+                  <h4>Delivery Address</h4>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Street Address"
+                      value={address.street}
+                      onChange={(e) => setAddress({...address, street: e.target.value})}
+                      className="address-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Region/City"
+                      value={address.region}
+                      onChange={(e) => setAddress({...address, region: e.target.value})}
+                      className="address-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <textarea
+                      placeholder="Additional details (building, floor, etc.)"
+                      value={address.descreption}
+                      onChange={(e) => setAddress({...address, descreption: e.target.value})}
+                      className="address-input"
+                      rows="2"
+                    />
+                  </div>
+                </div>
+
+                {/* Payment Method */}
+                <div className="payment-section">
+                  <h4>Payment Method</h4>
+                  <div className="payment-options">
+                    <label className="payment-option">
+                      <input
+                        type="radio"
+                        value="cash"
+                        checked={paymentMethod === "cash"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />
+                      <span>Cash on Delivery</span>
+                    </label>
+                    <label className="payment-option">
+                      <input
+                        type="radio"
+                        value="bank"
+                        checked={paymentMethod === "bank"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />
+                      <span>Bank Transfer</span>
+                    </label>
+                  </div>
                 </div>
 
                 <button onClick={checkout} className="btn checkout-btn" disabled={loading || cartItems.length === 0}>
