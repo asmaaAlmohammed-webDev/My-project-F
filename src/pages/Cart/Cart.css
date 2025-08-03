@@ -459,3 +459,76 @@
     text-align: left;
   }
 }
+
+/* Address and Payment Form Styles */
+.address-section,
+.payment-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.address-section h4,
+.payment-section h4 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.address-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.address-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.payment-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.payment-option:hover {
+  color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .address-section,
+  .payment-section {
+    padding: 12px;
+    margin: 15px 0;
+  }
+  
+  .address-input {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}

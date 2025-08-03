@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./BookCategories.css";
 import BookComponent from "../BookComponent/BookComponent";
 import { fetchProducts, fetchCategories } from "../../services/productService";
+import { getProductImageUrl } from "../../utils/imageUtils";
 
 const BookCategories = () => {
   const [books, setBooks] = useState([]);
@@ -31,8 +32,8 @@ const BookCategories = () => {
           author: product.categoryId?.name || "Unknown Category", // Using category as author for consistency
           price: product.price,
           category: product.categoryId?.name || "Uncategorized",
-          coverImage: product.image ? `/src/assets/imgs/${product.image}` : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000", // Fallback image
-          image: product.image ? `/src/assets/imgs/${product.image}` : "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000", // Add image field for cart compatibility
+          coverImage: getProductImageUrl(product),
+          image: getProductImageUrl(product),
           rating: 4.5, // Default rating until review system is implemented
           description: product.description
         }));

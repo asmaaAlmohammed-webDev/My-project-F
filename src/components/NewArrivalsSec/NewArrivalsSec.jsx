@@ -3,6 +3,7 @@ import './NewArrivalsSec.css';
 // REMOVED: import { NewArrivalsData } from '../../data/NewArrivalsData';
 // ADDED: Import real API service instead of mock data
 import { fetchNewArrivals } from '../../services/productService';
+import { getProductImageUrl } from '../../utils/imageUtils';
 import TitleComponent from './../TitleComponent/TitleComponent';
 import BookComponent from '../BookComponent/BookComponent';
 
@@ -95,12 +96,12 @@ const NewArrivalsSec = () => {
                 {newArrivals.map((book, index) => (
                     <SwiperSlide key={book._id || index} className='book'>
                         <BookComponent
-                            // UPDATED: Map backend data structure to component props
+                                                        // UPDATED: Map backend data structure to component props
                             author={book.categoryId?.name || 'Unknown Author'} // Using category as author for now
                             category={book.categoryId?.name || 'Unknown Category'}
                             price={book.price}
                             description={book.description}
-                            coverImage={`/src/assets/imgs/${book.image}`} // Construct image path
+                            coverImage={getProductImageUrl(book)} // Use proper image URL
                             title={book.name} // Add book title
                         />
                     </SwiperSlide>
