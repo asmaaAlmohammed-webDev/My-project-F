@@ -24,6 +24,7 @@ import AdminOrders from "./pages/Admin/AdminOrders.jsx";
 import AdminReviews from "./pages/Admin/AdminReviews.jsx";
 import AdminUsers from "./pages/Admin/AdminUsers.jsx";
 import AdminRequests from "./pages/Admin/AdminRequests.jsx";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 
 const router = createBrowserRouter(
   [
@@ -40,7 +41,7 @@ const router = createBrowserRouter(
         { path: "login", element: <Login /> },
         { path: "signup", element: <Signup /> },
         { path: "forgot-password", element: <ForgotPassword /> },
-        
+
         // Protected Routes (authentication required)
         {
           element: <ProtectedRoute />,
@@ -69,7 +70,15 @@ const router = createBrowserRouter(
         { path: "users", element: <AdminUsers /> },
         { path: "requests", element: <AdminRequests /> },
         // Catch-all for any other admin sub-routes
-        { path: "*", element: <div style={{padding: '20px'}}><h2>Admin Page</h2><p>This admin feature is coming soon!</p></div> },
+        {
+          path: "*",
+          element: (
+            <div style={{ padding: "20px" }}>
+              <h2>Admin Page</h2>
+              <p>This admin feature is coming soon!</p>
+            </div>
+          ),
+        },
       ],
     },
   ]
@@ -93,6 +102,7 @@ function AppLoaderWrapper() {
 // render
 createRoot(document.getElementById("root")).render(
   <StrictMode>
+    <ScrollToTop />
     <AppLoaderWrapper />
   </StrictMode>
 );
