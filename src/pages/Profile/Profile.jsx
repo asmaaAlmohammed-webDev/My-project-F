@@ -160,9 +160,7 @@ const Profile = () => {
       setIsReviewEditing(false);
       setReviewData({ message: "", rate: 5 });
     } catch (error) {
-      setMessage(
-        error.response?.data?.message || "❌ Failed to submit review"
-      );
+      setMessage(error.response?.data?.message || "❌ Failed to submit review");
       setMessageType("error");
     }
   };
@@ -199,7 +197,13 @@ const Profile = () => {
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <h1>My Profile</h1>
+        <h1
+          data-aos="fade-down"
+          data-aos-easing="linear"
+          data-aos-duration="1500"
+        >
+          My Profile
+        </h1>
         <button onClick={handleLogout} className="logout-button">
           Logout
         </button>
@@ -215,7 +219,13 @@ const Profile = () => {
 
       <div className="profile-section">
         <div className="profile-header">
-          <h2>Personal Information</h2>
+          <h2
+            data-aos="fade-down"
+            data-aos-easing="linear"
+            data-aos-duration="1500"
+          >
+            Personal Information
+          </h2>
           {!editMode ? (
             <button onClick={() => setEditMode(true)}>Edit Profile</button>
           ) : (
@@ -225,7 +235,12 @@ const Profile = () => {
 
         {editMode ? (
           <form onSubmit={handleProfileUpdate}>
-            <div className="form-group">
+            <div
+              className="form-group"
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <label>Name</label>
               <input
                 type="text"
@@ -235,11 +250,21 @@ const Profile = () => {
                 }
               />
             </div>
-            <div className="form-group">
+            <div
+              className="form-group"
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <label>Email</label>
               <input type="email" value={userData.email} disabled />
             </div>
-            <div className="form-group">
+            <div
+              className="form-group"
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <label>Phone</label>
               <input
                 type="text"
@@ -253,16 +278,32 @@ const Profile = () => {
           </form>
         ) : (
           <div className="profile-info">
-            <p>
+            <p
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <strong>Name:</strong> {userData.name}
             </p>
-            <p>
+            <p
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <strong>Email:</strong> {userData.email}
             </p>
-            <p>
+            <p
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <strong>Phone:</strong> {userData.phone}
             </p>
-            <p>
+            <p
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <strong>Role:</strong> {userData.role}
             </p>
           </div>
@@ -277,23 +318,35 @@ const Profile = () => {
             <p>Manage your application with administrator privileges</p>
           </div>
           <div className="admin-actions">
-            <button 
+            <button
               onClick={() => navigate("/admin")}
               className="dashboard-btn primary"
             >
               📊 Go to Dashboard
             </button>
             <div className="admin-quick-links">
-              <button onClick={() => navigate("/admin/categories")} className="quick-link-btn">
+              <button
+                onClick={() => navigate("/admin/categories")}
+                className="quick-link-btn"
+              >
                 📁 Categories
               </button>
-              <button onClick={() => navigate("/admin/products")} className="quick-link-btn">
+              <button
+                onClick={() => navigate("/admin/products")}
+                className="quick-link-btn"
+              >
                 📦 Products
               </button>
-              <button onClick={() => navigate("/admin/orders")} className="quick-link-btn">
+              <button
+                onClick={() => navigate("/admin/orders")}
+                className="quick-link-btn"
+              >
                 🛒 Orders
               </button>
-              <button onClick={() => navigate("/admin/users")} className="quick-link-btn">
+              <button
+                onClick={() => navigate("/admin/users")}
+                className="quick-link-btn"
+              >
                 👥 Users
               </button>
             </div>
@@ -315,7 +368,12 @@ const Profile = () => {
 
         {isPasswordEditing && (
           <form onSubmit={handlePasswordUpdate}>
-            <div className="form-group">
+            <div
+              className="form-group"
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <label>Current Password</label>
               <input
                 type="password"
@@ -329,7 +387,12 @@ const Profile = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div
+              className="form-group"
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <label>New Password</label>
               <input
                 type="password"
@@ -343,7 +406,12 @@ const Profile = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div
+              className="form-group"
+              data-aos="fade-down"
+              data-aos-easing="linear"
+              data-aos-duration="1500"
+            >
               <label>Confirm New Password</label>
               <input
                 type="password"
@@ -424,15 +492,17 @@ const Profile = () => {
           <div className="contact-header">
             <h2>Contact Support</h2>
             {!isContactEditing ? (
-              <button onClick={() => {
-                setIsContactEditing(true);
-                // Pre-fill with user data
-                setContactData({
-                  name: userData.name,
-                  email: userData.email,
-                  message: "",
-                });
-              }}>
+              <button
+                onClick={() => {
+                  setIsContactEditing(true);
+                  // Pre-fill with user data
+                  setContactData({
+                    name: userData.name,
+                    email: userData.email,
+                    message: "",
+                  });
+                }}
+              >
                 Send Request
               </button>
             ) : (
@@ -442,7 +512,12 @@ const Profile = () => {
 
           {isContactEditing && (
             <form onSubmit={handleContactSubmission}>
-              <div className="form-group">
+              <div
+                className="form-group"
+                data-aos="fade-down"
+                data-aos-easing="linear"
+                data-aos-duration="1500"
+              >
                 <label>Name</label>
                 <input
                   type="text"
@@ -456,7 +531,12 @@ const Profile = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div
+                className="form-group"
+                data-aos="fade-down"
+                data-aos-easing="linear"
+                data-aos-duration="1500"
+              >
                 <label>Email</label>
                 <input
                   type="email"
@@ -470,7 +550,12 @@ const Profile = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div
+                className="form-group"
+                data-aos="fade-down"
+                data-aos-easing="linear"
+                data-aos-duration="1500"
+              >
                 <label>Message</label>
                 <textarea
                   rows="4"

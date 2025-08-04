@@ -27,7 +27,11 @@ const ContactUsComp = () => {
   };
 
   return (
-    <div className="contact-container">
+    <div
+      className="contact-container"
+      data-aos="fade-up"
+      data-aos-duration="3000"
+    >
       <h2>Contact Us</h2>
       <form className="contact-form" onSubmit={handleSubmit}>
         <input

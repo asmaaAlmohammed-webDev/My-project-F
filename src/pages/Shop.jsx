@@ -18,14 +18,14 @@ const Shop = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         const [productsData, categoriesData] = await Promise.all([
           fetchProducts(),
-          fetchCategories()
+          fetchCategories(),
         ]);
 
         // Map backend product data to frontend format
-        const formattedBooks = productsData.map(product => ({
+        const formattedBooks = productsData.map((product) => ({
           _id: product._id,
           id: product._id,
           title: product.name,
@@ -36,13 +36,13 @@ const Shop = () => {
           coverImage: getProductImageUrl(product),
           image: getProductImageUrl(product),
           rating: 4.5,
-          description: product.description
+          description: product.description,
         }));
 
         // Format categories with "All" option
         const formattedCategories = [
           "All",
-          ...categoriesData.map(cat => cat.name)
+          ...categoriesData.map((cat) => cat.name),
         ];
 
         setBooks(formattedBooks);
@@ -60,11 +60,13 @@ const Shop = () => {
   }, []);
 
   // Filter books based on category and search term
-  const filteredBooks = books.filter(book => {
-    const matchesCategory = selectedCategory === "All" || book.category === selectedCategory;
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         book.description?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredBooks = books.filter((book) => {
+    const matchesCategory =
+      selectedCategory === "All" || book.category === selectedCategory;
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.description?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -91,9 +93,7 @@ const Shop = () => {
     return (
       <div className="shop-error">
         <p>{error}</p>
-        <button onClick={() => window.location.reload()}>
-          Try Again
-        </button>
+        <button onClick={() => window.location.reload()}>Try Again</button>
       </div>
     );
   }
@@ -110,7 +110,13 @@ const Shop = () => {
         {/* Search and Filter Section */}
         <div className="shop-controls">
           {/* Search Bar */}
-          <div className="search-container">
+          <div
+            className="search-container "
+            data-aos="fade-right"
+            data-aos-offset="300"
+            data-aos-duration="2500"
+            data-aos-easing="ease-in-sine"
+          >
             <FaSearch className="search-icon" />
             <input
               type="text"
@@ -122,7 +128,13 @@ const Shop = () => {
           </div>
 
           {/* Category Filter */}
-          <div className="filter-container">
+          <div
+            className="filter-container"
+            data-aos="fade-right"
+            data-aos-offset="300"
+            data-aos-duration="2500"
+            data-aos-easing="ease-in-sine"
+          >
             <FaFilter className="filter-icon" />
             <select
               value={selectedCategory}
@@ -143,8 +155,12 @@ const Shop = () => {
           {categories.map((category) => (
             <button
               key={category}
-              className={`category-pill ${selectedCategory === category ? 'active' : ''}`}
+              className={`category-pill ${
+                selectedCategory === category ? "active" : ""
+              }`}
               onClick={() => handleCategoryChange(category)}
+              data-aos="fade-up"
+              data-aos-duration="2500"
             >
               {category}
             </button>
@@ -154,7 +170,8 @@ const Shop = () => {
         {/* Results Info */}
         <div className="results-info">
           <p>
-            {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} found
+            {filteredBooks.length}{" "}
+            {filteredBooks.length === 1 ? "book" : "books"} found
             {selectedCategory !== "All" && ` in ${selectedCategory}`}
             {searchTerm && ` for "${searchTerm}"`}
           </p>
@@ -180,7 +197,12 @@ const Shop = () => {
             <div className="no-books-message">
               <h3>No books found</h3>
               <p>Try adjusting your search or category filter</p>
-              <button onClick={() => { setSearchTerm(""); setSelectedCategory("All"); }}>
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("All");
+                }}
+              >
                 Clear Filters
               </button>
             </div>
