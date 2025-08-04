@@ -19,7 +19,7 @@ export const getImageUrl = (imageValue) => {
 
   // If it's a filename, construct the backend static file URL
   // Backend serves static files from public folder at /img/static/
-  return `http://localhost:3001/img/static/${imageValue}`;
+  return `http://localhost:7000/img/static/${imageValue}`;
 };
 
 /**

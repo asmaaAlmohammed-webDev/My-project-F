@@ -28,8 +28,8 @@ const PopularBooksSec = () => {
         setPopularBooks(books);
         setError(null);
       } catch (err) {
-        console.error('Error loading popular books:', err);
-        setError('Failed to load popular books');
+        console.error("Error loading popular books:", err);
+        setError("Failed to load popular books");
       } finally {
         setLoading(false);
       }
@@ -95,12 +95,14 @@ const PopularBooksSec = () => {
           <SwiperSlide key={book._id || index}>
             <BookComponent
               // UPDATED: Map backend data structure to component props
-              author={book.categoryId?.name || 'Unknown Author'} // Using category as author for now
-              category={book.categoryId?.name || 'Unknown Category'}
+              id={book._id}
+              author={book.categoryId?.name || "Unknown Author"} // Using category as author for now
+              category={book.categoryId?.name || "Unknown Category"}
               price={book.price}
               description={book.description}
               coverImage={getProductImageUrl(book)} // Use proper image URL
               title={book.name} // Add book title
+              product={book}
             />
           </SwiperSlide>
         ))}
