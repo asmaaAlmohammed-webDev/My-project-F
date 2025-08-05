@@ -23,7 +23,7 @@
     color: #000;
     font-weight: 500;
     animation: moveGradient 5s infinite linear;
-    background: linear-gradient(90deg, #5a16bf, #a032d7, #9f66f3, #4f1f60);
+    background: linear-gradient(90deg, #16062e, #8420b7, #6a40a9, #4f1f60);
     background-size: 200%;
     background-clip: text;
     -webkit-background-clip: text;
