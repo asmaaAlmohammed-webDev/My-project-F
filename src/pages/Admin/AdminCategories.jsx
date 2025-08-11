@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from "react-i18next";
 import { fetchCategories } from '../../services/productService';
 import { API_ENDPOINTS } from '../../config/api';
 import axios from 'axios';
@@ -17,6 +18,7 @@ const AdminCategories = () => {
     photo: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const { t } = useTranslation();
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -140,7 +142,7 @@ const AdminCategories = () => {
     return (
       <div className="admin-categories-loading">
         <div className="loading-spinner"></div>
-        <p>Loading categories...</p>
+        <p>{t("loadingCategories")}</p>
       </div>
     );
   }
@@ -148,7 +150,7 @@ const AdminCategories = () => {
   return (
     <div className="admin-categories">
       <div className="admin-categories-header">
-        <h1>Categories Management</h1>
+        <h1>{t("categoriesManagement")}</h1>
         <button 
           className="btn btn-primary"
           onClick={() => {
@@ -164,7 +166,7 @@ const AdminCategories = () => {
             }
           }}
         >
-          {showForm ? 'Cancel' : 'Add New Category'}
+          {showForm ? t("cancel") : t("addNewCategory")}
         </button>
       </div>
 
@@ -177,10 +179,10 @@ const AdminCategories = () => {
       {/* Add/Edit Form */}
       {showForm && (
         <div className="category-form-section">
-          <h2>{editingCategory ? 'Edit Category' : 'Add New Category'}</h2>
+          <h2>{editingCategory ? t("editCategory") : t("addNewCategory")}</h2>
           <form onSubmit={handleFormSubmit} className="category-form">
             <div className="form-group">
-              <label htmlFor="name">Category Name *</label>
+              <label htmlFor="name">{t("categoryName")}</label>
               <input
                 type="text"
                 id="name"
@@ -188,18 +190,18 @@ const AdminCategories = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                placeholder="Enter category name"
+                placeholder={t("categoryName")}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="descrption">Description</label>
+              <label htmlFor="descrption">{t("categoryDescription")}</label>
               <textarea
                 id="descrption"
                 name="descrption"
                 value={formData.descrption}
                 onChange={handleInputChange}
-                placeholder="Enter category description"
+                placeholder={t("categoryDescription")}
                 rows="3"
               />
             </div>
@@ -207,7 +209,7 @@ const AdminCategories = () => {
             <ImageUpload
               currentImage={formData.photo}
               onImageChange={handleImageChange}
-              label="Category Photo"
+              label={t("categoryPhoto")}
               required={false}
             />
 
@@ -217,14 +219,14 @@ const AdminCategories = () => {
                 className="btn btn-success"
                 disabled={submitting}
               >
-                {submitting ? 'Saving...' : (editingCategory ? 'Update Category' : 'Create Category')}
+                {submitting ? t("processing") : (editingCategory ? t("updateCategory") : t("createCategory"))}
               </button>
               <button 
                 type="button" 
                 className="btn btn-secondary"
                 onClick={resetForm}
               >
-                Cancel
+                {t("cancel")}
               </button>
             </div>
           </form>
@@ -233,21 +235,20 @@ const AdminCategories = () => {
 
       {/* Categories Table */}
       <div className="categories-table-section">
-        <h2>All Categories ({categories.length})</h2>
-        
+        <h2>{t("allCategories")} ({categories.length})</h2>
         {categories.length === 0 ? (
           <div className="no-categories">
-            <p>No categories found. Create your first category!</p>
+            <p>{t("noCategories")}</p>
           </div>
         ) : (
           <div className="categories-table">
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Photo</th>
-                  <th>Actions</th>
+                  <th>{t("categoryName")}</th>
+                  <th>{t("categoryDescription")}</th>
+                  <th>{t("categoryPhoto")}</th>
+                  <th>{t("actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -255,7 +256,7 @@ const AdminCategories = () => {
                   <tr key={category._id}>
                     <td className="category-name">{category.name}</td>
                     <td className="category-description">
-                      {category.descrption || 'No description'}
+                      {category.descrption || t("noDescription")}
                     </td>
                     <td className="category-photo">
                       {category.photo ? (
@@ -265,23 +266,23 @@ const AdminCategories = () => {
                           className="category-thumbnail"
                         />
                       ) : (
-                        'No image'
+                        t("noImage")
                       )}
                     </td>
                     <td className="category-actions">
                       <button 
                         className="btn btn-sm btn-warning"
                         onClick={() => handleEdit(category)}
-                        title="Edit this category (opens form at top)"
+                        title={t("editCategory")}
                       >
-                        ✏️ Edit
+                        {t("editAction")}
                       </button>
                       <button 
                         className="btn btn-sm btn-danger"
                         onClick={() => handleDelete(category._id)}
-                        title="Delete this category permanently"
+                        title={t("deleteCategory")}
                       >
-                        🗑️ Delete
+                        {t("deleteAction")}
                       </button>
                     </td>
                   </tr>

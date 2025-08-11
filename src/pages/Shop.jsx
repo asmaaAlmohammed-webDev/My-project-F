@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "./Shop.css";
 import BookComponent from "../components/BookComponent/BookComponent";
 import { fetchProducts, fetchCategories } from "../services/productService";
@@ -12,6 +13,7 @@ const Shop = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   // Fetch data from API
   useEffect(() => {
@@ -84,7 +86,7 @@ const Shop = () => {
     return (
       <div className="shop-loading">
         <div className="loading-spinner"></div>
-        <p>Loading our amazing collection...</p>
+        <p>{t("loadingCollection")}</p>
       </div>
     );
   }
@@ -93,7 +95,7 @@ const Shop = () => {
     return (
       <div className="shop-error">
         <p>{error}</p>
-        <button onClick={() => window.location.reload()}>Try Again</button>
+        <button onClick={() => window.location.reload()}>{t("tryAgain")}</button>
       </div>
     );
   }
@@ -103,8 +105,8 @@ const Shop = () => {
       <div className="shop-container">
         {/* Shop Header */}
         <div className="shop-header">
-          <h1>Book Collection</h1>
-          <p>Discover your next favorite read from our curated collection</p>
+          <h1>{t("bookCollection")}</h1>
+          <p>{t("discoverCollection")}</p>
         </div>
 
         {/* Search and Filter Section */}
@@ -120,7 +122,7 @@ const Shop = () => {
             <FaSearch className="search-icon" />
             <input
               type="text"
-              placeholder="Search books, authors, or descriptions..."
+              placeholder={t("search") + " books, authors, or descriptions..."}
               value={searchTerm}
               onChange={handleSearchChange}
               className="search-input"
@@ -170,10 +172,9 @@ const Shop = () => {
         {/* Results Info */}
         <div className="results-info">
           <p>
-            {filteredBooks.length}{" "}
-            {filteredBooks.length === 1 ? "book" : "books"} found
-            {selectedCategory !== "All" && ` in ${selectedCategory}`}
-            {searchTerm && ` for "${searchTerm}"`}
+            {filteredBooks.length} {filteredBooks.length === 1 ? t("book") : t("books")}
+            {selectedCategory !== "All" && ` ${t("inCategory", { category: selectedCategory })}`}
+            {searchTerm && ` ${t("forSearch", { search: searchTerm })}`}
           </p>
         </div>
 
@@ -195,15 +196,15 @@ const Shop = () => {
             ))
           ) : (
             <div className="no-books-message">
-              <h3>No books found</h3>
-              <p>Try adjusting your search or category filter</p>
+              <h3>{t("noBooksFound")}</h3>
+              <p>{t("adjustSearch")}</p>
               <button
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedCategory("All");
                 }}
               >
-                Clear Filters
+                {t("clearFilters")}
               </button>
             </div>
           )}

@@ -1,9 +1,11 @@
 import './BookComponent.css'
 import { TbShoppingBagPlus } from 'react-icons/tb';
 import { addToCart } from '../../utils/cartUtils';
+import { useTranslation } from 'react-i18next';
 
 // UPDATED: Added title prop and improved prop handling for real API data
 const BookComponent = ({ author, category, price, description, coverImage, title, id, product }) => {
+    const { t } = useTranslation();
     
     const handleAddToCart = () => {
         // Create product object for cart
@@ -22,7 +24,7 @@ const BookComponent = ({ author, category, price, description, coverImage, title
         addToCart(productForCart, 1);
         
         // Show a quick feedback (you can replace this with a toast notification)
-        alert('✅ Product added to cart!');
+        alert(t('productAddedToCart'));
     };
 
     return (

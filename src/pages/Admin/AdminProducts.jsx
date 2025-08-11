@@ -5,8 +5,12 @@ import { API_ENDPOINTS } from '../../config/api';
 import axios from 'axios';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import './AdminProducts.css';
+// ADDED: Translation hook
+import { useTranslation } from 'react-i18next';
 
 const AdminProducts = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +42,7 @@ const AdminProducts = () => {
       setCategories(categoriesData);
       setError(null);
     } catch (err) {
-      setError('Failed to load data');
+      setError(t('failedLoadData'));
       console.error('Error loading data:', err);
     } finally {
       setLoading(false);
@@ -83,7 +87,7 @@ const AdminProducts = () => {
       resetForm();
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save product');
+      setError(err.response?.data?.message || t('failedSaveProduct'));
       console.error('Error saving product:', err);
     } finally {
       setSubmitting(false);
@@ -127,7 +131,7 @@ const AdminProducts = () => {
       await loadData();
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete product');
+      setError(err.response?.data?.message || t('failedDeleteProduct'));
       console.error('Error deleting product:', err);
     }
   };
@@ -157,7 +161,7 @@ const AdminProducts = () => {
       return categoryId.name;
     }
     const category = categories.find(cat => cat._id === categoryId);
-    return category ? category.name : 'Unknown';
+    return category ? category.name : t('unknown');
   };
 
   // Helper function to get the correct image URL
@@ -193,7 +197,7 @@ const AdminProducts = () => {
             }
           }}
         >
-          {showForm ? 'Cancel' : 'Add New Product'}
+          {showForm ? t('cancel') : t('addNewProduct')}
         </button>
       </div>
 
@@ -206,11 +210,11 @@ const AdminProducts = () => {
       {/* Add/Edit Form */}
       {showForm && (
         <div className="product-form-section">
-          <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+          <h2>{editingProduct ? t('editProduct') : t('addNewProduct')}</h2>
           <form onSubmit={handleFormSubmit} className="product-form">
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="name">Product Name *</label>
+                <label htmlFor="name">{t('productName')} *</label>
                 <input
                   type="text"
                   id="name"
@@ -223,7 +227,7 @@ const AdminProducts = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="price">Price ($) *</label>
+                <label htmlFor="price">{t('price')} ($) *</label>
                 <input
                   type="number"
                   id="price"
@@ -239,7 +243,7 @@ const AdminProducts = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="categoryId">Category *</label>
+              <label htmlFor="categoryId">{t('category')} *</label>
               <select
                 id="categoryId"
                 name="categoryId"
@@ -247,7 +251,7 @@ const AdminProducts = () => {
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Select a category</option>
+                <option value="">{t('selectCategory')}</option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>
                     {category.name}
@@ -257,7 +261,7 @@ const AdminProducts = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">{t('description')}</label>
               <textarea
                 id="description"
                 name="description"
@@ -271,7 +275,7 @@ const AdminProducts = () => {
             <ImageUpload
               currentImage={formData.image}
               onImageChange={handleImageChange}
-              label="Product Image"
+              label={t('productImage')}
               required={false}
             />
 
@@ -281,14 +285,14 @@ const AdminProducts = () => {
                 className="btn btn-success"
                 disabled={submitting}
               >
-                {submitting ? 'Saving...' : (editingProduct ? 'Update Product' : 'Create Product')}
+                {submitting ? t('saving') : (editingProduct ? t('updateProduct') : t('createProduct'))}
               </button>
               <button 
                 type="button" 
                 className="btn btn-secondary"
                 onClick={resetForm}
               >
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </form>

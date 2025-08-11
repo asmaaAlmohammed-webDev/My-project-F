@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import "./ContactUsComp.css";
 // ADDED: Import centralized API configuration
@@ -8,6 +9,7 @@ const ContactUsComp = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,10 +21,10 @@ const ContactUsComp = () => {
     setError("");
     try {
       await axios.post(API_ENDPOINTS.CONTACT, form); // CHANGED: Using centralized API configuration
-      setSuccess("Your message has been sent successfully!");
+  setSuccess(t("successContact"));
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
-      setError("Failed to send message. Please try again.");
+  setError(t("errorContact"));
     }
   };
 
@@ -32,12 +34,12 @@ const ContactUsComp = () => {
       data-aos="fade-up"
       data-aos-duration="3000"
     >
-      <h2>Contact Us</h2>
+      <h2>{t("contactUs")}</h2>
       <form className="contact-form" onSubmit={handleSubmit}>
         <input
           type="text"
           name="name"
-          placeholder="Your Name"
+          placeholder={t("yourName")}
           value={form.name}
           onChange={handleChange}
           required
@@ -45,19 +47,19 @@ const ContactUsComp = () => {
         <input
           type="email"
           name="email"
-          placeholder="Your Email"
+          placeholder={t("yourEmail")}
           value={form.email}
           onChange={handleChange}
           required
         />
         <textarea
           name="message"
-          placeholder="Your Message"
+          placeholder={t("yourMessage")}
           value={form.message}
           onChange={handleChange}
           required
         />
-        <button type="submit">Send Message</button>
+        <button type="submit">{t("sendMessage")}</button>
         {success && <div className="success-msg">{success}</div>}
         {error && <div className="error-msg">{error}</div>}
       </form>

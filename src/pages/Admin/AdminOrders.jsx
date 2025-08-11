@@ -3,8 +3,12 @@ import { API_ENDPOINTS } from '../../config/api';
 import { getAuthHeaders } from '../../utils/adminAuth';
 import axios from 'axios';
 import './AdminOrders.css';
+// ADDED: Translation hook
+import { useTranslation } from 'react-i18next';
 
 const AdminOrders = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,18 +18,20 @@ const AdminOrders = () => {
 
   // Order status options
   const statusOptions = [
-    { value: 'all', label: 'All Orders' },
-    { value: 'wating', label: 'Waiting' },
-    { value: 'preparing', label: 'Preparing' },
-    { value: 'dlivery', label: 'Delivery' },
-    { value: 'done', label: 'Completed' }
+    { value: 'all', label: t('allOrders') },
+    { value: 'wating', label: t('waiting') },
+    { value: 'preparing', label: t('preparing') },
+    { value: 'dlivery', label: t('delivery') },
+    { value: 'done', label: t('completed') }
   ];
 
   // Payment method labels
   const paymentMethods = {
-    cash: 'Cash on Delivery',
-    bank: 'Bank Transfer'
+    cash: t('cashOnDeliveryShort'),
+    bank: t('bankTransferShort')
   };
+
+  // Fetch orders from backend
 
   // Status badge colors
   const getStatusColor = (status) => {
@@ -53,7 +59,7 @@ const AdminOrders = () => {
       setOrders(response.data.doc || []);
       setError(null);
     } catch (err) {
-      setError('Failed to load orders');
+      setError(t('failedLoadOrders'));
       console.error('Error loading orders:', err);
     } finally {
       setLoading(false);
@@ -80,7 +86,7 @@ const AdminOrders = () => {
 
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update order status');
+      setError(err.response?.data?.message || t('failedUpdateOrderStatus'));
       console.error('Error updating order:', err);
     } finally {
       setUpdating(false);
@@ -88,7 +94,7 @@ const AdminOrders = () => {
   };
 
   const handleDeleteOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+    if (!window.confirm(t('confirmDeleteOrder'))) {
       return;
     }
 
@@ -101,7 +107,7 @@ const AdminOrders = () => {
       setSelectedOrder(null);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete order');
+      setError(err.response?.data?.message || t('failedDeleteOrder'));
       console.error('Error deleting order:', err);
     }
   };
@@ -142,7 +148,7 @@ const AdminOrders = () => {
     return (
       <div className="admin-orders-loading">
         <div className="loading-spinner"></div>
-        <p>Loading orders...</p>
+        <p>{t('loadingOrders')}</p>
       </div>
     );
   }
@@ -152,31 +158,31 @@ const AdminOrders = () => {
   return (
     <div className="admin-orders">
       <div className="admin-orders-header">
-        <h1>Orders Management</h1>
+        <h1>{t('manageOrders')}</h1>
         <div className="orders-stats">
           <div className="stat-card">
             <h3>{stats.total}</h3>
-            <p>Total Orders</p>
+            <p>{t('totalOrders')}</p>
           </div>
           <div className="stat-card">
             <h3>{stats.wating}</h3>
-            <p>Waiting</p>
+            <p>{t('waiting')}</p>
           </div>
           <div className="stat-card">
             <h3>{stats.preparing}</h3>
-            <p>Preparing</p>
+            <p>{t('preparing')}</p>
           </div>
           <div className="stat-card">
             <h3>{stats.dlivery}</h3>
-            <p>In Delivery</p>
+            <p>{t('delivery')}</p>
           </div>
           <div className="stat-card">
             <h3>{stats.done}</h3>
-            <p>Completed</p>
+            <p>{t('completed')}</p>
           </div>
           <div className="stat-card revenue">
             <h3>{formatCurrency(stats.totalRevenue)}</h3>
-            <p>Total Revenue</p>
+            <p>{t('totalRevenue')}</p>
           </div>
         </div>
       </div>
@@ -189,7 +195,7 @@ const AdminOrders = () => {
 
       <div className="orders-controls">
         <div className="filter-section">
-          <label htmlFor="statusFilter">Filter by Status:</label>
+          <label htmlFor="statusFilter">{t('filterByStatus')}:</label>
           <select
             id="statusFilter"
             value={filterStatus}
@@ -208,31 +214,31 @@ const AdminOrders = () => {
           onClick={loadOrders}
           disabled={loading}
         >
-          🔄 Refresh
+          🔄 {t('refresh')}
         </button>
       </div>
 
       <div className="orders-content">
         <div className="orders-list">
-          <h2>Orders ({filteredOrders.length})</h2>
+          <h2>{t('orders')} ({filteredOrders.length})</h2>
           
           {filteredOrders.length === 0 ? (
             <div className="no-orders">
-              <p>No orders found.</p>
+              <p>{t('noOrdersFound')}</p>
             </div>
           ) : (
             <div className="orders-table">
               <table>
                 <thead>
                   <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Date</th>
-                    <th>Items</th>
-                    <th>Total</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>{t('orderID')}</th>
+                    <th>{t('customer')}</th>
+                    <th>{t('date')}</th>
+                    <th>{t('items')}</th>
+                    <th>{t('total')}</th>
+                    <th>{t('payment')}</th>
+                    <th>{t('status')}</th>
+                    <th>{t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -243,15 +249,15 @@ const AdminOrders = () => {
                       </td>
                       <td className="customer-info">
                         <div>
-                          <strong>{order.userId?.name || 'Unknown'}</strong>
-                          <small>{order.userId?.email || 'No email'}</small>
+                          <strong>{order.userId?.name || t('unknown')}</strong>
+                          <small>{order.userId?.email || t('noEmail')}</small>
                         </div>
                       </td>
                       <td className="order-date">
                         {formatDate(order.createdAt)}
                       </td>
                       <td className="order-items">
-                        {order.cart?.length || 0} items
+                        {order.cart?.length || 0} {t('items')}
                       </td>
                       <td className="order-total">
                         <strong>{formatCurrency(order.total)}</strong>
@@ -271,28 +277,28 @@ const AdminOrders = () => {
                         <button 
                           className="btn btn-sm btn-primary"
                           onClick={() => setSelectedOrder(order)}
-                          title="View order details"
+                          title={t('viewOrderDetails')}
                         >
-                          👁️ View
+                          👁️ {t('view')}
                         </button>
                         <select
                           value={order.status}
                           onChange={(e) => handleStatusUpdate(order._id, e.target.value)}
                           disabled={updating}
                           className="status-select"
-                          title="Update order status"
+                          title={t('updateOrderStatus')}
                         >
-                          <option value="wating">Waiting</option>
-                          <option value="preparing">Preparing</option>
-                          <option value="dlivery">Delivery</option>
-                          <option value="done">Completed</option>
+                          <option value="wating">{t('waiting')}</option>
+                          <option value="preparing">{t('preparing')}</option>
+                          <option value="dlivery">{t('delivery')}</option>
+                          <option value="done">{t('completed')}</option>
                         </select>
                         <button 
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDeleteOrder(order._id)}
-                          title="Delete order permanently"
+                          title={t('deleteOrderPermanently')}
                         >
-                          🗑️ Delete
+                          🗑️ {t('delete')}
                         </button>
                       </td>
                     </tr>
@@ -308,7 +314,7 @@ const AdminOrders = () => {
           <div className="order-modal-overlay" onClick={() => setSelectedOrder(null)}>
             <div className="order-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2>Order Details #{selectedOrder._id.slice(-6).toUpperCase()}</h2>
+                <h2>{t('orderDetails')} #{selectedOrder._id.slice(-6).toUpperCase()}</h2>
                 <button 
                   className="close-btn"
                   onClick={() => setSelectedOrder(null)}
@@ -320,16 +326,16 @@ const AdminOrders = () => {
               <div className="modal-content">
                 <div className="order-info-grid">
                   <div className="info-section">
-                    <h3>Customer Information</h3>
-                    <p><strong>Name:</strong> {selectedOrder.userId?.name || 'Unknown'}</p>
-                    <p><strong>Email:</strong> {selectedOrder.userId?.email || 'No email'}</p>
-                    <p><strong>Phone:</strong> {selectedOrder.userId?.phone || 'No phone'}</p>
+                    <h3>{t('customerInformation')}</h3>
+                    <p><strong>{t('name')}:</strong> {selectedOrder.userId?.name || t('unknown')}</p>
+                    <p><strong>{t('email')}:</strong> {selectedOrder.userId?.email || t('noEmail')}</p>
+                    <p><strong>{t('phone')}:</strong> {selectedOrder.userId?.phone || t('noPhone')}</p>
                   </div>
                   
                   <div className="info-section">
-                    <h3>Order Information</h3>
-                    <p><strong>Date:</strong> {formatDate(selectedOrder.createdAt)}</p>
-                    <p><strong>Status:</strong> 
+                    <h3>{t('orderInformation')}</h3>
+                    <p><strong>{t('date')}:</strong> {formatDate(selectedOrder.createdAt)}</p>
+                    <p><strong>{t('status')}:</strong> 
                       <span 
                         className="status-badge"
                         style={{ backgroundColor: getStatusColor(selectedOrder.status) }}
@@ -337,28 +343,28 @@ const AdminOrders = () => {
                         {selectedOrder.status}
                       </span>
                     </p>
-                    <p><strong>Payment:</strong> {paymentMethods[selectedOrder.methodePayment]}</p>
-                    <p><strong>Total:</strong> <strong>{formatCurrency(selectedOrder.total)}</strong></p>
+                    <p><strong>{t('payment')}:</strong> {paymentMethods[selectedOrder.methodePayment]}</p>
+                    <p><strong>{t('total')}:</strong> <strong>{formatCurrency(selectedOrder.total)}</strong></p>
                   </div>
                   
                   <div className="info-section">
-                    <h3>Delivery Address</h3>
-                    <p><strong>Street:</strong> {selectedOrder.address?.street}</p>
-                    <p><strong>Region:</strong> {selectedOrder.address?.region}</p>
-                    <p><strong>Description:</strong> {selectedOrder.address?.descreption}</p>
+                    <h3>{t('deliveryAddress')}</h3>
+                    <p><strong>{t('street')}:</strong> {selectedOrder.address?.street}</p>
+                    <p><strong>{t('region')}:</strong> {selectedOrder.address?.region}</p>
+                    <p><strong>{t('description')}:</strong> {selectedOrder.address?.descreption}</p>
                   </div>
                 </div>
                 
                 <div className="order-items-section">
-                  <h3>Order Items</h3>
+                  <h3>{t('orderItems')}</h3>
                   <div className="items-list">
                     {selectedOrder.cart?.map((item, index) => (
                       <div key={index} className="cart-item">
                         <div className="item-info">
-                          <strong>{item.productId?.name || 'Unknown Product'}</strong>
-                          <p>Quantity: {item.amount}</p>
-                          <p>Unit Price: {formatCurrency(item.price)}</p>
-                          <p>Subtotal: {formatCurrency(item.price * item.amount)}</p>
+                          <strong>{item.productId?.name || t('unknownProduct')}</strong>
+                          <p>{t('quantity')}: {item.amount}</p>
+                          <p>{t('unitPrice')}: {formatCurrency(item.price)}</p>
+                          <p>{t('subtotal')}: {formatCurrency(item.price * item.amount)}</p>
                         </div>
                       </div>
                     ))}

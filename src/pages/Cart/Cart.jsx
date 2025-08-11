@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FaTrash,
   FaEdit,
@@ -13,6 +14,7 @@ import { getCartItems, updateCartItemQuantity, removeFromCart } from "../../util
 import "./Cart.css";
 
 const CartPage = () => {
+  const { t } = useTranslation();
   // حالة سلة التسوق الحالية - will be populated from localStorage initially
   const [cartItems, setCartItems] = useState([]);
 
@@ -205,10 +207,10 @@ const CartPage = () => {
     setEditingItem(null);
   };
 
-    // دالة الدفع والطلب - Connect to backend
+  // دالة الدفع والطلب - Connect to backend
   const checkout = async () => {
     if (cartItems.length === 0) {
-      setError("Your cart is empty!");
+      setError(t("cartIsEmpty"));
       return;
     }
 
@@ -255,7 +257,7 @@ const CartPage = () => {
       // Success - clear cart and show message
       setCartItems([]);
       localStorage.removeItem("cart");
-      setMessage("✅ Order placed successfully!");
+      setMessage(t("successOrder"));
       
       // Clear address form
       setAddress({
@@ -270,7 +272,7 @@ const CartPage = () => {
     } catch (err) {
       console.error("Checkout error:", err);
       setError(
-        err.response?.data?.message || "❌ Failed to place order. Please try again."
+        err.response?.data?.message || t("errorOrder")
       );
     } finally {
       setLoading(false);
@@ -310,7 +312,7 @@ const CartPage = () => {
       <div className="cart-container">
         <div className="cart-header">
           <h1>
-            <FaShoppingCart /> سلة التسوق
+            <FaShoppingCart /> {t("cart")}
           </h1>
         </div>
 
@@ -340,13 +342,13 @@ const CartPage = () => {
         )}
 
         <div className="cart-content">
-          <h2 className="section-title">Current Order</h2>
+          <h2 className="section-title">{t("currentOrder")}</h2>
 
           {cartItems.length === 0 ? (
             <div className="empty-cart">
-              <p>Cart is empty</p>
+              <p>{t("cartIsEmpty")}</p>
               <button className="btn continue-shopping">
-                Continue Shopping
+                {t("continueShopping")}
               </button>
             </div>
           ) : (
@@ -359,7 +361,7 @@ const CartPage = () => {
                     </div>
                     <div className="item-details">
                       <h3 className="item-title">{item.name}</h3>
-                      <p className="item-author">Author: {item.author}</p>
+                      <p className="item-author">{t("author")}: {item.author}</p>
 
                       {editingItem === item.id ? (
                         <div className="edit-quantity">
@@ -389,38 +391,38 @@ const CartPage = () => {
                           </button>
                           <div className="edit-actions">
                             <button onClick={saveEdit} className="btn save-btn">
-                              Save
+                              {t("save")}
                             </button>
                             <button
                               onClick={cancelEdit}
                               className="btn cancel-btn"
                             >
-                              Cancel
+                              {t("cancel")}
                             </button>
                           </div>
                         </div>
                       ) : (
                         <div className="item-quantity">
-                          <span>amount: {item.quantity}</span>
+                          <span>{t("amount")}: {item.quantity}</span>
                           <div className="item-actions">
                             <button
                               onClick={() => startEditing(item)}
                               className="btn edit-btn"
                             >
-                              <FaEdit /> Edit
+                              <FaEdit /> {t("edit")}
                             </button>
                             <button
                               onClick={() => removeItem(item.id)}
                               className="btn remove-btn"
                             >
-                              <FaTrash /> Delete
+                              <FaTrash /> {t("delete")}
                             </button>
                           </div>
                         </div>
                       )}
 
                       <p className="item-price">
-                        Price: ${(item.price * item.quantity).toFixed(2)}
+                        {t("price")}: ${(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -429,27 +431,27 @@ const CartPage = () => {
 
               {/* ملخص الطلب */}
               <div className="order-summary">
-                <h3>Order Summary</h3>
+                <h3>{t("orderSummary")}</h3>
                 <div className="summary-row">
-                  <span>Sub total:</span>
+                  <span>{t("subTotal")}</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="summary-row">
-                  <span>Tax (10%):</span>
+                  <span>{t("tax")}</span>
                   <span>${tax.toFixed(2)}</span>
                 </div>
                 <div className="summary-row total">
-                  <span>Total:</span>
+                  <span>{t("total")}</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
 
                 {/* Delivery Address Form */}
                 <div className="address-section">
-                  <h4>Delivery Address</h4>
+                  <h4>{t("deliveryAddress")}</h4>
                   <div className="form-group">
                     <input
                       type="text"
-                      placeholder="Street Address"
+                      placeholder={t("streetAddress")}
                       value={address.street}
                       onChange={(e) => setAddress({...address, street: e.target.value})}
                       className="address-input"
@@ -458,7 +460,7 @@ const CartPage = () => {
                   <div className="form-group">
                     <input
                       type="text"
-                      placeholder="Region/City"
+                      placeholder={t("regionCity")}
                       value={address.region}
                       onChange={(e) => setAddress({...address, region: e.target.value})}
                       className="address-input"
@@ -466,7 +468,7 @@ const CartPage = () => {
                   </div>
                   <div className="form-group">
                     <textarea
-                      placeholder="Additional details (building, floor, etc.)"
+                      placeholder={t("additionalDetails")}
                       value={address.descreption}
                       onChange={(e) => setAddress({...address, descreption: e.target.value})}
                       className="address-input"
@@ -477,7 +479,7 @@ const CartPage = () => {
 
                 {/* Payment Method */}
                 <div className="payment-section">
-                  <h4>Payment Method</h4>
+                  <h4>{t("paymentMethod")}</h4>
                   <div className="payment-options">
                     <label className="payment-option">
                       <input
@@ -486,7 +488,7 @@ const CartPage = () => {
                         checked={paymentMethod === "cash"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
-                      <span>Cash on Delivery</span>
+                      <span>{t("cashOnDelivery")}</span>
                     </label>
                     <label className="payment-option">
                       <input
@@ -495,13 +497,13 @@ const CartPage = () => {
                         checked={paymentMethod === "bank"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       />
-                      <span>Bank Transfer</span>
+                      <span>{t("bankTransfer")}</span>
                     </label>
                   </div>
                 </div>
 
                 <button onClick={checkout} className="btn checkout-btn" disabled={loading || cartItems.length === 0}>
-                  {loading ? "Processing..." : "Complete Purchase process"}
+                  {loading ? t("processing") : t("completePurchase")}
                 </button>
               </div>
             </>
@@ -516,7 +518,7 @@ const CartPage = () => {
           >
             <h2 className="section-title">
               <FaHistory />
-              Previous Orders
+              {t("previousOrders")}
             </h2>
             <span className="toggle-icon">
               {showPastOrders ? <FaChevronUp /> : <FaChevronDown />}
@@ -527,25 +529,25 @@ const CartPage = () => {
             <div className="past-orders">
               {orderHistoryLoading ? (
                 <div className="loading-orders">
-                  <p>Loading order history...</p>
+                  <p>{t("loadingOrderHistory")}</p>
                 </div>
               ) : pastOrders.length === 0 ? (
-                <p className="no-orders">No previous orders</p>
+                <p className="no-orders">{t("noPreviousOrders")}</p>
               ) : (
                 pastOrders.map((order) => (
                   <div key={order._id || order.id} className="past-order">
                     <div className="order-header">
                       <div>
                         <span className="order-id">
-                          Order: {order._id || order.id}
+                          {t("order")}: {order._id || order.id}
                         </span>
                         <span className="order-date">
-                          Date: {new Date(order.createdAt || order.date).toLocaleDateString()}
+                          {t("date")}: {new Date(order.createdAt || order.date).toLocaleDateString()}
                         </span>
                       </div>
                       <div>
                         <span className="order-total">
-                          Total: ${(order.total || 0).toFixed(2)}
+                          {t("orderTotal")}: ${(order.total || 0).toFixed(2)}
                         </span>
                         <span
                           className={`order-status ${
@@ -554,7 +556,7 @@ const CartPage = () => {
                               : "processing"
                           }`}
                         >
-                          {order.status || "PENDING"}
+                          {order.status || t("pending")}
                         </span>
                       </div>
                     </div>
@@ -562,9 +564,9 @@ const CartPage = () => {
                     <div className="order-items">
                       {(order.items || []).map((item, index) => (
                         <div key={item.id || item._id || index} className="order-item">
-                          <span className="item-name">{item.name || 'Unknown Item'}</span>
+                          <span className="item-name">{item.name || t("unknownItem")}</span>
                           <span className="item-quantity">
-                            amount: {item.quantity || 0}
+                            {t("amount")}: {item.quantity || 0}
                           </span>
                           <span className="item-price">
                             ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
@@ -572,7 +574,7 @@ const CartPage = () => {
                         </div>
                       ))}
                       {(!order.items || order.items.length === 0) && (
-                        <div className="no-items">No items found for this order</div>
+                        <div className="no-items">{t("noItemsOrder")}</div>
                       )}
                     </div>
                   </div>

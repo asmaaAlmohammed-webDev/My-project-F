@@ -25,6 +25,9 @@ import AdminReviews from "./pages/Admin/AdminReviews.jsx";
 import AdminUsers from "./pages/Admin/AdminUsers.jsx";
 import AdminRequests from "./pages/Admin/AdminRequests.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
+import "./i18n";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 
 const router = createBrowserRouter(
   [
@@ -102,7 +105,9 @@ function AppLoaderWrapper() {
 // render
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ScrollToTop />
-    <AppLoaderWrapper />
+    <I18nextProvider i18n={i18n}>
+      <ScrollToTop />
+      <AppLoaderWrapper />
+    </I18nextProvider>
   </StrictMode>
 );

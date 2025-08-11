@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "./BookCategories.css";
 import BookComponent from "../BookComponent/BookComponent";
 import { fetchProducts, fetchCategories } from "../../services/productService";
@@ -10,6 +11,7 @@ const BookCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   // Fetch data from API
   useEffect(() => {
@@ -70,7 +72,7 @@ const BookCategories = () => {
     return (
       <div className="book-categories-loading">
         <div className="spinner"></div>
-        <p>Loading books...</p>
+        <p>{t("loadingBooks")}</p>
       </div>
     );
   }
@@ -80,7 +82,7 @@ const BookCategories = () => {
       <div className="book-categories-error">
         <p>{error}</p>
         <button onClick={() => window.location.reload()}>
-          Try Again
+          {t("tryAgain")}
         </button>
       </div>
     );
@@ -89,8 +91,7 @@ const BookCategories = () => {
   return (
     <div className="book-categories">
       <div className="container">
-        <h2 className="section-title">Browse by Category</h2>
-        
+        <h2 className="section-title">{t("browseByCategory")}</h2>
         {/* Category Filter Buttons */}
         <div className="category-filters">
           {categories.map((category) => (
@@ -122,7 +123,7 @@ const BookCategories = () => {
             ))
           ) : (
             <div className="no-books-message">
-              <p>No books found in this category.</p>
+              <p>{t("noBooksCategory")}</p>
             </div>
           )}
         </div>

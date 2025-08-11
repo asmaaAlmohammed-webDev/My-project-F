@@ -3,8 +3,10 @@ import { API_ENDPOINTS } from '../../config/api';
 import { getAuthHeaders } from '../../utils/adminAuth';
 import axios from 'axios';
 import './AdminUsers.css';
+import { useTranslation } from 'react-i18next';
 
 const AdminUsers = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,9 +17,9 @@ const AdminUsers = () => {
 
   // Role filter options
   const roleOptions = [
-    { value: 'all', label: 'All Users' },
-    { value: 'USER', label: 'Regular Users' },
-    { value: 'ADMIN', label: 'Administrators' }
+    { value: 'all', label: t('allUsers') },
+    { value: 'USER', label: t('regularUsers') },
+    { value: 'ADMIN', label: t('administrators') }
   ];
 
   // Role badge colors
@@ -45,7 +47,7 @@ const AdminUsers = () => {
       setUsers(response.data.doc || []);
       setError(null);
     } catch (err) {
-      setError('Failed to load users');
+      setError(t('failedLoadUsers'));
       console.error('Error loading users:', err);
     } finally {
       setLoading(false);
@@ -72,7 +74,7 @@ const AdminUsers = () => {
 
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update user role');
+      setError(err.response?.data?.message || t('failedUpdateUserRole'));
       console.error('Error updating user:', err);
     } finally {
       setUpdating(false);
@@ -82,11 +84,11 @@ const AdminUsers = () => {
   const handleDeleteUser = async (userId) => {
     const user = users.find(u => u._id === userId);
     if (user?.role === 'ADMIN') {
-      setError('Cannot delete admin users');
+      setError(t('cannotDeleteAdmin'));
       return;
     }
 
-    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    if (!window.confirm(t('confirmDeleteUser'))) {
       return;
     }
 
@@ -100,7 +102,7 @@ const AdminUsers = () => {
       setSelectedUser(null);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete user');
+      setError(err.response?.data?.message || t('failedDeleteUser'));
       console.error('Error deleting user:', err);
     } finally {
       setUpdating(false);
@@ -149,7 +151,7 @@ const AdminUsers = () => {
     return (
       <div className="admin-users-loading">
         <div className="loading-spinner"></div>
-        <p>Loading users...</p>
+        <p>{t('loadingUsers')}</p>
       </div>
     );
   }
@@ -159,27 +161,27 @@ const AdminUsers = () => {
   return (
     <div className="admin-users">
       <div className="admin-users-header">
-        <h1>Users Management</h1>
+        <h1>{t('manageUsers')}</h1>
         <div className="users-stats">
           <div className="stat-card main">
             <h3>{stats.total}</h3>
-            <p>Total Users</p>
+            <p>{t('totalUsers')}</p>
           </div>
           <div className="stat-card users">
             <h3>{stats.users}</h3>
-            <p>Regular Users</p>
+            <p>{t('regularUsers')}</p>
           </div>
           <div className="stat-card admins">
             <h3>{stats.admins}</h3>
-            <p>Administrators</p>
+            <p>{t('administrators')}</p>
           </div>
           <div className="stat-card active">
             <h3>{stats.activeToday}</h3>
-            <p>Active Today</p>
+            <p>{t('activeToday')}</p>
           </div>
           <div className="stat-card new">
             <h3>{stats.newThisWeek}</h3>
-            <p>New This Week</p>
+            <p>{t('newThisWeek')}</p>
           </div>
         </div>
       </div>
@@ -192,18 +194,18 @@ const AdminUsers = () => {
 
       <div className="users-controls">
         <div className="search-section">
-          <label htmlFor="userSearch">Search Users:</label>
+          <label htmlFor="userSearch">{t('searchUsers')}:</label>
           <input
             id="userSearch"
             type="text"
-            placeholder="Search by name, email, or phone..."
+            placeholder={t('searchByNameEmailPhone')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
         </div>
         <div className="filter-section">
-          <label htmlFor="roleFilter">Filter by Role:</label>
+          <label htmlFor="roleFilter">{t('filterByRole')}:</label>
           <select
             id="roleFilter"
             value={filterRole}
@@ -222,30 +224,30 @@ const AdminUsers = () => {
           onClick={loadUsers}
           disabled={loading}
         >
-          🔄 Refresh
+          🔄 {t('refresh')}
         </button>
       </div>
 
       <div className="users-content">
         <div className="users-list">
-          <h2>Users ({filteredUsers.length})</h2>
+          <h2>{t('users')} ({filteredUsers.length})</h2>
           
           {filteredUsers.length === 0 ? (
             <div className="no-users">
-              <p>No users found matching your criteria.</p>
+              <p>{t('noUsersFound')}</p>
             </div>
           ) : (
             <div className="users-table">
               <table>
                 <thead>
                   <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Last Activity</th>
-                    <th>Actions</th>
+                    <th>{t('user')}</th>
+                    <th>{t('email')}</th>
+                    <th>{t('phone')}</th>
+                    <th>{t('role')}</th>
+                    <th>{t('joined')}</th>
+                    <th>{t('lastActivity')}</th>
+                    <th>{t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -256,15 +258,15 @@ const AdminUsers = () => {
                           {user.name?.charAt(0)?.toUpperCase() || 'U'}
                         </div>
                         <div className="user-details">
-                          <strong>{user.name || 'Unknown User'}</strong>
+                          <strong>{user.name || t('unknownUser')}</strong>
                           <small>ID: {user._id.slice(-6).toUpperCase()}</small>
                         </div>
                       </td>
                       <td className="user-email">
-                        {user.email || 'No email'}
+                        {user.email || t('noEmail')}
                       </td>
                       <td className="user-phone">
-                        {user.phone || 'No phone'}
+                        {user.phone || t('noPhone')}
                       </td>
                       <td className="user-role">
                         <span 
@@ -284,9 +286,9 @@ const AdminUsers = () => {
                         <button 
                           className="btn btn-sm btn-primary"
                           onClick={() => setSelectedUser(user)}
-                          title="View user details"
+                          title={t('viewUserDetails')}
                         >
-                          👁️ View
+                          👁️ {t('view')}
                         </button>
                         {user.role !== 'ADMIN' && (
                           <select
@@ -294,10 +296,10 @@ const AdminUsers = () => {
                             onChange={(e) => handleRoleUpdate(user._id, e.target.value)}
                             disabled={updating}
                             className="role-select"
-                            title="Update user role"
+                            title={t('updateUserRole')}
                           >
-                            <option value="USER">User</option>
-                            <option value="ADMIN">Admin</option>
+                            <option value="USER">{t('user')}</option>
+                            <option value="ADMIN">{t('admin')}</option>
                           </select>
                         )}
                         {user.role !== 'ADMIN' && (
@@ -305,9 +307,9 @@ const AdminUsers = () => {
                             className="btn btn-sm btn-danger"
                             onClick={() => handleDeleteUser(user._id)}
                             disabled={updating}
-                            title="Delete user permanently"
+                            title={t('deleteUserPermanently')}
                           >
-                            🗑️ Delete
+                            🗑️ {t('delete')}
                           </button>
                         )}
                       </td>
@@ -324,7 +326,7 @@ const AdminUsers = () => {
           <div className="user-modal-overlay" onClick={() => setSelectedUser(null)}>
             <div className="user-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2>User Details</h2>
+                <h2>{t('userDetails')}</h2>
                 <button 
                   className="close-btn"
                   onClick={() => setSelectedUser(null)}
@@ -336,14 +338,14 @@ const AdminUsers = () => {
               <div className="modal-content">
                 <div className="user-details-grid">
                   <div className="details-section">
-                    <h3>Personal Information</h3>
+                    <h3>{t('personalInformation')}</h3>
                     <div className="user-avatar-large">
                       {selectedUser.name?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
-                    <p><strong>Name:</strong> {selectedUser.name || 'Unknown User'}</p>
-                    <p><strong>Email:</strong> {selectedUser.email || 'No email'}</p>
-                    <p><strong>Phone:</strong> {selectedUser.phone || 'No phone'}</p>
-                    <p><strong>Role:</strong> 
+                    <p><strong>{t('name')}:</strong> {selectedUser.name || t('unknownUser')}</p>
+                    <p><strong>{t('email')}:</strong> {selectedUser.email || t('noEmail')}</p>
+                    <p><strong>{t('phone')}:</strong> {selectedUser.phone || t('noPhone')}</p>
+                    <p><strong>{t('role')}:</strong> 
                       <span 
                         className="role-badge"
                         style={{ backgroundColor: getRoleColor(selectedUser.role) }}
@@ -354,12 +356,12 @@ const AdminUsers = () => {
                   </div>
                   
                   <div className="details-section">
-                    <h3>Account Information</h3>
-                    <p><strong>User ID:</strong> {selectedUser._id}</p>
-                    <p><strong>Joined:</strong> {formatDate(selectedUser.createdAt)}</p>
-                    <p><strong>Last Activity:</strong> {formatDate(selectedUser.updatedAt)}</p>
-                    <p><strong>Account Status:</strong> 
-                      <span className="status-active">Active</span>
+                    <h3>{t('accountInformation')}</h3>
+                    <p><strong>{t('userID')}:</strong> {selectedUser._id}</p>
+                    <p><strong>{t('joined')}:</strong> {formatDate(selectedUser.createdAt)}</p>
+                    <p><strong>{t('lastActivity')}:</strong> {formatDate(selectedUser.updatedAt)}</p>
+                    <p><strong>{t('accountStatus')}:</strong> 
+                      <span className="status-active">{t('active')}</span>
                     </p>
                   </div>
                 </div>
@@ -375,7 +377,7 @@ const AdminUsers = () => {
                         }}
                         disabled={updating}
                       >
-                        {selectedUser.role === 'USER' ? '⬆️ Make Admin' : '⬇️ Make User'}
+                        {selectedUser.role === 'USER' ? `⬆️ ${t('makeAdmin')}` : `⬇️ ${t('makeUser')}`}
                       </button>
                       <button 
                         className="btn btn-danger"
@@ -385,7 +387,7 @@ const AdminUsers = () => {
                         }}
                         disabled={updating}
                       >
-                        🗑️ Delete User
+                        🗑️ {t('deleteUser')}
                       </button>
                     </>
                   )}

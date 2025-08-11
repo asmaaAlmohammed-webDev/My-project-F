@@ -4,8 +4,12 @@ import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 // ADDED: Import centralized API configuration
 import { API_ENDPOINTS } from "../../config/api";
+// ADDED: Translation hook
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -63,7 +67,8 @@ const Profile = () => {
         );
         setUserData(response.data.doc);
       } catch (error) {
-        setMessage("❌ Failed to fetch profile data");
+        console.error("Error fetching profile:", error);
+        setMessage(t("failedFetchProfile"));
         setMessageType("error");
       }
     };
@@ -90,11 +95,11 @@ const Profile = () => {
       );
       setUserData(response.data.doc);
       setEditMode(false);
-      setMessage("✅ Profile updated successfully!");
+      setMessage(t("profileUpdatedSuccess"));
       setMessageType("success");
       navigate("/profile");
     } catch (error) {
-      setMessage("❌ Failed to update profile");
+      setMessage(t("failedUpdateProfile"));
       setMessageType("error");
     }
   };
@@ -103,7 +108,7 @@ const Profile = () => {
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setMessage("❌ Passwords do not match");
+      setMessage(t("passwordsDoNotMatch"));
       setMessageType("error");
       return;
     }
@@ -121,7 +126,7 @@ const Profile = () => {
           },
         }
       );
-      setMessage("✅ Password updated successfully!");
+      setMessage(t("passwordUpdateSuccess"));
       setMessageType("success");
       setIsPasswordEditing(false);
 
@@ -132,7 +137,7 @@ const Profile = () => {
       });
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "❌ Failed to update password"
+        error.response?.data?.message || t("failedUpdatePassword")
       );
       setMessageType("error");
     }
@@ -155,12 +160,12 @@ const Profile = () => {
           },
         }
       );
-      setMessage("✅ Review submitted successfully!");
+      setMessage(t("reviewSubmittedSuccess"));
       setMessageType("success");
       setIsReviewEditing(false);
       setReviewData({ message: "", rate: 5 });
     } catch (error) {
-      setMessage(error.response?.data?.message || "❌ Failed to submit review");
+      setMessage(error.response?.data?.message || t("failedSubmitReview"));
       setMessageType("error");
     }
   };
@@ -182,13 +187,13 @@ const Profile = () => {
           },
         }
       );
-      setMessage("✅ Contact request sent successfully!");
+      setMessage(t("contactRequestSuccess"));
       setMessageType("success");
       setIsContactEditing(false);
       setContactData({ name: "", email: "", message: "" });
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "❌ Failed to send contact request"
+        error.response?.data?.message || t("failedSendContact")
       );
       setMessageType("error");
     }
@@ -202,10 +207,10 @@ const Profile = () => {
           data-aos-easing="linear"
           data-aos-duration="1500"
         >
-          My Profile
+          {t("myProfile")}
         </h1>
         <button onClick={handleLogout} className="logout-button">
-          Logout
+          {t("logout")}
         </button>
       </div>
 
@@ -224,12 +229,12 @@ const Profile = () => {
             data-aos-easing="linear"
             data-aos-duration="1500"
           >
-            Personal Information
+            {t("personalInformation")}
           </h2>
           {!editMode ? (
-            <button onClick={() => setEditMode(true)}>Edit Profile</button>
+            <button onClick={() => setEditMode(true)}>{t("editProfile")}</button>
           ) : (
-            <button onClick={() => setEditMode(false)}>Cancel</button>
+            <button onClick={() => setEditMode(false)}>{t("cancel")}</button>
           )}
         </div>
 
@@ -241,7 +246,7 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <label>Name</label>
+              <label>{t("name")}</label>
               <input
                 type="text"
                 value={userData.name}
@@ -256,7 +261,7 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <label>Email</label>
+              <label>{t("email")}</label>
               <input type="email" value={userData.email} disabled />
             </div>
             <div
@@ -265,7 +270,7 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <label>Phone</label>
+              <label>{t("phone")}</label>
               <input
                 type="text"
                 value={userData.phone}
@@ -274,7 +279,7 @@ const Profile = () => {
                 }
               />
             </div>
-            <button type="submit">Save Changes</button>
+            <button type="submit">{t("saveChanges")}</button>
           </form>
         ) : (
           <div className="profile-info">
@@ -283,21 +288,21 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>Name:</strong> {userData.name}
+              <strong>{t("name")}:</strong> {userData.name}
             </p>
             <p
               data-aos="fade-down"
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>Email:</strong> {userData.email}
+              <strong>{t("email")}:</strong> {userData.email}
             </p>
             <p
               data-aos="fade-down"
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>Phone:</strong> {userData.phone}
+              <strong>{t("phone")}:</strong> {userData.phone}
             </p>
             <p
               data-aos="fade-down"
@@ -314,40 +319,40 @@ const Profile = () => {
       {userData.role === "ADMIN" && (
         <div className="admin-section">
           <div className="admin-header">
-            <h2>🛠️ Admin Panel</h2>
-            <p>Manage your application with administrator privileges</p>
+            <h2>{t("adminPanelTitle")}</h2>
+            <p>{t("adminPanelDesc")}</p>
           </div>
           <div className="admin-actions">
             <button
               onClick={() => navigate("/admin")}
               className="dashboard-btn primary"
             >
-              📊 Go to Dashboard
+              {t("goToDashboard")}
             </button>
             <div className="admin-quick-links">
               <button
                 onClick={() => navigate("/admin/categories")}
                 className="quick-link-btn"
               >
-                📁 Categories
+                {t("categoriesAdmin")}
               </button>
               <button
                 onClick={() => navigate("/admin/products")}
                 className="quick-link-btn"
               >
-                📦 Products
+                {t("productsAdmin")}
               </button>
               <button
                 onClick={() => navigate("/admin/orders")}
                 className="quick-link-btn"
               >
-                🛒 Orders
+                {t("ordersAdmin")}
               </button>
               <button
                 onClick={() => navigate("/admin/users")}
                 className="quick-link-btn"
               >
-                👥 Users
+                {t("usersAdmin")}
               </button>
             </div>
           </div>
@@ -356,13 +361,13 @@ const Profile = () => {
 
       <div className="password-section">
         <div className="password-header">
-          <h2>Password Management</h2>
+          <h2>{t("changePassword")}</h2>
           {!isPasswordEditing ? (
             <button onClick={() => setIsPasswordEditing(true)}>
-              Change Password
+              {t("changePassword")}
             </button>
           ) : (
-            <button onClick={() => setIsPasswordEditing(false)}>Cancel</button>
+            <button onClick={() => setIsPasswordEditing(false)}>{t("cancel")}</button>
           )}
         </div>
 
@@ -374,7 +379,7 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <label>Current Password</label>
+              <label>{t("currentPassword")}</label>
               <input
                 type="password"
                 value={passwordData.currentPassword}
@@ -393,7 +398,7 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <label>New Password</label>
+              <label>{t("newPassword")}</label>
               <input
                 type="password"
                 value={passwordData.newPassword}
@@ -412,7 +417,7 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <label>Confirm New Password</label>
+              <label>{t("confirmNewPassword")}</label>
               <input
                 type="password"
                 value={passwordData.confirmPassword}
@@ -425,7 +430,7 @@ const Profile = () => {
                 required
               />
             </div>
-            <button type="submit">Update Password</button>
+            <button type="submit">{t("updatePassword")}</button>
           </form>
         )}
       </div>
@@ -434,20 +439,20 @@ const Profile = () => {
       {userData.role !== "ADMIN" && (
         <div className="review-section">
           <div className="review-header">
-            <h2>Leave a Review</h2>
+            <h2>{t("leaveReview")}</h2>
             {!isReviewEditing ? (
               <button onClick={() => setIsReviewEditing(true)}>
-                Write Review
+                {t("leaveReview")}
               </button>
             ) : (
-              <button onClick={() => setIsReviewEditing(false)}>Cancel</button>
+              <button onClick={() => setIsReviewEditing(false)}>{t("cancel")}</button>
             )}
           </div>
 
           {isReviewEditing && (
             <form onSubmit={handleReviewSubmission}>
               <div className="form-group">
-                <label>Rating (1-5 stars)</label>
+                <label>{t("rating")} (1-5 stars)</label>
                 <select
                   value={reviewData.rate}
                   onChange={(e) =>
@@ -466,7 +471,7 @@ const Profile = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Review Message</label>
+                <label>{t("reviewMessage")}</label>
                 <textarea
                   rows="4"
                   value={reviewData.message}
@@ -480,7 +485,7 @@ const Profile = () => {
                   required
                 />
               </div>
-              <button type="submit">Submit Review</button>
+              <button type="submit">{t("submitReview")}</button>
             </form>
           )}
         </div>
@@ -490,7 +495,7 @@ const Profile = () => {
       {userData.role !== "ADMIN" && (
         <div className="contact-section">
           <div className="contact-header">
-            <h2>Contact Support</h2>
+            <h2>{t("contactRequest")}</h2>
             {!isContactEditing ? (
               <button
                 onClick={() => {
@@ -503,10 +508,10 @@ const Profile = () => {
                   });
                 }}
               >
-                Send Request
+                {t("sendContactRequest")}
               </button>
             ) : (
-              <button onClick={() => setIsContactEditing(false)}>Cancel</button>
+              <button onClick={() => setIsContactEditing(false)}>{t("cancel")}</button>
             )}
           </div>
 
@@ -518,7 +523,7 @@ const Profile = () => {
                 data-aos-easing="linear"
                 data-aos-duration="1500"
               >
-                <label>Name</label>
+                <label>{t("name")}</label>
                 <input
                   type="text"
                   value={contactData.name}
@@ -537,7 +542,7 @@ const Profile = () => {
                 data-aos-easing="linear"
                 data-aos-duration="1500"
               >
-                <label>Email</label>
+                <label>{t("email")}</label>
                 <input
                   type="email"
                   value={contactData.email}
@@ -556,7 +561,7 @@ const Profile = () => {
                 data-aos-easing="linear"
                 data-aos-duration="1500"
               >
-                <label>Message</label>
+                <label>{t("yourMessage")}</label>
                 <textarea
                   rows="4"
                   value={contactData.message}
@@ -570,7 +575,7 @@ const Profile = () => {
                   required
                 />
               </div>
-              <button type="submit">Send Request</button>
+              <button type="submit">{t("sendContactRequest")}</button>
             </form>
           )}
         </div>

@@ -3,8 +3,10 @@ import { API_ENDPOINTS } from '../../config/api';
 import { getAuthHeaders } from '../../utils/adminAuth';
 import axios from 'axios';
 import './AdminReviews.css';
+import { useTranslation } from 'react-i18next';
 
 const AdminReviews = () => {
+  const { t } = useTranslation();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,12 +16,12 @@ const AdminReviews = () => {
 
   // Rating filter options
   const ratingOptions = [
-    { value: 'all', label: 'All Ratings' },
-    { value: '5', label: '5 Stars' },
-    { value: '4', label: '4 Stars' },
-    { value: '3', label: '3 Stars' },
-    { value: '2', label: '2 Stars' },
-    { value: '1', label: '1 Star' }
+    { value: 'all', label: t('allRatings') },
+    { value: '5', label: t('fiveStars') },
+    { value: '4', label: t('fourStars') },
+    { value: '3', label: t('threeStars') },
+    { value: '2', label: t('twoStars') },
+    { value: '1', label: t('oneStar') }
   ];
 
   // Fetch reviews on component mount
@@ -37,7 +39,7 @@ const AdminReviews = () => {
       setReviews(response.data.doc || []);
       setError(null);
     } catch (err) {
-      setError('Failed to load reviews');
+      setError(t('failedLoadReviews'));
       console.error('Error loading reviews:', err);
     } finally {
       setLoading(false);
@@ -45,7 +47,7 @@ const AdminReviews = () => {
   };
 
   const handleDeleteReview = async (reviewId) => {
-    if (!window.confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+    if (!window.confirm(t('confirmDeleteReview'))) {
       return;
     }
 
@@ -59,7 +61,7 @@ const AdminReviews = () => {
       setSelectedReview(null);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete review');
+      setError(err.response?.data?.message || t('failedDeleteReview'));
       console.error('Error deleting review:', err);
     } finally {
       setUpdating(false);
@@ -123,7 +125,7 @@ const AdminReviews = () => {
     return (
       <div className="admin-reviews-loading">
         <div className="loading-spinner"></div>
-        <p>Loading reviews...</p>
+        <p>{t('loadingReviews')}</p>
       </div>
     );
   }
@@ -133,18 +135,18 @@ const AdminReviews = () => {
   return (
     <div className="admin-reviews">
       <div className="admin-reviews-header">
-        <h1>Reviews Management</h1>
+        <h1>{t('manageReviews')}</h1>
         <div className="reviews-stats">
           <div className="stat-card main">
             <h3>{stats.total}</h3>
-            <p>Total Reviews</p>
+            <p>{t('totalReviews')}</p>
           </div>
           <div className="stat-card rating">
             <h3>{stats.avgRating}</h3>
             <div className="stars-display">
               {renderStars(Math.round(stats.avgRating))}
             </div>
-            <p>Average Rating</p>
+            <p>{t('averageRating')}</p>
           </div>
           {stats.breakdown.map(({ rating, count, percentage }) => (
             <div key={rating} className="stat-card breakdown">
@@ -175,7 +177,7 @@ const AdminReviews = () => {
 
       <div className="reviews-controls">
         <div className="filter-section">
-          <label htmlFor="ratingFilter">Filter by Rating:</label>
+          <label htmlFor="ratingFilter">{t('filterByRating')}:</label>
           <select
             id="ratingFilter"
             value={filterRating}
@@ -194,17 +196,17 @@ const AdminReviews = () => {
           onClick={loadReviews}
           disabled={loading}
         >
-          🔄 Refresh
+          🔄 {t('refresh')}
         </button>
       </div>
 
       <div className="reviews-content">
         <div className="reviews-list">
-          <h2>Reviews ({filteredReviews.length})</h2>
+          <h2>{t('reviews')} ({filteredReviews.length})</h2>
           
           {filteredReviews.length === 0 ? (
             <div className="no-reviews">
-              <p>No reviews found.</p>
+              <p>{t('noReviewsFound')}</p>
             </div>
           ) : (
             <div className="reviews-grid">
@@ -212,8 +214,8 @@ const AdminReviews = () => {
                 <div key={review._id} className="review-card">
                   <div className="review-header">
                     <div className="customer-info">
-                      <strong>{review.userId?.name || 'Anonymous'}</strong>
-                      <small>{review.userId?.email || 'No email'}</small>
+                      <strong>{review.userId?.name || t('anonymous')}</strong>
+                      <small>{review.userId?.email || t('noEmail')}</small>
                     </div>
                     <div className="review-rating">
                       <div className="stars">
@@ -234,17 +236,17 @@ const AdminReviews = () => {
                     <button 
                       className="btn btn-sm btn-primary"
                       onClick={() => setSelectedReview(review)}
-                      title="View full review"
+                      title={t('viewFullReview')}
                     >
-                      👁️ View
+                      👁️ {t('view')}
                     </button>
                     <button 
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDeleteReview(review._id)}
                       disabled={updating}
-                      title="Delete review permanently"
+                      title={t('deleteReviewPermanently')}
                     >
-                      🗑️ Delete
+                      🗑️ {t('delete')}
                     </button>
                   </div>
                 </div>
@@ -258,7 +260,7 @@ const AdminReviews = () => {
           <div className="review-modal-overlay" onClick={() => setSelectedReview(null)}>
             <div className="review-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2>Review Details</h2>
+                <h2>{t('reviewDetails')}</h2>
                 <button 
                   className="close-btn"
                   onClick={() => setSelectedReview(null)}
@@ -270,37 +272,37 @@ const AdminReviews = () => {
               <div className="modal-content">
                 <div className="review-details">
                   <div className="customer-section">
-                    <h3>Customer Information</h3>
+                    <h3>{t('customerInformation')}</h3>
                     <div className="customer-details">
-                      <p><strong>Name:</strong> {selectedReview.userId?.name || 'Anonymous'}</p>
-                      <p><strong>Email:</strong> {selectedReview.userId?.email || 'No email'}</p>
-                      <p><strong>Phone:</strong> {selectedReview.userId?.phone || 'No phone'}</p>
+                      <p><strong>{t('name')}:</strong> {selectedReview.userId?.name || t('anonymous')}</p>
+                      <p><strong>{t('email')}:</strong> {selectedReview.userId?.email || t('noEmail')}</p>
+                      <p><strong>{t('phone')}:</strong> {selectedReview.userId?.phone || t('noPhone')}</p>
                     </div>
                   </div>
                   
                   <div className="rating-section">
-                    <h3>Rating</h3>
+                    <h3>{t('rating')}</h3>
                     <div className="rating-display">
                       <div className="large-stars">
                         {renderStars(selectedReview.rate)}
                       </div>
                       <span className="large-rating">
-                        {selectedReview.rate} out of 5 stars
+                        {selectedReview.rate} {t('outOfFiveStars')}
                       </span>
                     </div>
                   </div>
                   
                   <div className="message-section">
-                    <h3>Review Message</h3>
+                    <h3>{t('reviewMessage')}</h3>
                     <div className="message-content">
                       <p>"{selectedReview.message}"</p>
                     </div>
                   </div>
                   
                   <div className="metadata-section">
-                    <h3>Review Information</h3>
-                    <p><strong>Date:</strong> {formatDate(selectedReview.createdAt)}</p>
-                    <p><strong>Review ID:</strong> {selectedReview._id}</p>
+                    <h3>{t('reviewInformation')}</h3>
+                    <p><strong>{t('date')}:</strong> {formatDate(selectedReview.createdAt)}</p>
+                    <p><strong>{t('reviewID')}:</strong> {selectedReview._id}</p>
                   </div>
                 </div>
                 
@@ -313,13 +315,13 @@ const AdminReviews = () => {
                     }}
                     disabled={updating}
                   >
-                    🗑️ Delete Review
+                    🗑️ {t('deleteReview')}
                   </button>
                   <button 
                     className="btn btn-secondary"
                     onClick={() => setSelectedReview(null)}
                   >
-                    Close
+                    {t('close')}
                   </button>
                 </div>
               </div>
