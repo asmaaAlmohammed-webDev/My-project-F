@@ -12,8 +12,13 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 // ADDED: React hooks for state management and API calls
 import { useState, useEffect } from "react";
+// ADDED: Translation hook
+import { useTranslation } from "react-i18next";
 
 const PopularBooksSec = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
+  
   // ADDED: State management for real API data
   const [popularBooks, setPopularBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +34,7 @@ const PopularBooksSec = () => {
         setError(null);
       } catch (err) {
         console.error("Error loading popular books:", err);
-        setError("Failed to load popular books");
+        setError(t("failedLoadPopularBooks"));
       } finally {
         setLoading(false);
       }
@@ -43,11 +48,11 @@ const PopularBooksSec = () => {
     return (
       <section className="popular-books-sec">
         <TitleComponent
-          title="Popular"
-          subTitle="Books"
-          desc="Loading popular books..."
+          title={t("popular")}
+          subTitle={t("books")}
+          desc={t("loadingPopularBooks")}
         />
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-spinner">{t("loading")}</div>
       </section>
     );
   }
@@ -57,9 +62,9 @@ const PopularBooksSec = () => {
     return (
       <section className="popular-books-sec">
         <TitleComponent
-          title="Popular"
-          subTitle="Books"
-          desc="Unable to load popular books at the moment."
+          title={t("popular")}
+          subTitle={t("books")}
+          desc={t("unableLoadPopularBooks")}
         />
         <div className="error-message">{error}</div>
       </section>
@@ -69,9 +74,9 @@ const PopularBooksSec = () => {
   return (
     <section className="popular-books-sec">
       <TitleComponent
-        title="Popular"
-        subTitle="Books"
-        desc="From timeless classics to modern masterpieces, find the perfect read for every moment."
+        title={t("popular")}
+        subTitle={t("books")}
+        desc={t("popularBooksDesc")}
       />
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}

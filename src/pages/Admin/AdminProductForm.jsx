@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { fetchCategories } from '../../services/productService';
 import { API_ENDPOINTS } from '../../config/api';
 import axios from 'axios';
@@ -7,6 +8,7 @@ import './AdminProductForm.css';
 
 const AdminProductForm = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -31,7 +33,7 @@ const AdminProductForm = () => {
       const data = await fetchCategories();
       setCategories(data);
     } catch (err) {
-      setError('Failed to load categories');
+      setError(t('failedToLoadCategories'));
       console.error('Error loading categories:', err);
     } finally {
       setLoadingCategories(false);
@@ -64,7 +66,7 @@ const AdminProductForm = () => {
       };
 
       if (isNaN(productData.price) || productData.price <= 0) {
-        throw new Error('Please enter a valid price greater than 0');
+        throw new Error(t('pleaseEnterValidPrice'));
       }
 
       await axios.post(
@@ -82,7 +84,7 @@ const AdminProductForm = () => {
       }, 2000);
 
     } catch (err) {
-      setError(err.message || err.response?.data?.message || 'Failed to create product');
+      setError(err.message || err.response?.data?.message || t('failedToCreateProduct'));
       console.error('Error creating product:', err);
     } finally {
       setSubmitting(false);
@@ -93,8 +95,8 @@ const AdminProductForm = () => {
     return (
       <div className="admin-product-form">
         <div className="success-message">
-          <h2>✅ Product Created Successfully!</h2>
-          <p>Redirecting to products list...</p>
+          <h2>✅ {t('productCreatedSuccessfully')}</h2>
+          <p>{t('redirectingToProductsList')}</p>
         </div>
       </div>
     );
@@ -103,12 +105,12 @@ const AdminProductForm = () => {
   return (
     <div className="admin-product-form">
       <div className="form-header">
-        <h1>Add New Product</h1>
+        <h1>{t('addNewProduct')}</h1>
         <button 
           className="btn btn-secondary"
           onClick={() => navigate('/admin/products')}
         >
-          ← Back to Products
+          ← {t('backToProducts')}
         </button>
       </div>
 
@@ -122,7 +124,7 @@ const AdminProductForm = () => {
         <form onSubmit={handleSubmit} className="product-form">
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="name">Product Name *</label>
+              <label htmlFor="name">{t('productName')} *</label>
               <input
                 type="text"
                 id="name"
@@ -130,12 +132,12 @@ const AdminProductForm = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                placeholder="Enter product name (e.g., The Great Gatsby)"
+                placeholder={t('enterProductNamePlaceholder')}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="price">Price ($) *</label>
+              <label htmlFor="price">{t('price')} ($) *</label>
               <input
                 type="number"
                 id="price"
@@ -151,9 +153,9 @@ const AdminProductForm = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="categoryId">Category *</label>
+            <label htmlFor="categoryId">{t('category')} *</label>
             {loadingCategories ? (
-              <div className="loading-categories">Loading categories...</div>
+              <div className="loading-categories">{t('loadingCategories')}</div>
             ) : (
               <select
                 id="categoryId"
@@ -162,7 +164,7 @@ const AdminProductForm = () => {
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Select a category</option>
+                <option value="">{t('selectCategory')}</option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>
                     {category.name}
@@ -171,46 +173,46 @@ const AdminProductForm = () => {
               </select>
             )}
             <small className="form-help">
-              Choose the category that best fits this product.
+              {t('chooseCategoryHelp')}
             </small>
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">{t('description')}</label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Enter a detailed description of the product"
+              placeholder={t('enterDetailedDescriptionPlaceholder')}
               rows="4"
             />
             <small className="form-help">
-              This description will help customers understand what the product is about.
+              {t('descriptionHelp')}
             </small>
           </div>
 
           <div className="form-group">
-            <label htmlFor="image">Product Image URL</label>
+            <label htmlFor="image">{t('productImageUrl')}</label>
             <input
               type="url"
               id="image"
               name="image"
               value={formData.image}
               onChange={handleInputChange}
-              placeholder="https://example.com/product-image.jpg"
+              placeholder={t('imageUrlPlaceholder')}
             />
             <small className="form-help">
-              Optional: Provide a URL to an image of the product.
+              {t('imageUrlHelp')}
             </small>
           </div>
 
           {formData.image && (
             <div className="image-preview">
-              <label>Image Preview:</label>
+              <label>{t('imagePreview')}:</label>
               <img 
                 src={formData.image} 
-                alt="Product preview"
+                alt={t('productPreview')}
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
@@ -224,14 +226,14 @@ const AdminProductForm = () => {
               className="btn btn-primary"
               disabled={submitting || !formData.name.trim() || !formData.price || !formData.categoryId}
             >
-              {submitting ? 'Creating Product...' : 'Create Product'}
+              {submitting ? t('creatingProduct') : t('createProduct')}
             </button>
             <button 
               type="button" 
               className="btn btn-secondary"
               onClick={() => navigate('/admin/products')}
             >
-              Cancel
+              {t('cancel')}
             </button>
           </div>
         </form>

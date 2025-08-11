@@ -5,8 +5,12 @@ import axios from "axios";
 import { useState } from "react";
 // ADDED: Import centralized API configuration
 import { API_ENDPOINTS } from "../../config/api";
+// ADDED: Translation hook
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -74,7 +78,7 @@ const Login = () => {
 
       <div className="login-form-container">
         <h2 className="login-title" data-aos="zoom-out">
-          Login
+          {t("loginTitle")}
         </h2>
 
         <form
@@ -82,22 +86,22 @@ const Login = () => {
           data-aos="zoom-out"
           onSubmit={handleSubmit}
         >
-          <label>Email</label>
+          <label>{t("emailLabel")}</label>
           <input
             type="email"
             name="email"
-            placeholder="user@example.com"
+            placeholder={t("emailPlaceholder")}
             required
             value={formData.email}
             onChange={handleChange}
           />
           {errors.email && <p className="field-error">{errors.email}</p>}
 
-          <label>Password</label>
+          <label>{t("passwordLabel")}</label>
           <input
             type="password"
             name="password"
-            placeholder="•••••••"
+            placeholder={t("passwordPlaceholder")}
             required
             value={formData.password}
             onChange={handleChange}
@@ -105,13 +109,13 @@ const Login = () => {
           {errors.password && <p className="field-error">{errors.password}</p>}
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? t("loggingIn") : t("loginTitle")}
           </button>
         </form>
 
         <div className="login-links">
-          <Link to="/forgot-password">Forgot your password?</Link>
-          <Link to="/signup">Don't have an account? Create account</Link>
+          <Link to="/forgot-password">{t("forgotPassword")}</Link>
+          <Link to="/signup">{t("dontHaveAccount")}</Link>
         </div>
       </div>
     </div>

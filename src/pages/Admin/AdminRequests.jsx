@@ -3,8 +3,10 @@ import { API_ENDPOINTS } from '../../config/api';
 import { getAuthHeaders } from '../../utils/adminAuth';
 import axios from 'axios';
 import './AdminRequests.css';
+import { useTranslation } from 'react-i18next';
 
 const AdminRequests = () => {
+  const { t } = useTranslation();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,7 +29,7 @@ const AdminRequests = () => {
       setRequests(response.data.doc || []);
       setError(null);
     } catch (err) {
-      setError('Failed to load contact requests');
+      setError(t('failedLoadRequests'));
       console.error('Error loading requests:', err);
     } finally {
       setLoading(false);
@@ -35,7 +37,7 @@ const AdminRequests = () => {
   };
 
   const handleDeleteRequest = async (requestId) => {
-    if (!window.confirm('Are you sure you want to delete this contact request? This action cannot be undone.')) {
+    if (!window.confirm(t('confirmDeleteRequest'))) {
       return;
     }
 
@@ -49,7 +51,7 @@ const AdminRequests = () => {
       setSelectedRequest(null);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete request');
+      setError(err.response?.data?.message || t('failedDeleteRequest'));
       console.error('Error deleting request:', err);
     } finally {
       setUpdating(false);
@@ -73,12 +75,12 @@ const AdminRequests = () => {
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours} hours ago`;
-    if (diffInDays === 1) return 'Yesterday';
-    if (diffInDays < 7) return `${diffInDays} days ago`;
-    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
-    return `${Math.floor(diffInDays / 30)} months ago`;
+    if (diffInHours < 1) return t('justNow');
+    if (diffInHours < 24) return t('hoursAgo', { hours: diffInHours });
+    if (diffInDays === 1) return t('yesterday');
+    if (diffInDays < 7) return t('daysAgo', { days: diffInDays });
+    if (diffInDays < 30) return t('weeksAgo', { weeks: Math.floor(diffInDays / 7) });
+    return t('monthsAgo', { months: Math.floor(diffInDays / 30) });
   };
 
   const filteredRequests = requests.filter(request => {
@@ -111,7 +113,7 @@ const AdminRequests = () => {
     return (
       <div className="admin-requests-loading">
         <div className="loading-spinner"></div>
-        <p>Loading contact requests...</p>
+        <p>{t('loadingRequests')}</p>
       </div>
     );
   }
@@ -121,27 +123,27 @@ const AdminRequests = () => {
   return (
     <div className="admin-requests">
       <div className="admin-requests-header">
-        <h1>Contact Requests Management</h1>
+        <h1>{t('manageRequests')}</h1>
         <div className="requests-stats">
           <div className="stat-card main">
             <h3>{stats.total}</h3>
-            <p>Total Requests</p>
+            <p>{t('totalRequests')}</p>
           </div>
           <div className="stat-card today">
             <h3>{stats.today}</h3>
-            <p>Today</p>
+            <p>{t('today')}</p>
           </div>
           <div className="stat-card week">
             <h3>{stats.thisWeek}</h3>
-            <p>This Week</p>
+            <p>{t('thisWeek')}</p>
           </div>
           <div className="stat-card month">
             <h3>{stats.thisMonth}</h3>
-            <p>This Month</p>
+            <p>{t('thisMonth')}</p>
           </div>
           <div className="stat-card unread">
             <h3>{stats.unread}</h3>
-            <p>Pending</p>
+            <p>{t('pendingRequests')}</p>
           </div>
         </div>
       </div>
@@ -154,11 +156,11 @@ const AdminRequests = () => {
 
       <div className="requests-controls">
         <div className="search-section">
-          <label htmlFor="requestSearch">Search Requests:</label>
+          <label htmlFor="requestSearch">{t('searchRequests')}:</label>
           <input
             id="requestSearch"
             type="text"
-            placeholder="Search by name, email, or message..."
+            placeholder={t('searchByNameEmailMessage')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -169,17 +171,17 @@ const AdminRequests = () => {
           onClick={loadRequests}
           disabled={loading}
         >
-          🔄 Refresh
+          🔄 {t('refresh')}
         </button>
       </div>
 
       <div className="requests-content">
         <div className="requests-list">
-          <h2>Contact Requests ({filteredRequests.length})</h2>
+          <h2>{t('contactRequests')} ({filteredRequests.length})</h2>
           
           {filteredRequests.length === 0 ? (
             <div className="no-requests">
-              <p>No contact requests found.</p>
+              <p>{t('noRequestsFound')}</p>
             </div>
           ) : (
             <div className="requests-grid">
@@ -191,8 +193,8 @@ const AdminRequests = () => {
                         {request.name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
                       <div className="contact-details">
-                        <strong>{request.name || 'Unknown'}</strong>
-                        <small>{request.email || 'No email'}</small>
+                        <strong>{request.name || t('unknown')}</strong>
+                        <small>{request.email || t('noEmail')}</small>
                       </div>
                     </div>
                     <div className="request-time">
@@ -204,7 +206,7 @@ const AdminRequests = () => {
                     <p className="request-message">
                       "{request.message?.length > 100 
                         ? `${request.message.substring(0, 100)}...`
-                        : request.message || 'No message'
+                        : request.message || t('noMessage')
                       }"
                     </p>
                     <div className="request-date">
@@ -216,24 +218,24 @@ const AdminRequests = () => {
                     <button 
                       className="btn btn-sm btn-primary"
                       onClick={() => setSelectedRequest(request)}
-                      title="View full request"
+                      title={t('viewFullRequest')}
                     >
-                      👁️ View
+                      👁️ {t('view')}
                     </button>
                     <button 
                       className="btn btn-sm btn-success"
                       onClick={() => window.open(`mailto:${request.email}?subject=Re: Your Contact Request`)}
-                      title="Reply via email"
+                      title={t('replyViaEmail')}
                     >
-                      📧 Reply
+                      📧 {t('reply')}
                     </button>
                     <button 
                       className="btn btn-sm btn-danger"
                       onClick={() => handleDeleteRequest(request._id)}
                       disabled={updating}
-                      title="Delete request permanently"
+                      title={t('deleteRequestPermanently')}
                     >
-                      🗑️ Delete
+                      🗑️ {t('delete')}
                     </button>
                   </div>
                 </div>
@@ -247,7 +249,7 @@ const AdminRequests = () => {
           <div className="request-modal-overlay" onClick={() => setSelectedRequest(null)}>
             <div className="request-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2>Contact Request Details</h2>
+                <h2>{t('requestDetails')}</h2>
                 <button 
                   className="close-btn"
                   onClick={() => setSelectedRequest(null)}
@@ -259,29 +261,29 @@ const AdminRequests = () => {
               <div className="modal-content">
                 <div className="request-details">
                   <div className="contact-section">
-                    <h3>Contact Information</h3>
+                    <h3>{t('contactInformation')}</h3>
                     <div className="contact-avatar-large">
                       {selectedRequest.name?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
                     <div className="contact-info-detailed">
-                      <p><strong>Name:</strong> {selectedRequest.name || 'Unknown'}</p>
-                      <p><strong>Email:</strong> {selectedRequest.email || 'No email'}</p>
-                      <p><strong>Submitted:</strong> {formatDate(selectedRequest.createdAt)}</p>
-                      <p><strong>Time Ago:</strong> {getTimeAgo(selectedRequest.createdAt)}</p>
+                      <p><strong>{t('name')}:</strong> {selectedRequest.name || t('unknown')}</p>
+                      <p><strong>{t('email')}:</strong> {selectedRequest.email || t('noEmail')}</p>
+                      <p><strong>{t('submitted')}:</strong> {formatDate(selectedRequest.createdAt)}</p>
+                      <p><strong>{t('timeAgo')}:</strong> {getTimeAgo(selectedRequest.createdAt)}</p>
                     </div>
                   </div>
                   
                   <div className="message-section">
-                    <h3>Message</h3>
+                    <h3>{t('message')}</h3>
                     <div className="message-content">
-                      <p>"{selectedRequest.message || 'No message provided'}"</p>
+                      <p>"{selectedRequest.message || t('noMessageProvided')}"</p>
                     </div>
                   </div>
                   
                   <div className="metadata-section">
-                    <h3>Request Information</h3>
-                    <p><strong>Request ID:</strong> {selectedRequest._id}</p>
-                    <p><strong>Status:</strong> <span className="status-pending">Pending</span></p>
+                    <h3>{t('requestInformation')}</h3>
+                    <p><strong>{t('requestID')}:</strong> {selectedRequest._id}</p>
+                    <p><strong>{t('status')}:</strong> <span className="status-pending">{t('pendingRequests')}</span></p>
                   </div>
                 </div>
                 
@@ -290,7 +292,7 @@ const AdminRequests = () => {
                     className="btn btn-success"
                     onClick={() => window.open(`mailto:${selectedRequest.email}?subject=Re: Your Contact Request&body=Dear ${selectedRequest.name},%0D%0A%0D%0AThank you for contacting us. Regarding your message:%0D%0A"${selectedRequest.message}"%0D%0A%0D%0ABest regards,%0D%0AThe Team`)}
                   >
-                    📧 Reply via Email
+                    📧 {t('replyViaEmail')}
                   </button>
                   <button 
                     className="btn btn-danger"
@@ -300,13 +302,13 @@ const AdminRequests = () => {
                     }}
                     disabled={updating}
                   >
-                    🗑️ Delete Request
+                    🗑️ {t('deleteRequest')}
                   </button>
                   <button 
                     className="btn btn-secondary"
                     onClick={() => setSelectedRequest(null)}
                   >
-                    Close
+                    {t('close')}
                   </button>
                 </div>
               </div>

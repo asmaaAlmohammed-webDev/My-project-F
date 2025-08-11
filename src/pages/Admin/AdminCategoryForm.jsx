@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/api';
 import axios from 'axios';
 import './AdminCategoryForm.css';
 
 const AdminCategoryForm = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     descrption: '', // Note: backend uses 'descrption' not 'description'
@@ -49,7 +51,7 @@ const AdminCategoryForm = () => {
       }, 2000);
 
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create category');
+      setError(err.response?.data?.message || t('failedToCreateCategory'));
       console.error('Error creating category:', err);
     } finally {
       setSubmitting(false);
@@ -60,8 +62,8 @@ const AdminCategoryForm = () => {
     return (
       <div className="admin-category-form">
         <div className="success-message">
-          <h2>✅ Category Created Successfully!</h2>
-          <p>Redirecting to categories list...</p>
+          <h2>✅ {t('categoryCreatedSuccessfully')}</h2>
+          <p>{t('redirectingToCategoriesList')}</p>
         </div>
       </div>
     );
@@ -70,12 +72,12 @@ const AdminCategoryForm = () => {
   return (
     <div className="admin-category-form">
       <div className="form-header">
-        <h1>Add New Category</h1>
+        <h1>{t('addNewCategory')}</h1>
         <button 
           className="btn btn-secondary"
           onClick={() => navigate('/admin/categories')}
         >
-          ← Back to Categories
+          ← {t('backToCategories')}
         </button>
       </div>
 
@@ -88,7 +90,7 @@ const AdminCategoryForm = () => {
       <div className="form-container">
         <form onSubmit={handleSubmit} className="category-form">
           <div className="form-group">
-            <label htmlFor="name">Category Name *</label>
+            <label htmlFor="name">{t('categoryName')} *</label>
             <input
               type="text"
               id="name"
@@ -96,46 +98,46 @@ const AdminCategoryForm = () => {
               value={formData.name}
               onChange={handleInputChange}
               required
-              placeholder="Enter category name (e.g., Science Fiction)"
+              placeholder={t('enterCategoryNamePlaceholder')}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="descrption">Description</label>
+            <label htmlFor="descrption">{t('description')}</label>
             <textarea
               id="descrption"
               name="descrption"
               value={formData.descrption}
               onChange={handleInputChange}
-              placeholder="Enter a brief description of this category"
+              placeholder={t('enterCategoryDescriptionPlaceholder')}
               rows="4"
             />
             <small className="form-help">
-              This description will help users understand what books belong in this category.
+              {t('categoryDescriptionHelp')}
             </small>
           </div>
 
           <div className="form-group">
-            <label htmlFor="photo">Category Image URL</label>
+            <label htmlFor="photo">{t('categoryImageUrl')}</label>
             <input
               type="url"
               id="photo"
               name="photo"
               value={formData.photo}
               onChange={handleInputChange}
-              placeholder="https://example.com/category-image.jpg"
+              placeholder={t('categoryImageUrlPlaceholder')}
             />
             <small className="form-help">
-              Optional: Provide a URL to an image that represents this category.
+              {t('categoryImageUrlHelp')}
             </small>
           </div>
 
           {formData.photo && (
             <div className="image-preview">
-              <label>Image Preview:</label>
+              <label>{t('imagePreview')}:</label>
               <img 
                 src={formData.photo} 
-                alt="Category preview"
+                alt={t('categoryPreview')}
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
@@ -149,14 +151,14 @@ const AdminCategoryForm = () => {
               className="btn btn-primary"
               disabled={submitting || !formData.name.trim()}
             >
-              {submitting ? 'Creating Category...' : 'Create Category'}
+              {submitting ? t('creatingCategory') : t('createCategory')}
             </button>
             <button 
               type="button" 
               className="btn btn-secondary"
               onClick={() => navigate('/admin/categories')}
             >
-              Cancel
+              {t('cancel')}
             </button>
           </div>
         </form>

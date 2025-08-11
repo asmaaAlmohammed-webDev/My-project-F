@@ -5,8 +5,12 @@ import axios from "axios";
 import { useState } from "react";
 // ADDED: Import centralized API configuration
 import { API_ENDPOINTS } from "../../config/api";
+// ADDED: Translation hook
+import { useTranslation } from "react-i18next";
 
 const Signup = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -84,48 +88,48 @@ const Signup = () => {
       </div>
       <div className="signup-form-container">
         <h2 className="signup-title" data-aos="zoom-out">
-          Create Account
+          {t("signupTitle")}
         </h2>
 
         <form className="signup-form" onSubmit={handleSubmit}>
-          <label>Full Name</label>
+          <label>{t("fullName")}</label>
           <input
             type="text"
             name="name"
-            placeholder="John Doe"
+            placeholder={t("namePlaceholder")}
             required
             value={formData.name}
             onChange={handleChange}
           />
           {errors.name && <p className="field-error">{errors.name}</p>}
 
-          <label>Email</label>
+          <label>{t("emailLabel")}</label>
           <input
             type="email"
             name="email"
-            placeholder="user@example.com"
+            placeholder={t("emailPlaceholder")}
             required
             value={formData.email}
             onChange={handleChange}
           />
           {errors.email && <p className="field-error">{errors.email}</p>}
 
-          <label>Password</label>
+          <label>{t("passwordLabel")}</label>
           <input
             type="password"
             name="password"
-            placeholder="•••••••"
+            placeholder={t("passwordPlaceholder")}
             required
             value={formData.password}
             onChange={handleChange}
           />
           {errors.password && <p className="field-error">{errors.password}</p>}
 
-          <label>Phone Number</label>
+          <label>{t("phone")}</label>
           <input
             type="tel"
             name="phone"
-            placeholder="1234567890"
+            placeholder={t("phonePlaceholder")}
             required
             value={formData.phone}
             onChange={handleChange}
@@ -133,12 +137,12 @@ const Signup = () => {
           {errors.phone && <p className="field-error">{errors.phone}</p>}
 
           <button type="submit" className="signup-btn" disabled={loading}>
-            {loading ? "Creating Account..." : "Sign Up"}
+            {loading ? t("signingUp") : t("signupButton")}
           </button>
         </form>
 
         <div className="signup-links">
-          <Link to="/login">Already have an account? Login</Link>
+          <Link to="/login">{t("alreadyHaveAccount")}</Link>
         </div>
       </div>
     </div>

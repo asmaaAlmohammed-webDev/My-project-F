@@ -1,104 +1,76 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./Footer.css";
+
 import logo from "./../../assets/imgs/logo.png";
 import { FaInstagram } from "react-icons/fa6";
 import { TbBrandLinkedin } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { FiYoutube } from "react-icons/fi";
+
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer
-      className="footer "
+      className="footer"
       data-aos="zoom-in-down"
       data-aos-duration="1900"
     >
       <div className="footer-top">
-        <h2 className="footer-heading">
-          Discover books that ignite your imagination
-        </h2>
-        <p className="footer-subheading">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni,
-          ducimus iste?
-        </p>
+        <h2 className="footer-heading">{t("discoverBooks")}</h2>
+        <p className="footer-subheading">{t("exploreWorld")}</p>
       </div>
 
       <div className="footer-content">
         <div className="footer-column brand">
           <div className="logo">
-            {" "}
             <img src={logo} alt="logo" className="logo-img" /> Bookletto
           </div>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nulla
-            recusandae excepturi nostrum cum delectus repellat?
-          </p>
-          {/* <form className="subscribe-form">
-                        <input type="email" placeholder="Enter your email" />
-                        <button type="submit">Subscribe</button>
-                    </form> */}
+          <p>{t("welcome")}</p>
         </div>
 
         <div className="footer-column">
-          <h4>Learn More</h4>
+          <h4>{t("featuresTitle")}</h4>
           <nav className="footer-links">
-            <Link to="/about">About Us</Link>
-            <Link to="/latest">Latest books</Link>
-            <Link to="/offers">Hot Offers</Link>
-            <Link to="/popular">Popular books</Link>
+            <Link to="/about">{t("aboutUs")}</Link>
+            <Link to="/latest">{t("newArrivals")}</Link>
+            <Link to="/offers">{t("hotOffers")}</Link>
+            <Link to="/popular">{t("popularBooks")}</Link>
             <Link to="/faq">FAQ</Link>
-            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/privacy">{t("privacyPolicy")}</Link>
           </nav>
         </div>
 
         <div className="footer-column">
-          <h4>Our Community</h4>
+          <h4>{t("ourCommunity")}</h4>
           <nav className="footer-links">
-            <Link to="/terms">Terms and Conditions</Link>
-            <Link to="/special">Special Offers</Link>
-            <Link to="/reviews">Customer Reviews</Link>
+            <Link to="/terms">{t("termsAndConditions")}</Link>
+            <Link to="/special">{t("specialOffers")}</Link>
+            <Link to="/reviews">{t("customerReviews")}</Link>
           </nav>
         </div>
 
-        <div className="footer-column">
-          <h4>Contact Us</h4>
-          <p>Contact Number: +963 9565 55678</p>
-          <p>Email Address: Bookletto@gmail.com</p>
-          <div className="social">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <RiFacebookCircleLine />
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+        <div className="footer-column social">
+          <h4>{t("followUs")}</h4>
+          <div className="social-icons">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
               <FaInstagram />
             </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FiYoutube />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
               <TbBrandLinkedin />
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+              <RiFacebookCircleLine />
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+              <FiYoutube />
             </a>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2025 Bookletto</p>
-        <p>All rights reserved</p>
+        <p>&copy; {new Date().getFullYear()} Bookletto. {t("allRightsReserved")}</p>
       </div>
     </footer>
   );

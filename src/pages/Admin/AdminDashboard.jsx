@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getCurrentUser } from '../../utils/adminAuth';
 import './AdminDashboard.css';
+// ADDED: Translation hook
+import { useTranslation } from 'react-i18next';
 
 // ADDED: Main admin dashboard with statistics and quick actions
 const AdminDashboard = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
   const [adminUser, setAdminUser] = useState(null);
   const [stats, setStats] = useState({
     categories: 0,
@@ -48,7 +52,7 @@ const AdminDashboard = () => {
     return (
       <div className="dashboard-loading">
         <div className="loading-spinner"></div>
-        <p>Loading dashboard...</p>
+        <p>{t('loadingDashboard')}</p>
       </div>
     );
   }
@@ -57,8 +61,8 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       {/* Header Section */}
       <div className="dashboard-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome back, {adminUser?.name || 'Admin'}!</p>
+        <h1>{t('adminDashboard')}</h1>
+        <p>{t('welcomeBack')}, {adminUser?.name || 'Admin'}!</p>
       </div>
 
       {/* Statistics Cards */}
@@ -69,10 +73,10 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.categories}</h3>
-            <p>Categories</p>
+            <p>{t('categories')}</p>
           </div>
           <Link to="/admin/categories" className="stat-link">
-            Manage Categories
+            {t('manageCategories')}
           </Link>
         </div>
 
@@ -82,10 +86,10 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.products}</h3>
-            <p>Products</p>
+            <p>{t('productsAdmin')}</p>
           </div>
           <Link to="/admin/products" className="stat-link">
-            Manage Products
+            {t('manageProducts')}
           </Link>
         </div>
 
@@ -95,10 +99,10 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.reviews}</h3>
-            <p>Reviews</p>
+            <p>{t('reviews')}</p>
           </div>
           <Link to="/admin/reviews" className="stat-link">
-            Moderate Reviews
+            {t('manageReviews')}
           </Link>
         </div>
 
@@ -108,10 +112,10 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.orders}</h3>
-            <p>Orders</p>
+            <p>{t('ordersAdmin')}</p>
           </div>
           <Link to="/admin/orders" className="stat-link">
-            View Orders
+            {t('manageOrders')}
           </Link>
         </div>
 
@@ -121,10 +125,10 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.requests}</h3>
-            <p>Requests</p>
+            <p>{t('requests')}</p>
           </div>
           <Link to="/admin/requests" className="stat-link">
-            Handle Requests
+            {t('manageRequests')}
           </Link>
         </div>
 
@@ -134,33 +138,33 @@ const AdminDashboard = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.users}</h3>
-            <p>Users</p>
+            <p>{t('users')}</p>
           </div>
           <Link to="/admin/users" className="stat-link">
-            Manage Users
+            {t('manageUsers')}
           </Link>
         </div>
       </div>
 
       {/* Quick Actions */}
       <div className="quick-actions">
-        <h2>Quick Actions</h2>
+        <h2>{t('quickActions')}</h2>
         <div className="actions-grid">
           <Link to="/admin/categories/new" className="action-btn primary">
             <i className="fas fa-plus"></i>
-            Add Category
+            {t('addNewCategory')}
           </Link>
           <Link to="/admin/products/new" className="action-btn primary">
             <i className="fas fa-plus"></i>
-            Add Product
+            {t('addNewProduct')}
           </Link>
           <Link to="/admin/reviews" className="action-btn warning">
             <i className="fas fa-eye"></i>
-            Review Moderation
+            {t('manageReviews')}
           </Link>
           <Link to="/admin/requests" className="action-btn info">
             <i className="fas fa-envelope-open"></i>
-            Customer Requests
+            {t('manageRequests')}
           </Link>
         </div>
       </div>

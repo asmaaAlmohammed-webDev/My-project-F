@@ -5,8 +5,10 @@ import "./ForgotPassword.css";
 import img from "../../assets/imgs/login.png";
 // ADDED: Import centralized API configuration
 import { API_ENDPOINTS } from "../../config/api";
+import { useTranslation } from "react-i18next";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState(""); // success | error
@@ -20,11 +22,11 @@ const ForgotPassword = () => {
           email,
         }
       );
-      setMessage(res.data.message || "Check your email for the reset link");
+      setMessage(res.data.message || t('checkEmailForResetLink'));
       setMessageType("success");
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "❌ Failed to send reset link"
+        error.response?.data?.message || t('failedToSendResetLink')
       );
       setMessageType("error");
     }
@@ -33,15 +35,15 @@ const ForgotPassword = () => {
   return (
     <div className="forgot-page">
       <div className="forgot-image" data-aos="zoom-out">
-        <img src={img} alt="Forgot password visual" />
+        <img src={img} alt={t('forgotPasswordVisual')} />
       </div>
 
       <div className="forgot-form-container">
         <h2 className="forgot-title" data-aos="zoom-out">
-          Forgot your password?
+          {t('forgotYourPassword')}
         </h2>
         <p className="forgot-subtitle">
-          Enter your email and we’ll send you a reset link
+          {t('enterEmailForResetLink')}
         </p>
 
         {/* ✅ عرض الرسالة */}
@@ -52,22 +54,22 @@ const ForgotPassword = () => {
           data-aos="zoom-out"
           onSubmit={handleSubmit}
         >
-          <label>Email Address</label>
+          <label>{t('emailAddress')}</label>
           <input
             type="email"
-            placeholder="your-email@example.com"
+            placeholder={t('forgotEmailPlaceholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
           <button type="submit" className="forgot-btn">
-            Send Reset Link
+            {t('sendResetLink')}
           </button>
         </form>
 
         <div className="forgot-links">
-          <Link to="/login">Back to Login</Link>
+          <Link to="/login">{t('backToLogin')}</Link>
         </div>
       </div>
     </div>

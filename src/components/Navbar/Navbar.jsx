@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import logo from "./../../assets/imgs/logo.png";
@@ -51,6 +52,20 @@ const Navbar = () => {
     window.location.reload();
   };
 
+  const { i18n, t } = useTranslation();
+  const [isArabic, setIsArabic] = useState(i18n.language === "ar");
+
+  const handleLanguageToggle = () => {
+    const newLang = isArabic ? "en" : "ar";
+    i18n.changeLanguage(newLang);
+    setIsArabic(!isArabic);
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+  };
+
+  useEffect(() => {
+    document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
+  }, [i18n.language]);
+
   return (
     <header className="navbar" data-aos="zoom-in" data-aos-duration="1500">
       <div className="container">
@@ -58,17 +73,25 @@ const Navbar = () => {
           <img src={logo} alt="logo" className="logo-img" />
           Bookletto
         </NavLink>
+        {/* Language Toggle Button */}
+        <button
+          className="lang-toggle-btn"
+          onClick={handleLanguageToggle}
+          style={{ marginLeft: "auto", marginRight: "20px", padding: "8px 16px", borderRadius: "20px", border: "none", background: "#7c4dff", color: "white", fontWeight: "bold", cursor: "pointer" }}
+        >
+          {isArabic ? t("english") : t("arabic")}
+        </button>
 
         <nav className={`nav ${menuOpen ? "open" : ""}`}>
           <NavLink to="/home" className="nav-link">
             <TbHomeFilled />
-            Home
+            {t("home")}
           </NavLink>
           <NavLink to="/shop" className="nav-link">
-            <GiBookshelf /> Shop
+            <GiBookshelf /> {t("shop")}
           </NavLink>
           <NavLink to="/contact" className="nav-link">
-            <IoMailOpen /> Contact
+            <IoMailOpen /> {t("contact")}
           </NavLink>
         </nav>
 

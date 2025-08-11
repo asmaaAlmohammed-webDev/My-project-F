@@ -13,8 +13,13 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 // ADDED: React hooks for state management and API calls
 import { useState, useEffect } from "react";
+// ADDED: Translation hook
+import { useTranslation } from "react-i18next";
 
 const NewArrivalsSec = () => {
+  // ADDED: Translation hook
+  const { t } = useTranslation();
+  
   // ADDED: State management for real API data
   const [newArrivals, setNewArrivals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +35,7 @@ const NewArrivalsSec = () => {
         setError(null);
       } catch (err) {
         console.error("Error loading new arrivals:", err);
-        setError("Failed to load new arrivals");
+        setError(t("failedLoadNewArrivals"));
       } finally {
         setLoading(false);
       }
@@ -44,11 +49,11 @@ const NewArrivalsSec = () => {
     return (
       <section className="newArrivals-sec">
         <TitleComponent
-          title="New"
-          subTitle="Arrivals"
-          desc="Loading new arrivals..."
+          title={t("new")}
+          subTitle={t("arrivals")}
+          desc={t("loadingNewArrivals")}
         />
-        <div className="loading-spinner">Loading...</div>
+        <div className="loading-spinner">{t("loading")}</div>
       </section>
     );
   }
@@ -58,9 +63,9 @@ const NewArrivalsSec = () => {
     return (
       <section className="newArrivals-sec">
         <TitleComponent
-          title="New"
-          subTitle="Arrivals"
-          desc="Unable to load new arrivals at the moment."
+          title={t("new")}
+          subTitle={t("arrivals")}
+          desc={t("unableLoadNewArrivals")}
         />
         <div className="error-message">{error}</div>
       </section>
@@ -70,9 +75,9 @@ const NewArrivalsSec = () => {
   return (
     <section className="newArrivals-sec">
       <TitleComponent
-        title="New"
-        subTitle="Arrivals"
-        desc="From timeless classics to modern masterpieces. Find the perfect spot for every moment."
+        title={t("new")}
+        subTitle={t("arrivals")}
+        desc={t("newArrivalsDesc")}
       />
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
