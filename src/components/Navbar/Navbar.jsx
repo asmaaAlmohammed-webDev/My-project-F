@@ -28,10 +28,10 @@ const Navbar = () => {
     updateCartCount();
 
     // Listen for cart updates
-    window.addEventListener('cartUpdated', updateCartCount);
+    window.addEventListener("cartUpdated", updateCartCount);
 
     return () => {
-      window.removeEventListener('cartUpdated', updateCartCount);
+      window.removeEventListener("cartUpdated", updateCartCount);
     };
   }, []);
 
@@ -73,14 +73,6 @@ const Navbar = () => {
           <img src={logo} alt="logo" className="logo-img" />
           Bookletto
         </NavLink>
-        {/* Language Toggle Button */}
-        <button
-          className="lang-toggle-btn"
-          onClick={handleLanguageToggle}
-          style={{ marginLeft: "auto", marginRight: "20px", padding: "8px 16px", borderRadius: "20px", border: "none", background: "#7c4dff", color: "white", fontWeight: "bold", cursor: "pointer" }}
-        >
-          {isArabic ? t("english") : t("arabic")}
-        </button>
 
         <nav className={`nav ${menuOpen ? "open" : ""}`}>
           <NavLink to="/home" className="nav-link">
@@ -95,8 +87,28 @@ const Navbar = () => {
           </NavLink>
         </nav>
 
-                <div className="actions">
-          <button onClick={handleProfileClick} className="login-icon profile-btn">
+        <div className="actions">
+          {/* Language Toggle Button */}
+          <button
+            className="lang-toggle-btn"
+            onClick={handleLanguageToggle}
+            // style={{
+            //   marginRight: "20px",
+            //   padding: "8px 16px",
+            //   borderRadius: "20px",
+            //   border: "none",
+            //   background: "#7c4dff",
+            //   color: "white",
+            //   fontWeight: "bold",
+            //   cursor: "pointer",
+            // }}
+          >
+            {isArabic ? t("english") : t("arabic")}
+          </button>
+          <button
+            onClick={handleProfileClick}
+            className="login-icon profile-btn"
+          >
             <FaUserCircle />
           </button>
           <NavLink to="/cart" className="cart-icon">
