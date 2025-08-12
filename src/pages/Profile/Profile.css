@@ -10,7 +10,8 @@
 .password-section,
 .admin-section,
 .review-section,
-.contact-section {
+.contact-section,
+.orders-section {
   background: #ffffff;
   border-radius: 8px;
   padding: 1.5rem;
@@ -23,7 +24,8 @@
 .password-header,
 .admin-header,
 .review-header,
-.contact-header {
+.contact-header,
+.orders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -191,6 +193,142 @@
 /* Contact Section Specific Styles */
 .contact-section {
   border-left: 4px solid #17a2b8;
+}
+
+/* Orders Section Specific Styles */
+.orders-section {
+  border-left: 4px solid #fd7e14;
+}
+
+.orders-content {
+  margin-top: 1rem;
+}
+
+.loading-orders {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+.no-orders {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.order-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.order-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.order-basic-info h4 {
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.order-basic-info p {
+  margin: 0.25rem 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.order-total {
+  font-weight: 600;
+  color: #28a745 !important;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.status-wating {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.status-preparing {
+  background-color: #17a2b8;
+}
+
+.status-dlivery {
+  background-color: #6f42c1;
+}
+
+.status-done {
+  background-color: #28a745;
+}
+
+.order-actions {
+  display: flex;
+  align-items: center;
+}
+
+.order-items h5 {
+  color: #495057;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.order-item-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #dee2e6;
+  font-size: 0.9rem;
+}
+
+.order-item-detail:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  flex: 1;
+  font-weight: 500;
+  color: #495057;
+}
+
+.item-quantity {
+  color: #6c757d;
+  margin: 0 1rem;
+}
+
+.item-price {
+  font-weight: 600;
+  color: #28a745;
 }
 
 /* Profile Info */

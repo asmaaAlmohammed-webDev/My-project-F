@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../config/api";
 // ADDED: Translation hook
 import { useTranslation } from "react-i18next";
+// ADDED: Invoice download component
+import InvoiceDownload from "../../components/InvoiceDownload/InvoiceDownload";
 
 const Profile = () => {
   // ADDED: Translation hook
@@ -44,6 +46,11 @@ const Profile = () => {
     message: "",
   });
   const [isContactEditing, setIsContactEditing] = useState(false);
+
+  // ADDED: Orders functionality state
+  const [userOrders, setUserOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [showOrders, setShowOrders] = useState(false);
 
   // Handle logout
   const handleLogout = () => {
@@ -198,6 +205,47 @@ const Profile = () => {
       setMessageType("error");
     }
   };
+
+  // ADDED: Load user orders
+  const loadUserOrders = async () => {
+    try {
+      setOrdersLoading(true);
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        setMessage("Please login to view orders");
+        setMessageType("error");
+        return;
+      }
+
+      const response = await axios.get(
+        `${API_ENDPOINTS.ORDERS}/mien`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("User orders response:", response.data);
+      const orders = response.data.doc || response.data.data || response.data || [];
+      setUserOrders(orders);
+    } catch (error) {
+      console.error("Error loading user orders:", error);
+      setMessage(t("failedLoadOrders") || "Failed to load orders");
+      setMessageType("error");
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  // Load orders when section is expanded
+  useEffect(() => {
+    if (showOrders && userOrders.length === 0) {
+      loadUserOrders();
+    }
+  }, [showOrders]);
 
   return (
     <div className="profile-container">
@@ -580,6 +628,89 @@ const Profile = () => {
           )}
         </div>
       )}
+
+      {/* ADDED: My Orders Section */}
+      <div className="orders-section">
+        <div className="orders-header">
+          <h2
+            onClick={() => setShowOrders(!showOrders)}
+            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}
+          >
+            {t("myOrders") || "My Orders"}
+            <span>{showOrders ? '▼' : '▶'}</span>
+          </h2>
+          {showOrders && (
+            <button onClick={loadUserOrders} disabled={ordersLoading}>
+              {ordersLoading ? (t("loading") || "Loading...") : (t("refresh") || "Refresh")}
+            </button>
+          )}
+        </div>
+
+        {showOrders && (
+          <div className="orders-content">
+            {ordersLoading ? (
+              <div className="loading-orders">
+                <p>{t("loadingOrders") || "Loading your orders..."}</p>
+              </div>
+            ) : userOrders.length === 0 ? (
+              <div className="no-orders">
+                <p>{t("noOrdersFound") || "No orders found"}</p>
+              </div>
+            ) : (
+              <div className="orders-list">
+                {userOrders.map((order) => (
+                  <div key={order._id} className="order-card">
+                    <div className="order-header-info">
+                      <div className="order-basic-info">
+                        <h4>
+                          {t("order") || "Order"} #{order._id?.slice(-8)?.toUpperCase()}
+                        </h4>
+                        <p className="order-date">
+                          {t("date") || "Date"}: {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
+                        <p className="order-total">
+                          {t("total") || "Total"}: ${(order.total || 0).toFixed(2)}
+                        </p>
+                        <p className="order-status">
+                          {t("status") || "Status"}: 
+                          <span className={`status-badge status-${order.status}`}>
+                            {order.status?.toUpperCase()}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="order-actions">
+                        <InvoiceDownload 
+                          orderId={order._id}
+                          orderNumber={order._id?.slice(-8)?.toUpperCase()}
+                          className="compact"
+                          showPreview={true}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="order-items">
+                      <h5>{t("items") || "Items"}:</h5>
+                      {(order.cart || []).map((item, index) => (
+                        <div key={index} className="order-item-detail">
+                          <span className="item-name">
+                            {item.productId?.name || t("unknownProduct") || "Unknown Product"}
+                          </span>
+                          <span className="item-quantity">
+                            {t("qty") || "Qty"}: {item.amount}
+                          </span>
+                          <span className="item-price">
+                            ${(item.price * item.amount).toFixed(2)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import { API_ENDPOINTS } from "../../config/api";
 import { getCartItems, updateCartItemQuantity, removeFromCart } from "../../utils/cartUtils";
+import InvoiceDownload from "../../components/InvoiceDownload/InvoiceDownload";
 import "./Cart.css";
 
 const CartPage = () => {
@@ -43,6 +44,9 @@ const CartPage = () => {
 
   // حالة طريقة الدفع
   const [paymentMethod, setPaymentMethod] = useState("cash");
+
+  // State for successful order
+  const [successfulOrderId, setSuccessfulOrderId] = useState(null);
 
   // Debounce timer for order history loading
   const [orderLoadTimer, setOrderLoadTimer] = useState(null);
@@ -259,6 +263,11 @@ const CartPage = () => {
       localStorage.removeItem("cart");
       setMessage(t("successOrder"));
       
+      // Store the successful order ID for invoice download
+      if (response.data && response.data.doc && response.data.doc._id) {
+        setSuccessfulOrderId(response.data.doc._id);
+      }
+      
       // Clear address form
       setAddress({
         street: "",
@@ -326,6 +335,18 @@ const CartPage = () => {
             marginBottom: '1rem' 
           }}>
             {message}
+            {successfulOrderId && (
+              <div className="invoice-download-section" style={{ marginTop: '1rem' }}>
+                <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                  {t('orderSuccessInvoice') || 'Your order has been placed successfully! Download your invoice:'}
+                </p>
+                <InvoiceDownload 
+                  orderId={successfulOrderId} 
+                  className="success-invoice"
+                  showPreview={true}
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -576,6 +597,16 @@ const CartPage = () => {
                       {(!order.items || order.items.length === 0) && (
                         <div className="no-items">{t("noItemsOrder")}</div>
                       )}
+                    </div>
+                    
+                    {/* Invoice Download Section */}
+                    <div className="order-invoice-section">
+                      <InvoiceDownload 
+                        orderId={order._id || order.id}
+                        orderNumber={order._id?.slice(-8)?.toUpperCase() || order.id?.slice(-8)?.toUpperCase()}
+                        className="compact"
+                        showPreview={true}
+                      />
                     </div>
                   </div>
                 ))
