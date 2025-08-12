@@ -1,0 +1,133 @@
+.invoice-download {
+  margin: 10px 0;
+}
+
+.invoice-error {
+  margin-bottom: 10px;
+}
+
+.invoice-error small {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  background: #fdf2f2;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+  display: inline-block;
+}
+
+.invoice-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.invoice-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-preview {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.btn-preview:hover {
+  background: linear-gradient(135deg, #2980b9, #21618c);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn-download {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+}
+
+.btn-download:hover:not(:disabled) {
+  background: linear-gradient(135deg, #229954, #1e8449);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-download:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Compact version for smaller spaces */
+.invoice-download.compact .invoice-actions {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.invoice-download.compact .btn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+/* Inline version for table cells */
+.invoice-download.inline .invoice-actions {
+  flex-direction: row;
+  gap: 5px;
+}
+
+.invoice-download.inline .btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+.invoice-download.inline .btn span {
+  display: none;
+}
+
+.invoice-download.inline .btn {
+  min-width: 30px;
+  justify-content: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .invoice-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .invoice-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoice-actions .btn {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}

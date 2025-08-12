@@ -453,7 +453,28 @@
     flex-direction: column;
     gap: 5px;
   }
+}
 
+/* Invoice Download Section Styles */
+.invoice-download-section {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.order-invoice-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.success-invoice .invoice-actions {
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
   .item-quantity,
   .item-price {
     text-align: left;
