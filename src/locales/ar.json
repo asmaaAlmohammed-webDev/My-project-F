@@ -381,5 +381,22 @@
   "specialOffers": "عروض خاصة",
   "customerReviews": "مراجعات العملاء",
   "followUs": "تابعنا",
-  "allRightsReserved": "جميع الحقوق محفوظة."
+  "allRightsReserved": "جميع الحقوق محفوظة.",
+  
+  "invoice": "فاتورة",
+  "invoiceNumber": "رقم الفاتورة",
+  "invoiceDate": "تاريخ الفاتورة",
+  "billTo": "فاتورة إلى",
+  "item": "الصنف",
+  "quantity": "الكمية",
+  "unitPriceInvoice": "السعر",
+  "totalInvoice": "الإجمالي",
+  "subtotalInvoice": "المجموع الفرعي:",
+  "taxInvoice": "الضريبة (10%):",
+  "totalAmountInvoice": "الإجمالي:",
+  "thankYou": "شكراً لتعاملكم معنا!",
+  "companyName": "شركة مكتبة الكتب",
+  "companyAddress": "123 شارع الكتب، مدينة القراءة، 12345",
+  "companyPhone": "الهاتف: +1 (555) 123-4567",
+  "companyEmail": "البريد الإلكتروني: info@bookstore.com"
 }

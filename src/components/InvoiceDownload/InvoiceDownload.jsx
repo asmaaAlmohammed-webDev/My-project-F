@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaDownload, FaEye, FaFileInvoiceDollar } from 'react-icons/fa';
+import { FaDownload, FaFileInvoiceDollar } from 'react-icons/fa';
 import invoiceService from '../../services/invoiceService';
 import './InvoiceDownload.css';
 
-const InvoiceDownload = ({ orderId, orderNumber, className = '', showPreview = true }) => {
+const InvoiceDownload = ({ orderId, orderNumber, className = '' }) => {
   const { t } = useTranslation();
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
@@ -26,16 +26,6 @@ const InvoiceDownload = ({ orderId, orderNumber, className = '', showPreview = t
     }
   };
 
-  const handlePreview = async () => {
-    try {
-      setError('');
-      await invoiceService.openPreview(orderId);
-    } catch (err) {
-      console.error('Preview error:', err);
-      setError(t('failedPreviewInvoice') || 'Failed to preview invoice');
-    }
-  };
-
   return (
     <div className={`invoice-download ${className}`}>
       {error && (
@@ -45,17 +35,6 @@ const InvoiceDownload = ({ orderId, orderNumber, className = '', showPreview = t
       )}
       
       <div className="invoice-actions">
-        {showPreview && (
-          <button
-            onClick={handlePreview}
-            className="btn btn-preview"
-            title={t('previewInvoice') || 'Preview Invoice'}
-          >
-            <FaEye />
-            <span>{t('preview') || 'Preview'}</span>
-          </button>
-        )}
-        
         <button
           onClick={handleDownload}
           disabled={downloading}

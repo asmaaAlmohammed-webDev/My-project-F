@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../config/api";
 // ADDED: Translation hook
 import { useTranslation } from "react-i18next";
-// ADDED: Invoice download component
-import InvoiceDownload from "../../components/InvoiceDownload/InvoiceDownload";
+// ADDED: Invoice viewer component
+import InvoiceViewer from "../../components/InvoiceViewer/InvoiceViewer";
 
 const Profile = () => {
   // ADDED: Translation hook
@@ -51,6 +51,10 @@ const Profile = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [showOrders, setShowOrders] = useState(false);
+  
+  // ADDED: Invoice viewer state
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [showInvoiceViewer, setShowInvoiceViewer] = useState(false);
 
   // Handle logout
   const handleLogout = () => {
@@ -240,6 +244,17 @@ const Profile = () => {
     }
   };
 
+  // ADDED: Handle invoice viewing
+  const handleViewInvoice = (orderId) => {
+    setSelectedOrderId(orderId);
+    setShowInvoiceViewer(true);
+  };
+
+  const handleCloseInvoiceViewer = () => {
+    setShowInvoiceViewer(false);
+    setSelectedOrderId(null);
+  };
+
   // Load orders when section is expanded
   useEffect(() => {
     if (showOrders && userOrders.length === 0) {
@@ -249,6 +264,13 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
+      {/* Invoice Viewer Modal */}
+      {showInvoiceViewer && selectedOrderId && (
+        <InvoiceViewer 
+          orderId={selectedOrderId}
+          onClose={handleCloseInvoiceViewer}
+        />
+      )}
       <div className="profile-header">
         <h1
           data-aos="fade-down"
@@ -679,12 +701,13 @@ const Profile = () => {
                         </p>
                       </div>
                       <div className="order-actions">
-                        <InvoiceDownload 
-                          orderId={order._id}
-                          orderNumber={order._id?.slice(-8)?.toUpperCase()}
-                          className="compact"
-                          showPreview={true}
-                        />
+                        <button 
+                          onClick={() => handleViewInvoice(order._id)}
+                          className="invoice-btn"
+                          title={t("viewInvoice") || "View Invoice"}
+                        >
+                          {t("invoice") || "Invoice"}
+                        </button>
                       </div>
                     </div>
                     
