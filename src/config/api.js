@@ -5,7 +5,7 @@
 const API_CONFIG = {
   // CHANGED: Updated from port 7000 to 3001 to match backend server configuration
   // Backend server was moved to port 3001 to avoid conflicts with macOS Control Center
-  BASE_URL: "http://localhost:7000",
+  BASE_URL: "http://localhost:3001",
   API_VERSION: "v1.0.0"
 };
 
@@ -39,7 +39,10 @@ export const API_ENDPOINTS = {
   
   // Orders and Reviews endpoints
   ORDERS: `${API_BASE_URL}/orders`,
-  REVIEWS: `${API_BASE_URL}/reviews`
+  REVIEWS: `${API_BASE_URL}/reviews`,
+  
+  // Invoice endpoint helper function
+  ORDER_INVOICE: (orderId) => `${API_BASE_URL}/orders/${orderId}/invoice`
 };
 
 export default API_CONFIG;

@@ -51,6 +51,31 @@
 }
 
 .profile-container button:hover {
+  background: var(--purple2);
+  transform: translateY(-2px);
+}
+
+/* Invoice Button Styling */
+.invoice-btn {
+  background: #8e44ad !important;
+  color: white !important;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.invoice-btn:hover {
+  background: #7d3c98 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-container button:hover {
   box-shadow: var(--purple1) 0px 22px 50px 4px;
 }
 

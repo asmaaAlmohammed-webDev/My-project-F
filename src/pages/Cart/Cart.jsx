@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   FaTrash,
   FaEdit,
@@ -10,12 +11,14 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../config/api";
-import { getCartItems, updateCartItemQuantity, removeFromCart } from "../../utils/cartUtils";
-import InvoiceDownload from "../../components/InvoiceDownload/InvoiceDownload";
+import { getCartItems, updateCartItemQuantity, removeFromCart, clearCart } from "../../utils/cartUtils";
+import InvoiceViewer from "../../components/InvoiceViewer/InvoiceViewer";
 import "./Cart.css";
 
 const CartPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  
   // حالة سلة التسوق الحالية - will be populated from localStorage initially
   const [cartItems, setCartItems] = useState([]);
 
@@ -47,9 +50,26 @@ const CartPage = () => {
 
   // State for successful order
   const [successfulOrderId, setSuccessfulOrderId] = useState(null);
+  
+  // State for invoice viewer
+  const [showInvoiceViewer, setShowInvoiceViewer] = useState(false);
 
   // Debounce timer for order history loading
   const [orderLoadTimer, setOrderLoadTimer] = useState(null);
+
+  // Handle invoice viewing
+  const handleViewInvoice = (orderId) => {
+    setSuccessfulOrderId(orderId);
+    setShowInvoiceViewer(true);
+  };
+
+  const handleCloseInvoiceViewer = () => {
+    setShowInvoiceViewer(false);
+  };
+
+  const handleContinueShopping = () => {
+    navigate('/shop');
+  };
 
   // Load cart from localStorage on component mount
   useEffect(() => {
@@ -259,8 +279,8 @@ const CartPage = () => {
       );
 
       // Success - clear cart and show message
-      setCartItems([]);
-      localStorage.removeItem("cart");
+      clearCart(); // Use utility function that dispatches cartUpdated event
+      setCartItems([]); // Update local state
       setMessage(t("successOrder"));
       
       // Store the successful order ID for invoice download
@@ -318,6 +338,14 @@ const CartPage = () => {
 
   return (
     <div className="cart-page">
+      {/* Invoice Viewer Modal */}
+      {showInvoiceViewer && successfulOrderId && (
+        <InvoiceViewer 
+          orderId={successfulOrderId}
+          onClose={handleCloseInvoiceViewer}
+        />
+      )}
+      
       <div className="cart-container">
         <div className="cart-header">
           <h1>
@@ -338,13 +366,24 @@ const CartPage = () => {
             {successfulOrderId && (
               <div className="invoice-download-section" style={{ marginTop: '1rem' }}>
                 <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                  {t('orderSuccessInvoice') || 'Your order has been placed successfully! Download your invoice:'}
+                  {t('orderSuccessInvoice') || 'Your order has been placed successfully! View your invoice:'}
                 </p>
-                <InvoiceDownload 
-                  orderId={successfulOrderId} 
-                  className="success-invoice"
-                  showPreview={true}
-                />
+                <button 
+                  onClick={() => handleViewInvoice(successfulOrderId)}
+                  className="invoice-btn"
+                  style={{
+                    background: '#8e44ad',
+                    color: 'white',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '14px'
+                  }}
+                >
+                  {t('viewInvoice') || 'View Invoice'}
+                </button>
               </div>
             )}
           </div>
@@ -368,7 +407,10 @@ const CartPage = () => {
           {cartItems.length === 0 ? (
             <div className="empty-cart">
               <p>{t("cartIsEmpty")}</p>
-              <button className="btn continue-shopping">
+              <button 
+                className="btn continue-shopping"
+                onClick={handleContinueShopping}
+              >
                 {t("continueShopping")}
               </button>
             </div>
@@ -601,12 +643,22 @@ const CartPage = () => {
                     
                     {/* Invoice Download Section */}
                     <div className="order-invoice-section">
-                      <InvoiceDownload 
-                        orderId={order._id || order.id}
-                        orderNumber={order._id?.slice(-8)?.toUpperCase() || order.id?.slice(-8)?.toUpperCase()}
-                        className="compact"
-                        showPreview={true}
-                      />
+                      <button 
+                        onClick={() => handleViewInvoice(order._id || order.id)}
+                        className="invoice-btn"
+                        style={{
+                          background: '#8e44ad',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontWeight: '600',
+                          fontSize: '14px'
+                        }}
+                      >
+                        {t('viewInvoice') || 'View Invoice'}
+                      </button>
                     </div>
                   </div>
                 ))

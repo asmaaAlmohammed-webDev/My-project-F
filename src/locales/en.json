@@ -379,5 +379,22 @@
   "categoryImageUrlPlaceholder": "https://example.com/category-image.jpg",
   "categoryImageUrlHelp": "Optional: Provide a URL to an image that represents this category.",
   "categoryPreview": "Category preview",
-  "creatingCategory": "Creating Category..."
+  "creatingCategory": "Creating Category...",
+  
+  "invoice": "Invoice",
+  "invoiceNumber": "Invoice Number",
+  "invoiceDate": "Invoice Date",
+  "billTo": "Bill To",
+  "item": "ITEM",
+  "quantity": "QTY",
+  "unitPriceInvoice": "PRICE",
+  "totalInvoice": "TOTAL",
+  "subtotalInvoice": "Subtotal:",
+  "taxInvoice": "Tax (10%):",
+  "totalAmountInvoice": "TOTAL:",
+  "thankYou": "Thank you for your business!",
+  "companyName": "BookStore Company",
+  "companyAddress": "123 Book Street, Reading City, RC 12345",
+  "companyPhone": "Phone: +1 (555) 123-4567",
+  "companyEmail": "Email: info@bookstore.com"
 }
