@@ -304,21 +304,21 @@
   .discount-display {
     padding: 15px;
   }
-  
+
   .promo-input-group {
     flex-direction: column;
   }
-  
+
   .apply-btn {
     width: 100%;
   }
-  
+
   .promotion-item {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
   }
-  
+
   .quick-apply-btn,
   .applied-badge {
     align-self: center;
@@ -331,17 +331,21 @@
     align-items: stretch;
     gap: 10px;
   }
-  
+
   .promotion-info {
     justify-content: space-between;
   }
-  
+
   .remove-btn {
     align-self: flex-end;
   }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -1,5 +1,5 @@
 .promotions-banner {
-  margin: 80px auto 20px auto;
+  margin: 140px auto 20px auto;
   max-width: 1200px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 12px;
@@ -39,8 +39,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Loyalty Tier Display */
@@ -97,6 +101,7 @@
   height: 160px;
   overflow: hidden;
   border-radius: 8px;
+  padding: 25px;
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -127,6 +132,7 @@
   height: 100%;
   padding: 20px 25px;
   gap: 20px;
+  padding: 25px;
 }
 
 .promotion-icon {
@@ -136,7 +142,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -148,12 +155,13 @@
   flex: 1;
   min-width: 0;
   margin-right: 15px;
+  padding: 25px;
 }
 
 .promotion-title {
   font-size: 1.4rem;
   font-weight: bold;
-  margin: 0 0 8px 0;
+  margin: 30px 0 8px 0;
   color: white;
   white-space: nowrap;
   overflow: hidden;
@@ -162,7 +170,7 @@
 
 .promotion-description {
   font-size: 1rem;
-  margin: 0 0 12px 0;
+  margin: 0 0 15px 0;
   opacity: 0.9;
   line-height: 1.4;
   display: -webkit-box;
@@ -201,7 +209,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .code-value {
@@ -318,53 +326,53 @@
     padding: 20px;
     margin: 70px 15px 15px 15px;
   }
-  
+
   .loyalty-tier-display {
     flex-direction: column;
     align-items: center;
     gap: 10px;
     text-align: center;
   }
-  
+
   .tier-info {
     align-items: center;
   }
-  
+
   .promotions-banner.rtl .tier-info {
     align-items: center;
   }
-  
+
   .carousel-container {
     height: 180px;
   }
-  
+
   .promotion-content {
     flex-direction: row;
     text-align: left;
     padding: 15px;
     gap: 15px;
   }
-  
+
   .promotion-icon {
     font-size: 2.2rem;
   }
-  
+
   .promotion-title {
     font-size: 1.2rem;
   }
-  
+
   .promotion-description {
     font-size: 0.9rem;
   }
-  
+
   .discount {
     font-size: 1.2rem;
   }
-  
+
   .promotion-value {
     justify-content: flex-start;
   }
-  
+
   .carousel-nav {
     width: 35px;
     height: 35px;
@@ -377,28 +385,28 @@
     padding: 15px;
     margin: 65px 10px 10px 10px;
   }
-  
+
   .carousel-container {
     height: 200px;
   }
-  
+
   .promotion-content {
     flex-direction: column;
     text-align: center;
     padding: 12px;
     gap: 12px;
   }
-  
+
   .promotion-details {
     margin-right: 0;
   }
-  
+
   .promotion-value {
     flex-direction: column;
     gap: 8px;
     align-items: center;
   }
-  
+
   .carousel-nav {
     display: none; /* Hide navigation arrows on very small screens */
   }

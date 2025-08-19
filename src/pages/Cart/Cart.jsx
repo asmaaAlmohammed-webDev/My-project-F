@@ -11,14 +11,19 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../config/api";
-import { getCartItems, updateCartItemQuantity, removeFromCart, clearCart } from "../../utils/cartUtils";
+import {
+  getCartItems,
+  updateCartItemQuantity,
+  removeFromCart,
+  clearCart,
+} from "../../utils/cartUtils";
 import InvoiceViewer from "../../components/InvoiceViewer/InvoiceViewer";
 import "./Cart.css";
 
 const CartPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  
+
   // حالة سلة التسوق الحالية - will be populated from localStorage initially
   const [cartItems, setCartItems] = useState([]);
 
@@ -42,7 +47,7 @@ const CartPage = () => {
   const [address, setAddress] = useState({
     street: "",
     region: "",
-    descreption: ""
+    descreption: "",
   });
 
   // حالة طريقة الدفع
@@ -50,7 +55,7 @@ const CartPage = () => {
 
   // State for successful order
   const [successfulOrderId, setSuccessfulOrderId] = useState(null);
-  
+
   // State for invoice viewer
   const [showInvoiceViewer, setShowInvoiceViewer] = useState(false);
 
@@ -68,13 +73,13 @@ const CartPage = () => {
   };
 
   const handleContinueShopping = () => {
-    navigate('/shop');
+    navigate("/shop");
   };
 
   // Load cart from localStorage on component mount
   useEffect(() => {
     setCartItems(getCartItems());
-    
+
     // Load user's order history with debouncing to prevent rate limiting
     debouncedLoadOrderHistory();
 
@@ -83,14 +88,14 @@ const CartPage = () => {
       setCartItems(getCartItems());
     };
 
-    window.addEventListener('cartUpdated', handleCartUpdate);
-    
+    window.addEventListener("cartUpdated", handleCartUpdate);
+
     return () => {
       // Clear any pending timer on cleanup
       if (orderLoadTimer) {
         clearTimeout(orderLoadTimer);
       }
-      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener("cartUpdated", handleCartUpdate);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -119,7 +124,7 @@ const CartPage = () => {
     }
 
     setOrderHistoryLoading(true);
-    
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -129,25 +134,25 @@ const CartPage = () => {
       }
 
       // Try using the /mien endpoint as defined in backend
-      const response = await axios.get(
-        `${API_ENDPOINTS.ORDERS}/mien`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      
+      const response = await axios.get(`${API_ENDPOINTS.ORDERS}/mien`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
       console.log("Order history response:", response.data);
       // Ensure we handle different response structures and validate order data
-      const orders = response.data.doc || response.data.data || response.data || [];
+      const orders =
+        response.data.doc || response.data.data || response.data || [];
       // Filter and validate orders to ensure they have required properties
-      const validOrders = orders.filter(order => order && (order._id || order.id));
+      const validOrders = orders.filter(
+        (order) => order && (order._id || order.id)
+      );
       setPastOrders(validOrders);
     } catch (err) {
       console.error("Error loading order history:", err);
-      
+
       // Handle rate limiting specifically
       if (err.response?.status === 429) {
         console.warn("Rate limited - will try again later");
@@ -155,25 +160,28 @@ const CartPage = () => {
         setOrderHistoryLoading(false);
         return;
       }
-      
+
       // If /mien doesn't work, try the regular orders endpoint
       if (err.response?.status === 403 || err.response?.status === 404) {
         try {
           const token = localStorage.getItem("token");
-          const fallbackResponse = await axios.get(
-            API_ENDPOINTS.ORDERS,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          const fallbackResponse = await axios.get(API_ENDPOINTS.ORDERS, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
           console.log("Fallback order response:", fallbackResponse.data);
           // Ensure we handle different response structures and validate order data
-          const fallbackOrders = fallbackResponse.data.doc || fallbackResponse.data.data || fallbackResponse.data || [];
+          const fallbackOrders =
+            fallbackResponse.data.doc ||
+            fallbackResponse.data.data ||
+            fallbackResponse.data ||
+            [];
           // Filter and validate orders to ensure they have required properties
-          const validFallbackOrders = fallbackOrders.filter(order => order && (order._id || order.id));
+          const validFallbackOrders = fallbackOrders.filter(
+            (order) => order && (order._id || order.id)
+          );
           setPastOrders(validFallbackOrders);
         } catch (fallbackErr) {
           console.error("Fallback order loading also failed:", fallbackErr);
@@ -219,7 +227,7 @@ const CartPage = () => {
     setEditedQuantity(item.quantity);
   };
 
-    // دالة حفظ التعديل
+  // دالة حفظ التعديل
   const saveEdit = () => {
     updateQuantity(editingItem, editedQuantity);
     setEditingItem(null);
@@ -255,54 +263,49 @@ const CartPage = () => {
     try {
       // Prepare order data for backend according to Order model schema
       const orderData = {
-        cart: cartItems.map(item => ({
+        cart: cartItems.map((item) => ({
           productId: item.id || item._id,
           amount: item.quantity,
-          price: item.price
+          price: item.price,
         })),
+        subtotal: subtotal, ///////////////////
+        loyaltyPointsEarned: 0, /////////////
         total: total,
         status: "wating", // Use valid enum value instead of "PENDING"
         methodePayment: paymentMethod, // Use selected payment method
-        address: address // Use the address from the form
+        address: address, // Use the address from the form
       };
 
       // Create order via API
-      const response = await axios.post(
-        API_ENDPOINTS.ORDERS,
-        orderData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post(API_ENDPOINTS.ORDERS, orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       // Success - clear cart and show message
       clearCart(); // Use utility function that dispatches cartUpdated event
       setCartItems([]); // Update local state
       setMessage(t("successOrder"));
-      
+
       // Store the successful order ID for invoice download
       if (response.data && response.data.doc && response.data.doc._id) {
         setSuccessfulOrderId(response.data.doc._id);
       }
-      
+
       // Clear address form
       setAddress({
         street: "",
         region: "",
-        descreption: ""
+        descreption: "",
       });
-      
+
       // Reload order history to show the new order with debouncing to prevent rate limiting
       debouncedLoadOrderHistory();
-
     } catch (err) {
       console.error("Checkout error:", err);
-      setError(
-        err.response?.data?.message || t("errorOrder")
-      );
+      setError(err.response?.data?.message || t("errorOrder"));
     } finally {
       setLoading(false);
     }
@@ -310,13 +313,16 @@ const CartPage = () => {
 
   // Utility function to add item to cart (can be called from other components)
   const addToCart = (product, quantity = 1) => {
-    const existingItem = cartItems.find(item => 
-      (item.id || item._id) === (product.id || product._id)
+    const existingItem = cartItems.find(
+      (item) => (item.id || item._id) === (product.id || product._id)
     );
 
     if (existingItem) {
       // Update quantity if item already exists
-      updateQuantity(existingItem.id || existingItem._id, existingItem.quantity + quantity);
+      updateQuantity(
+        existingItem.id || existingItem._id,
+        existingItem.quantity + quantity
+      );
     } else {
       // Add new item to cart
       const cartItem = {
@@ -324,15 +330,17 @@ const CartPage = () => {
         name: product.name,
         price: product.price,
         quantity: quantity,
-        image: product.image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
-        author: product.author || "Unknown Author"
+        image:
+          product.image ||
+          "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000",
+        author: product.author || "Unknown Author",
       };
       const newCartItems = [...cartItems, cartItem];
       setCartItems(newCartItems);
       localStorage.setItem("cart", JSON.stringify(newCartItems));
-      
+
       // Dispatch cart update event
-      window.dispatchEvent(new CustomEvent('cartUpdated'));
+      window.dispatchEvent(new CustomEvent("cartUpdated"));
     }
   };
 
@@ -340,12 +348,12 @@ const CartPage = () => {
     <div className="cart-page">
       {/* Invoice Viewer Modal */}
       {showInvoiceViewer && successfulOrderId && (
-        <InvoiceViewer 
+        <InvoiceViewer
           orderId={successfulOrderId}
           onClose={handleCloseInvoiceViewer}
         />
       )}
-      
+
       <div className="cart-container">
         <div className="cart-header">
           <h1>
@@ -355,34 +363,41 @@ const CartPage = () => {
 
         {/* Display messages */}
         {message && (
-          <div className="success-message" style={{ 
-            background: '#d4edda', 
-            color: '#155724', 
-            padding: '1rem', 
-            borderRadius: '4px', 
-            marginBottom: '1rem' 
-          }}>
+          <div
+            className="success-message"
+            style={{
+              background: "#d4edda",
+              color: "#155724",
+              padding: "1rem",
+              borderRadius: "4px",
+              marginBottom: "1rem",
+            }}
+          >
             {message}
             {successfulOrderId && (
-              <div className="invoice-download-section" style={{ marginTop: '1rem' }}>
-                <p style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                  {t('orderSuccessInvoice') || 'Your order has been placed successfully! View your invoice:'}
+              <div
+                className="invoice-download-section"
+                style={{ marginTop: "1rem" }}
+              >
+                <p style={{ marginBottom: "0.5rem", fontWeight: "bold" }}>
+                  {t("orderSuccessInvoice") ||
+                    "Your order has been placed successfully! View your invoice:"}
                 </p>
-                <button 
+                <button
                   onClick={() => handleViewInvoice(successfulOrderId)}
                   className="invoice-btn"
                   style={{
-                    background: '#8e44ad',
-                    color: 'white',
-                    border: 'none',
-                    padding: '10px 20px',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: '600',
-                    fontSize: '14px'
+                    background: "#8e44ad",
+                    color: "white",
+                    border: "none",
+                    padding: "10px 20px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    fontSize: "14px",
                   }}
                 >
-                  {t('viewInvoice') || 'View Invoice'}
+                  {t("viewInvoice") || "View Invoice"}
                 </button>
               </div>
             )}
@@ -390,13 +405,16 @@ const CartPage = () => {
         )}
 
         {error && (
-          <div className="error-message" style={{ 
-            background: '#f8d7da', 
-            color: '#721c24', 
-            padding: '1rem', 
-            borderRadius: '4px', 
-            marginBottom: '1rem' 
-          }}>
+          <div
+            className="error-message"
+            style={{
+              background: "#f8d7da",
+              color: "#721c24",
+              padding: "1rem",
+              borderRadius: "4px",
+              marginBottom: "1rem",
+            }}
+          >
             {error}
           </div>
         )}
@@ -407,7 +425,7 @@ const CartPage = () => {
           {cartItems.length === 0 ? (
             <div className="empty-cart">
               <p>{t("cartIsEmpty")}</p>
-              <button 
+              <button
                 className="btn continue-shopping"
                 onClick={handleContinueShopping}
               >
@@ -424,7 +442,9 @@ const CartPage = () => {
                     </div>
                     <div className="item-details">
                       <h3 className="item-title">{item.name}</h3>
-                      <p className="item-author">{t("author")}: {item.author}</p>
+                      <p className="item-author">
+                        {t("author")}: {item.author}
+                      </p>
 
                       {editingItem === item.id ? (
                         <div className="edit-quantity">
@@ -466,7 +486,9 @@ const CartPage = () => {
                         </div>
                       ) : (
                         <div className="item-quantity">
-                          <span>{t("amount")}: {item.quantity}</span>
+                          <span>
+                            {t("amount")}: {item.quantity}
+                          </span>
                           <div className="item-actions">
                             <button
                               onClick={() => startEditing(item)}
@@ -516,7 +538,9 @@ const CartPage = () => {
                       type="text"
                       placeholder={t("streetAddress")}
                       value={address.street}
-                      onChange={(e) => setAddress({...address, street: e.target.value})}
+                      onChange={(e) =>
+                        setAddress({ ...address, street: e.target.value })
+                      }
                       className="address-input"
                     />
                   </div>
@@ -525,7 +549,9 @@ const CartPage = () => {
                       type="text"
                       placeholder={t("regionCity")}
                       value={address.region}
-                      onChange={(e) => setAddress({...address, region: e.target.value})}
+                      onChange={(e) =>
+                        setAddress({ ...address, region: e.target.value })
+                      }
                       className="address-input"
                     />
                   </div>
@@ -533,7 +559,9 @@ const CartPage = () => {
                     <textarea
                       placeholder={t("additionalDetails")}
                       value={address.descreption}
-                      onChange={(e) => setAddress({...address, descreption: e.target.value})}
+                      onChange={(e) =>
+                        setAddress({ ...address, descreption: e.target.value })
+                      }
                       className="address-input"
                       rows="2"
                     />
@@ -565,7 +593,11 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                <button onClick={checkout} className="btn checkout-btn" disabled={loading || cartItems.length === 0}>
+                <button
+                  onClick={checkout}
+                  className="btn checkout-btn"
+                  disabled={loading || cartItems.length === 0}
+                >
                   {loading ? t("processing") : t("completePurchase")}
                 </button>
               </div>
@@ -605,7 +637,10 @@ const CartPage = () => {
                           {t("order")}: {order._id || order.id}
                         </span>
                         <span className="order-date">
-                          {t("date")}: {new Date(order.createdAt || order.date).toLocaleDateString()}
+                          {t("date")}:{" "}
+                          {new Date(
+                            order.createdAt || order.date
+                          ).toLocaleDateString()}
                         </span>
                       </div>
                       <div>
@@ -614,7 +649,8 @@ const CartPage = () => {
                         </span>
                         <span
                           className={`order-status ${
-                            order.status === "DELIVERED" || order.status === "تم التوصيل"
+                            order.status === "DELIVERED" ||
+                            order.status === "تم التوصيل"
                               ? "delivered"
                               : "processing"
                           }`}
@@ -626,13 +662,21 @@ const CartPage = () => {
 
                     <div className="order-items">
                       {(order.items || []).map((item, index) => (
-                        <div key={item.id || item._id || index} className="order-item">
-                          <span className="item-name">{item.name || t("unknownItem")}</span>
+                        <div
+                          key={item.id || item._id || index}
+                          className="order-item"
+                        >
+                          <span className="item-name">
+                            {item.name || t("unknownItem")}
+                          </span>
                           <span className="item-quantity">
                             {t("amount")}: {item.quantity || 0}
                           </span>
                           <span className="item-price">
-                            ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
+                            $
+                            {((item.price || 0) * (item.quantity || 0)).toFixed(
+                              2
+                            )}
                           </span>
                         </div>
                       ))}
@@ -640,24 +684,24 @@ const CartPage = () => {
                         <div className="no-items">{t("noItemsOrder")}</div>
                       )}
                     </div>
-                    
+
                     {/* Invoice Download Section */}
                     <div className="order-invoice-section">
-                      <button 
+                      <button
                         onClick={() => handleViewInvoice(order._id || order.id)}
                         className="invoice-btn"
                         style={{
-                          background: '#8e44ad',
-                          color: 'white',
-                          border: 'none',
-                          padding: '8px 16px',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontWeight: '600',
-                          fontSize: '14px'
+                          background: "#8e44ad",
+                          color: "white",
+                          border: "none",
+                          padding: "8px 16px",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          fontSize: "14px",
                         }}
                       >
-                        {t('viewInvoice') || 'View Invoice'}
+                        {t("viewInvoice") || "View Invoice"}
                       </button>
                     </div>
                   </div>
