@@ -6,7 +6,7 @@ import './AdminUsers.css';
 import { useTranslation } from 'react-i18next';
 
 const AdminUsers = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -110,13 +110,25 @@ const AdminUsers = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US';
+    
+    return new Date(dateString).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  // Translate role function
+  const translateRole = (role) => {
+    const roleTranslations = {
+      'USER': t('user'),
+      'ADMIN': t('adminRole'),
+      'MODERATOR': t('moderator')
+    };
+    return roleTranslations[role] || role;
   };
 
   const filteredUsers = users.filter(user => {
@@ -259,7 +271,7 @@ const AdminUsers = () => {
                         </div>
                         <div className="user-details">
                           <strong>{user.name || t('unknownUser')}</strong>
-                          <small>ID: {user._id.slice(-6).toUpperCase()}</small>
+                          <small>{t('id')}: {user._id.slice(-6).toUpperCase()}</small>
                         </div>
                       </td>
                       <td className="user-email">
@@ -273,7 +285,7 @@ const AdminUsers = () => {
                           className="role-badge"
                           style={{ backgroundColor: getRoleColor(user.role) }}
                         >
-                          {user.role || 'USER'}
+                          {translateRole(user.role || 'USER')}
                         </span>
                       </td>
                       <td className="user-joined">
@@ -299,7 +311,7 @@ const AdminUsers = () => {
                             title={t('updateUserRole')}
                           >
                             <option value="USER">{t('user')}</option>
-                            <option value="ADMIN">{t('admin')}</option>
+                            <option value="ADMIN">{t('adminRole')}</option>
                           </select>
                         )}
                         {user.role !== 'ADMIN' && (
@@ -350,7 +362,7 @@ const AdminUsers = () => {
                         className="role-badge"
                         style={{ backgroundColor: getRoleColor(selectedUser.role) }}
                       >
-                        {selectedUser.role || 'USER'}
+                        {translateRole(selectedUser.role || 'USER')}
                       </span>
                     </p>
                   </div>
@@ -395,7 +407,7 @@ const AdminUsers = () => {
                     className="btn btn-secondary"
                     onClick={() => setSelectedUser(null)}
                   >
-                    Close
+                    {t('close')}
                   </button>
                 </div>
               </div>

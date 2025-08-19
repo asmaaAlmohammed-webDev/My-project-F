@@ -13,6 +13,29 @@ const BookCategories = () => {
   const [error, setError] = useState(null);
   const { t } = useTranslation();
 
+  // Function to translate category names
+  const translateCategoryName = (name) => {
+    if (name === "All") return t('allCategories');
+    const categoryTranslations = {
+      'Fiction': t('categoryFiction'),
+      'Science Fiction': t('categoryScienceFiction'),
+      'Biography': t('categoryBiography'),
+      'History': t('categoryHistory'),
+      'Romance': t('categoryRomance'),
+      'Mystery': t('categoryMystery'),
+      'Thriller': t('categoryThriller'),
+      'Fantasy': t('categoryFantasy'),
+      'Horror': t('categoryHorror'),
+      'Self Help': t('categorySelfHelp'),
+      'Business': t('categoryBusiness'),
+      'Technology': t('categoryTechnology'),
+      'Children': t('categoryChildren'),
+      'Education': t('categoryEducation'),
+      'Travel': t('categoryTravel')
+    };
+    return categoryTranslations[name] || name;
+  };
+
   // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
@@ -55,8 +78,10 @@ const BookCategories = () => {
       } finally {
         setLoading(false);
       }
-    };    fetchData();
-  }, []);
+    };
+
+    fetchData();
+  }, [t]); // Re-fetch when language changes (t function changes)
 
   // Filter books based on selected category
   const filteredBooks = selectedCategory === "All" 
@@ -100,7 +125,7 @@ const BookCategories = () => {
               className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
               onClick={() => handleCategoryChange(category)}
             >
-              {category}
+              {translateCategoryName(category)}
             </button>
           ))}
         </div>

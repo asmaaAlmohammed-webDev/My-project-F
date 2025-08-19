@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const AdminOrders = () => {
   // ADDED: Translation hook
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -113,7 +113,9 @@ const AdminOrders = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US';
+    
+    return new Date(dateString).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -122,8 +124,26 @@ const AdminOrders = () => {
     });
   };
 
+  // Translate status function
+  const translateStatus = (status) => {
+    const statusTranslations = {
+      wating: t('waiting'),
+      preparing: t('preparing'),
+      dlivery: t('delivery'),
+      done: t('completed')
+    };
+    return statusTranslations[status] || status;
+  };
+
   const formatCurrency = (amount) => {
-    return `$${amount.toFixed(2)}`;
+    const locale = i18n.language === 'ar' ? 'ar-SA' : 'en-US';
+    const currency = i18n.language === 'ar' ? 'SAR' : 'USD';
+    
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2
+    }).format(amount);
   };
 
   const filteredOrders = filterStatus === 'all' 
@@ -263,14 +283,14 @@ const AdminOrders = () => {
                         <strong>{formatCurrency(order.total)}</strong>
                       </td>
                       <td className="payment-method">
-                        {paymentMethods[order.methodePayment] || order.methodePayment}
+                        {paymentMethods[order.methodePayment] || t('unknown')}
                       </td>
                       <td className="order-status">
                         <span 
                           className="status-badge"
                           style={{ backgroundColor: getStatusColor(order.status) }}
                         >
-                          {order.status}
+                          {translateStatus(order.status)}
                         </span>
                       </td>
                       <td className="order-actions">
@@ -340,10 +360,10 @@ const AdminOrders = () => {
                         className="status-badge"
                         style={{ backgroundColor: getStatusColor(selectedOrder.status) }}
                       >
-                        {selectedOrder.status}
+                        {translateStatus(selectedOrder.status)}
                       </span>
                     </p>
-                    <p><strong>{t('payment')}:</strong> {paymentMethods[selectedOrder.methodePayment]}</p>
+                    <p><strong>{t('payment')}:</strong> {paymentMethods[selectedOrder.methodePayment] || t('unknown')}</p>
                     <p><strong>{t('total')}:</strong> <strong>{formatCurrency(selectedOrder.total)}</strong></p>
                   </div>
                   

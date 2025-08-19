@@ -1,0 +1,347 @@
+.discount-display {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.discount-display.rtl {
+  direction: rtl;
+}
+
+.section-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+/* Applied Promotions */
+.applied-promotions {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.applied-promotion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.promo-code {
+  font-family: monospace;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.discount-amount {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.remove-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: background 0.3s ease;
+}
+
+.remove-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.total-savings {
+  text-align: center;
+  padding: 10px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 6px;
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+/* Promo Code Section */
+.promo-code-section {
+  margin-bottom: 20px;
+}
+
+.promo-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.promo-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  transition: border-color 0.3s ease;
+}
+
+.promo-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.promo-input:disabled {
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.apply-btn {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apply-btn:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.apply-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  padding: 8px 12px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+
+.success-message {
+  color: #155724;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  padding: 8px 12px;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+}
+
+/* Available Promotions */
+.available-promotions {
+  border-top: 1px solid #dee2e6;
+  padding-top: 15px;
+}
+
+.toggle-promotions {
+  background: transparent;
+  border: none;
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.toggle-promotions:hover {
+  color: #0056b3;
+}
+
+.promotions-list {
+  margin-top: 15px;
+}
+
+.promotion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.promotion-item:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.promotion-item.applied {
+  background: #e8f5e8;
+  border-color: #28a745;
+}
+
+.promotion-details {
+  flex: 1;
+}
+
+.promotion-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.promotion-discount {
+  color: #007bff;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.promotion-savings {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.minimum-order {
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-top: 3px;
+}
+
+.quick-apply-btn {
+  padding: 8px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quick-apply-btn:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.quick-apply-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.applied-badge {
+  padding: 4px 12px;
+  background: #28a745;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* RTL Adjustments */
+.discount-display.rtl .promo-input-group {
+  flex-direction: row-reverse;
+}
+
+.discount-display.rtl .promotion-info {
+  flex-direction: row-reverse;
+}
+
+.discount-display.rtl .toggle-promotions {
+  flex-direction: row-reverse;
+}
+
+.discount-display.rtl .promotion-item {
+  flex-direction: row-reverse;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .discount-display {
+    padding: 15px;
+  }
+  
+  .promo-input-group {
+    flex-direction: column;
+  }
+  
+  .apply-btn {
+    width: 100%;
+  }
+  
+  .promotion-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .quick-apply-btn,
+  .applied-badge {
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .applied-promotion {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .promotion-info {
+    justify-content: space-between;
+  }
+  
+  .remove-btn {
+    align-self: flex-end;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

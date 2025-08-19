@@ -59,7 +59,7 @@ const Shop = () => {
     };
 
     fetchData();
-  }, []);
+  }, [t]); // Re-fetch when language changes (t function changes)
 
   // Filter books based on category and search term
   const filteredBooks = books.filter((book) => {

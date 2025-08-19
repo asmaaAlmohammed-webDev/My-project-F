@@ -42,7 +42,35 @@ export const API_ENDPOINTS = {
   REVIEWS: `${API_BASE_URL}/reviews`,
   
   // Invoice endpoint helper function
-  ORDER_INVOICE: (orderId) => `${API_BASE_URL}/orders/${orderId}/invoice`
+  ORDER_INVOICE: (orderId) => `${API_BASE_URL}/orders/${orderId}/invoice`,
+  
+  // ADDED: Inventory management endpoints
+  INVENTORY_STATS: `${API_BASE_URL}/products/inventory/stats`,
+  LOW_STOCK_PRODUCTS: `${API_BASE_URL}/products/inventory/low-stock`,
+  OUT_OF_STOCK_PRODUCTS: `${API_BASE_URL}/products/inventory/out-of-stock`,
+  UPDATE_STOCK: (productId) => `${API_BASE_URL}/products/${productId}/stock`,
+  
+  // ADDED: Publisher management endpoints  
+  PUBLISHERS: `${API_BASE_URL}/publishers`,
+  ACTIVE_PUBLISHERS: `${API_BASE_URL}/publishers/active`,
+  
+  // ADDED: Notification system endpoints
+  NOTIFICATIONS: `${API_BASE_URL}/notifications`,
+  MY_NOTIFICATIONS: `${API_BASE_URL}/notifications/my-notifications`,
+  UNREAD_COUNT: `${API_BASE_URL}/notifications/unread-count`,
+  LOGIN_NOTIFICATIONS: `${API_BASE_URL}/notifications/login-notifications`,
+  MARK_READ: (notificationId) => `${API_BASE_URL}/notifications/mark-read/${notificationId}`,
+  MARK_ALL_READ: `${API_BASE_URL}/notifications/mark-all-read`,
+  NOTIFICATION_STATS: `${API_BASE_URL}/notifications/stats`,
+  
+  // ADDED: Promotion system endpoints
+  PROMOTIONS: `${API_BASE_URL}/promotions`,
+  USER_PROMOTIONS: `${API_BASE_URL}/promotions/user`,
+  APPLY_PROMOTION: `${API_BASE_URL}/promotions/apply`,
+  VALIDATE_PROMOTION: `${API_BASE_URL}/promotions/validate`,
+  FIRST_TIME_BUYER_PROMOTIONS: `${API_BASE_URL}/promotions/first-time-buyer`,
+  LOYALTY_PROMOTIONS: `${API_BASE_URL}/promotions/loyalty`,
+  PROMOTION_ANALYTICS: `${API_BASE_URL}/promotions/analytics`
 };
 
 export default API_CONFIG;

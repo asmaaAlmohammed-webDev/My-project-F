@@ -25,7 +25,7 @@ const NewArrivalsSec = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ADDED: Fetch real data from backend API on component mount
+  // ADDED: Fetch real data from backend API on component mount and language change
   useEffect(() => {
     const loadNewArrivals = async () => {
       try {
@@ -42,7 +42,7 @@ const NewArrivalsSec = () => {
     };
 
     loadNewArrivals();
-  }, []);
+  }, [t]); // Re-fetch when language changes (t function changes)
 
   // ADDED: Loading state display
   if (loading) {

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './AdminSidebar.css';
 import { 
   TbDashboard, 
@@ -8,84 +9,110 @@ import {
   TbStar, 
   TbClipboardList,
   TbShoppingCart,
-  TbLogout,
   TbUsers,
-  TbHome
+  TbHome,
+  TbBox,
+  TbLogout,
+  TbLanguage,
+  TbMenu2,
+  TbDiscount
 } from 'react-icons/tb';
 import { logoutAdmin } from '../../utils/adminAuth';
 
 // ADDED: Admin navigation sidebar with all management sections
 const AdminSidebar = ({ isCollapsed, toggleSidebar }) => {
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
+  const [isArabic, setIsArabic] = useState(i18n.language === "ar");
+
+  const handleLanguageToggle = () => {
+    const newLang = isArabic ? "en" : "ar";
+    i18n.changeLanguage(newLang);
+    setIsArabic(!isArabic);
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+  };
 
   const menuItems = [
     {
       path: '/home',
       icon: TbHome,
-      label: 'Back to Home',
-      description: 'Return to Main Site',
+      label: t('backToHome'),
+      description: t('returnToMainSite'),
       isExternal: true
     },
     {
       path: '/admin/dashboard',
       icon: TbDashboard,
-      label: 'Dashboard',
-      description: 'Overview & Statistics'
+      label: t('dashboard'),
+      description: t('overviewStatistics')
     },
     {
       path: '/admin/categories',
       icon: TbCategory,
-      label: 'Categories',
-      description: 'Manage Book Categories'
+      label: t('categories'),
+      description: t('manageBookCategories')
     },
     {
       path: '/admin/products',
       icon: TbBooks,
-      label: 'Products',
-      description: 'Manage Books & Inventory'
+      label: t('products'),
+      description: t('manageBooksInventory')
+    },
+    {
+      path: '/admin/inventory',
+      icon: TbBox,
+      label: t('inventory'),
+      description: t('stockManagementAlerts')
     },
     {
       path: '/admin/reviews',
       icon: TbStar,
-      label: 'Reviews',
-      description: 'Moderate Customer Reviews'
+      label: t('reviews'),
+      description: t('moderateCustomerReviews')
     },
     {
       path: '/admin/requests',
       icon: TbClipboardList,
-      label: 'Requests',
-      description: 'Customer Product Requests'
+      label: t('requests'),
+      description: t('customerProductRequests')
+    },
+    {
+      path: '/admin/promotions',
+      icon: TbDiscount,
+      label: t('promotions'),
+      description: t('manageDiscountsLoyalty')
     },
     {
       path: '/admin/orders',
       icon: TbShoppingCart,
-      label: 'Orders',
-      description: 'Order Management'
+      label: t('orders'),
+      description: t('orderManagement')
     },
     {
       path: '/admin/users',
       icon: TbUsers,
-      label: 'Users',
-      description: 'User Management'
+      label: t('users'),
+      description: t('userManagement')
     }
   ];
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
+    if (window.confirm(t('confirmLogout'))) {
       logoutAdmin();
     }
   };
 
   return (
-    <div className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+    <div className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''} ${isRTL ? 'rtl' : ''}`}>
       {/* Sidebar Header */}
       <div className="sidebar-header">
         <Link to="/home" className="logo">
           <TbBooks className="logo-icon" />
-          {!isCollapsed && <span className="logo-text">BookStore Admin</span>}
+          {!isCollapsed && <span className="logo-text">{t('bookstoreAdmin')}</span>}
         </Link>
         <button className="toggle-btn" onClick={toggleSidebar}>
-          {isCollapsed ? '→' : '←'}
+          {isCollapsed ? (isRTL ? '←' : '→') : (isRTL ? '→' : '←')}
         </button>
       </div>
 
@@ -116,9 +143,14 @@ const AdminSidebar = ({ isCollapsed, toggleSidebar }) => {
 
       {/* Sidebar Footer */}
       <div className="sidebar-footer">
+        {/* Language Toggle Button */}
+        <button className="language-toggle-btn" onClick={handleLanguageToggle}>
+          🌐 {!isCollapsed && <span>{isArabic ? t("english") : t("arabic")}</span>}
+        </button>
+        
         <button className="logout-btn" onClick={handleLogout}>
           <TbLogout className="logout-icon" />
-          {!isCollapsed && <span>Logout</span>}
+          {!isCollapsed && <span>{t('logout')}</span>}
         </button>
       </div>
     </div>

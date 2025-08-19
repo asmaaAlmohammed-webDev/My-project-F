@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api';
+import i18n from '../i18n';
 
 // ADDED: Product service functions to replace mock data with real API calls
 // This service handles all product and category related API interactions
@@ -14,13 +15,22 @@ const getAuthHeaders = () => {
 };
 
 /**
- * Fetch all products from backend
- * UPDATED: No authentication required for browsing products (public access)
+ * Get current language for API requests
+ * ADDED: Helper function to get current language from i18n
+ */
+const getCurrentLanguage = () => {
+  return i18n.language || 'en';
+};
+
+/**
+ * Fetch all products from backend with localization
+ * UPDATED: Now supports Arabic/English descriptions based on current language
  */
 export const fetchProducts = async () => {
   try {
-    const response = await axios.get(API_ENDPOINTS.PRODUCTS);
-    return response.data.doc || response.data.products || [];
+    const lang = getCurrentLanguage();
+    const response = await axios.get(`${API_ENDPOINTS.PRODUCTS}?lang=${lang}`);
+    return response.data.data?.products || response.data.doc || response.data.products || [];
   } catch (error) {
     console.error('Error fetching products:', error);
     // ADDED: Fallback to empty array if API fails

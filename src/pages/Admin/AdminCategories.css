@@ -345,3 +345,41 @@
     height: 40px;
   }
 }
+
+/* Category image styles */
+.category-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease;
+}
+
+.category-thumbnail:hover {
+  transform: scale(1.05);
+  border-color: #007bff;
+}
+
+.no-image-placeholder {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px dashed #ced4da;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 24px;
+  transition: border-color 0.2s ease;
+}
+
+.no-image-placeholder:hover {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.no-image-placeholder i {
+  opacity: 0.6;
+}
