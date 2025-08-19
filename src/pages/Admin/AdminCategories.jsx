@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { fetchCategories } from '../../services/productService';
 import { API_ENDPOINTS } from '../../config/api';
+import { getImageUrl } from '../../utils/imageUtils';
 import axios from 'axios';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import './AdminCategories.css';
@@ -20,6 +21,81 @@ const AdminCategories = () => {
   const [submitting, setSubmitting] = useState(false);
   const { t } = useTranslation();
 
+  // Function to get category image with fallbacks
+    const getCategoryImageUrl = (photo) => {
+    if (!photo) return null;
+    
+    // Define mapping for database categories to available images
+    const categoryImageMap = {
+      'fiction.jpg': 'fiction.png',          // Fiction -> fiction.png
+      'romance.jpg': 'romance.png',          // Romance -> romance.png (book_1)
+      'mystery.jpg': 'mystery.png',          // Mystery -> mystery.png (book_15)
+      'scifi.jpg': 'scifi.png',              // Science Fiction -> scifi.png (book_3)
+      'biography.jpg': 'biography.png',      // Biography -> biography.png (book_7)
+      'history.jpg': 'history.png',          // History -> history.png (book_12)
+      'selfhelp.jpg': 'selfhelp.png',        // Self Help -> selfhelp.png (book_25)
+      'technology.jpg': 'technology.png',    // Technology -> technology.png (book_30)
+      'health.jpg': 'health.png',
+      'business.jpg': 'business.png',
+      'children.jpg': 'children.png',
+      'academic.jpg': 'academic.png',
+      'religious.jpg': 'religious.png',
+    };
+    
+    // Check if we have a mapped image for this category
+    const mappedImage = categoryImageMap[photo];
+    if (mappedImage) {
+      return `http://localhost:7000/img/static/${mappedImage}`;
+    }
+    
+    // Try the original filename
+    return `http://localhost:7000/img/static/${photo}`;
+  };
+
+  // Function to translate category names
+  const translateCategoryName = (name) => {
+    const categoryTranslations = {
+      'Fiction': t('categoryFiction'),
+      'Science Fiction': t('categoryScienceFiction'),
+      'Biography': t('categoryBiography'),
+      'History': t('categoryHistory'),
+      'Romance': t('categoryRomance'),
+      'Mystery': t('categoryMystery'),
+      'Thriller': t('categoryThriller'),
+      'Fantasy': t('categoryFantasy'),
+      'Horror': t('categoryHorror'),
+      'Self Help': t('categorySelfHelp'),
+      'Business': t('categoryBusiness'),
+      'Technology': t('categoryTechnology'),
+      'Children': t('categoryChildren'),
+      'Education': t('categoryEducation'),
+      'Travel': t('categoryTravel')
+    };
+    return categoryTranslations[name] || name;
+  };
+
+  // Function to translate category descriptions
+  const translateCategoryDescription = (description) => {
+    const descriptionTranslations = {
+      'Fictional stories and novels': t('descriptionFiction'),
+      'Love stories and romantic novels': t('descriptionRomance'), 
+      'Mystery and thriller books': t('descriptionMystery'),
+      'Science fiction and fantasy books': t('descriptionScienceFiction'),
+      'Biographies and memoirs': t('descriptionBiography'),
+      'Historical books and documentaries': t('descriptionHistory'),
+      'Personal development and self-improvement': t('descriptionSelfHelp'),
+      'Programming, AI, and technology books': t('descriptionTechnology'),
+      'Thriller and suspense novels': t('descriptionThriller'),
+      'Fantasy and magical stories': t('descriptionFantasy'),
+      'Horror and scary stories': t('descriptionHorror'),
+      'Business and entrepreneurship': t('descriptionBusiness'),
+      'Children books and stories': t('descriptionChildren'),
+      'Educational and academic books': t('descriptionEducation'),
+      'Travel guides and adventures': t('descriptionTravel')
+    };
+    return descriptionTranslations[description] || description;
+  };
+
   // Fetch categories on component mount
   useEffect(() => {
     loadCategories();
@@ -32,7 +108,7 @@ const AdminCategories = () => {
       setCategories(data);
       setError(null);
     } catch (err) {
-      setError('Failed to load categories');
+      setError(t('failedToLoadCategories'));
       console.error('Error loading categories:', err);
     } finally {
       setLoading(false);
@@ -71,7 +147,7 @@ const AdminCategories = () => {
       resetForm();
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save category');
+      setError(err.response?.data?.message || t('failedToSaveCategory'));
       console.error('Error saving category:', err);
     } finally {
       setSubmitting(false);
@@ -95,7 +171,7 @@ const AdminCategories = () => {
   };
 
   const handleDelete = async (categoryId) => {
-    if (!window.confirm('Are you sure you want to delete this category?')) {
+    if (!window.confirm(t('confirmDeleteCategory'))) {
       return;
     }
 
@@ -113,7 +189,7 @@ const AdminCategories = () => {
       await loadCategories();
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete category');
+      setError(err.response?.data?.message || t('failedToDeleteCategory'));
       console.error('Error deleting category:', err);
     }
   };
@@ -254,19 +330,31 @@ const AdminCategories = () => {
               <tbody>
                 {categories.map((category) => (
                   <tr key={category._id}>
-                    <td className="category-name">{category.name}</td>
+                    <td className="category-name">{translateCategoryName(category.name)}</td>
                     <td className="category-description">
-                      {category.descrption || t("noDescription")}
+                      {category.descrption ? translateCategoryDescription(category.descrption) : t("noDescription")}
                     </td>
                     <td className="category-photo">
-                      {category.photo ? (
-                        <img 
-                          src={category.photo} 
-                          alt={category.name}
-                          className="category-thumbnail"
-                        />
+                      {category.photo || category.name ? (
+                        <>
+                          <img 
+                            src={getCategoryImageUrl(category.photo)} 
+                            alt={translateCategoryName(category.name)}
+                            className="category-thumbnail"
+                            onError={(e) => {
+                              // Fallback to a no-image placeholder
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <div className="no-image-placeholder" style={{display: 'none'}}>
+                            <i className="fas fa-camera"></i>
+                          </div>
+                        </>
                       ) : (
-                        t("noImage")
+                        <div className="no-image-placeholder">
+                          <i className="fas fa-camera"></i>
+                        </div>
                       )}
                     </td>
                     <td className="category-actions">

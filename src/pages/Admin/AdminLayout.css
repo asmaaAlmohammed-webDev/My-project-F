@@ -8,12 +8,22 @@
 .admin-main {
   flex: 1;
   margin-left: 260px;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.3s ease, margin-right 0.3s ease;
   min-height: 100vh;
 }
 
 .admin-main.sidebar-collapsed {
   margin-left: 80px;
+}
+
+/* RTL Support */
+.admin-main.rtl {
+  margin-left: 0;
+  margin-right: 260px;
+}
+
+.admin-main.rtl.sidebar-collapsed {
+  margin-right: 80px;
 }
 
 .admin-content {
@@ -61,6 +71,14 @@
   
   .admin-main.sidebar-collapsed {
     margin-left: 0;
+  }
+  
+  .admin-main.rtl {
+    margin-right: 0;
+  }
+  
+  .admin-main.rtl.sidebar-collapsed {
+    margin-right: 0;
   }
   
   .admin-content {

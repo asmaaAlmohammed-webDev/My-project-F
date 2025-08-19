@@ -9,13 +9,39 @@ import './AdminProductForm.css';
 const AdminProductForm = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Function to translate category names
+  const translateCategoryName = (name) => {
+    const categoryTranslations = {
+      'Fiction': t('categoryFiction'),
+      'Science Fiction': t('categoryScienceFiction'),
+      'Biography': t('categoryBiography'),
+      'History': t('categoryHistory'),
+      'Romance': t('categoryRomance'),
+      'Mystery': t('categoryMystery'),
+      'Thriller': t('categoryThriller'),
+      'Fantasy': t('categoryFantasy'),
+      'Horror': t('categoryHorror'),
+      'Self Help': t('categorySelfHelp'),
+      'Business': t('categoryBusiness'),
+      'Technology': t('categoryTechnology'),
+      'Children': t('categoryChildren'),
+      'Education': t('categoryEducation'),
+      'Travel': t('categoryTravel')
+    };
+    return categoryTranslations[name] || name;
+  };
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
+    description_en: '',
+    description_ar: '',
     price: '',
     image: '',
-    categoryId: ''
+    categoryId: '',
+    stock: '',
+    minStockLevel: '',
+    publisherEmail: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -62,11 +88,21 @@ const AdminProductForm = () => {
       // Convert price to number and validate
       const productData = {
         ...formData,
-        price: parseFloat(formData.price)
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock) || 0,
+        minStockLevel: parseInt(formData.minStockLevel) || 1
       };
 
       if (isNaN(productData.price) || productData.price <= 0) {
         throw new Error(t('pleaseEnterValidPrice'));
+      }
+
+      if (productData.stock < 0) {
+        throw new Error(t('stockCannotBeNegative'));
+      }
+
+      if (productData.minStockLevel < 1) {
+        throw new Error(t('minStockLevelAtLeastOne'));
       }
 
       await axios.post(
@@ -76,7 +112,17 @@ const AdminProductForm = () => {
       );
 
       setSuccess(true);
-      setFormData({ name: '', description: '', price: '', image: '', categoryId: '' });
+      setFormData({ 
+        name: '', 
+        description_en: '', 
+        description_ar: '', 
+        price: '', 
+        image: '', 
+        categoryId: '',
+        stock: '',
+        minStockLevel: '',
+        publisherEmail: ''
+      });
       
       // Redirect to products list after 2 seconds
       setTimeout(() => {
@@ -147,7 +193,7 @@ const AdminProductForm = () => {
                 required
                 min="0"
                 step="0.01"
-                placeholder="0.00"
+                placeholder={t('enterPrice')}
               />
             </div>
           </div>
@@ -167,7 +213,7 @@ const AdminProductForm = () => {
                 <option value="">{t('selectCategory')}</option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>
-                    {category.name}
+                    {translateCategoryName(category.name)}
                   </option>
                 ))}
               </select>
@@ -178,18 +224,76 @@ const AdminProductForm = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">{t('description')}</label>
+            <label htmlFor="description_en">{t('description')} (English)</label>
             <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+              id="description_en"
+              name="description_en"
+              value={formData.description_en}
               onChange={handleInputChange}
-              placeholder={t('enterDetailedDescriptionPlaceholder')}
-              rows="4"
+              placeholder={t('enterDetailedDescriptionEn')}
+              rows="3"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description_ar">{t('description')} (Arabic)</label>
+            <textarea
+              id="description_ar"
+              name="description_ar"
+              value={formData.description_ar}
+              onChange={handleInputChange}
+              placeholder={t('enterDescriptionArabic')}
+              rows="3"
+              dir="rtl"
             />
             <small className="form-help">
               {t('descriptionHelp')}
             </small>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="stock">{t('currentStock')} *</label>
+              <input
+                type="number"
+                id="stock"
+                name="stock"
+                value={formData.stock}
+                onChange={handleInputChange}
+                required
+                min="0"
+                placeholder={t('enterStockQuantity')}
+              />
+              <small className="form-help">{t('currentStockHelp')}</small>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="minStockLevel">{t('minStockLevel')} *</label>
+              <input
+                type="number"
+                id="minStockLevel"
+                name="minStockLevel"
+                value={formData.minStockLevel}
+                onChange={handleInputChange}
+                required
+                min="1"
+                placeholder="5"
+              />
+              <small className="form-help">{t('minStockLevelHelp')}</small>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="publisherEmail">{t('publisherEmail')}</label>
+            <input
+              type="email"
+              id="publisherEmail"
+              name="publisherEmail"
+              value={formData.publisherEmail}
+              onChange={handleInputChange}
+              placeholder="publisher@example.com"
+            />
+            <small className="form-help">{t('publisherEmailHelp')}</small>
           </div>
 
           <div className="form-group">
@@ -224,7 +328,7 @@ const AdminProductForm = () => {
             <button 
               type="submit" 
               className="btn btn-primary"
-              disabled={submitting || !formData.name.trim() || !formData.price || !formData.categoryId}
+              disabled={submitting || !formData.name.trim() || !formData.price || !formData.categoryId || !formData.stock || !formData.minStockLevel}
             >
               {submitting ? t('creatingProduct') : t('createProduct')}
             </button>

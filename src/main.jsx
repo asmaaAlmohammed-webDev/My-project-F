@@ -24,6 +24,9 @@ import AdminOrders from "./pages/Admin/AdminOrders.jsx";
 import AdminReviews from "./pages/Admin/AdminReviews.jsx";
 import AdminUsers from "./pages/Admin/AdminUsers.jsx";
 import AdminRequests from "./pages/Admin/AdminRequests.jsx";
+import AdminInventory from "./pages/Admin/AdminInventory.jsx";
+import AdminNotifications from "./pages/Admin/AdminNotifications.jsx";
+import AdminPromotions from "./pages/Admin/AdminPromotions.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import "./i18n";
 import { I18nextProvider } from "react-i18next";
@@ -68,10 +71,13 @@ const router = createBrowserRouter(
         { path: "categories/new", element: <AdminCategoryForm /> },
         { path: "products", element: <AdminProducts /> },
         { path: "products/new", element: <AdminProductForm /> },
+        { path: "inventory", element: <AdminInventory /> },
         { path: "orders", element: <AdminOrders /> },
         { path: "reviews", element: <AdminReviews /> },
         { path: "users", element: <AdminUsers /> },
         { path: "requests", element: <AdminRequests /> },
+        { path: "notifications", element: <AdminNotifications /> },
+        { path: "promotions", element: <AdminPromotions /> },
         // Catch-all for any other admin sub-routes
         {
           path: "*",

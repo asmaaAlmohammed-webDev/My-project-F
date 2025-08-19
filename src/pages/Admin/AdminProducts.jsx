@@ -19,10 +19,14 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
+    description_en: '',
+    description_ar: '',
     price: '',
     image: '',
-    categoryId: ''
+    categoryId: '',
+    stock: '',
+    minStockLevel: '',
+    publisherEmail: ''
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -63,7 +67,9 @@ const AdminProducts = () => {
       // Convert price to number
       const productData = {
         ...formData,
-        price: parseFloat(formData.price)
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock) || 0,
+        minStockLevel: parseInt(formData.minStockLevel) || 1
       };
 
       if (editingProduct) {
@@ -98,10 +104,14 @@ const AdminProducts = () => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      description: product.description || '',
+      description_en: product.description_en || '',
+      description_ar: product.description_ar || '',
       price: product.price.toString(),
       image: product.image || '',
-      categoryId: product.categoryId?._id || ''
+      categoryId: product.categoryId?._id || product.categoryId,
+      stock: product.stock || 0,
+      minStockLevel: product.minStockLevel || 1,
+      publisherEmail: product.publisherEmail || ''
     });
     setShowForm(true);
     
@@ -113,7 +123,7 @@ const AdminProducts = () => {
   };
 
   const handleDelete = async (productId) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) {
+    if (!window.confirm(t('confirmDeleteProduct'))) {
       return;
     }
 
@@ -137,7 +147,17 @@ const AdminProducts = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', description: '', price: '', image: '', categoryId: '' });
+    setFormData({ 
+      name: '', 
+      description_en: '', 
+      description_ar: '', 
+      price: '', 
+      image: '', 
+      categoryId: '',
+      stock: 0,
+      minStockLevel: 1,
+      publisherEmail: ''
+    });
     setEditingProduct(null);
     setShowForm(false);
   };
@@ -158,10 +178,32 @@ const AdminProducts = () => {
 
   const getCategoryName = (categoryId) => {
     if (typeof categoryId === 'object' && categoryId?.name) {
-      return categoryId.name;
+      return translateCategoryName(categoryId.name);
     }
     const category = categories.find(cat => cat._id === categoryId);
-    return category ? category.name : t('unknown');
+    return category ? translateCategoryName(category.name) : t('unknown');
+  };
+
+  // Function to translate category names
+  const translateCategoryName = (name) => {
+    const categoryTranslations = {
+      'Fiction': t('categoryFiction'),
+      'Science Fiction': t('categoryScienceFiction'),
+      'Biography': t('categoryBiography'),
+      'History': t('categoryHistory'),
+      'Romance': t('categoryRomance'),
+      'Mystery': t('categoryMystery'),
+      'Thriller': t('categoryThriller'),
+      'Fantasy': t('categoryFantasy'),
+      'Horror': t('categoryHorror'),
+      'Self Help': t('categorySelfHelp'),
+      'Business': t('categoryBusiness'),
+      'Technology': t('categoryTechnology'),
+      'Children': t('categoryChildren'),
+      'Education': t('categoryEducation'),
+      'Travel': t('categoryTravel')
+    };
+    return categoryTranslations[name] || name;
   };
 
   // Helper function to get the correct image URL
@@ -173,7 +215,7 @@ const AdminProducts = () => {
     return (
       <div className="admin-products-loading">
         <div className="loading-spinner"></div>
-        <p>Loading products...</p>
+        <p>{t('loadingProducts')}</p>
       </div>
     );
   }
@@ -181,7 +223,7 @@ const AdminProducts = () => {
   return (
     <div className="admin-products">
       <div className="admin-products-header">
-        <h1>Products Management</h1>
+        <h1>{t('productsManagement')}</h1>
         <button 
           className="btn btn-primary"
           onClick={() => {
@@ -222,7 +264,7 @@ const AdminProducts = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  placeholder="Enter product name"
+                  placeholder={t('enterProductName')}
                 />
               </div>
 
@@ -254,21 +296,71 @@ const AdminProducts = () => {
                 <option value="">{t('selectCategory')}</option>
                 {categories.map((category) => (
                   <option key={category._id} value={category._id}>
-                    {category.name}
+                    {translateCategoryName(category.name)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="description">{t('description')}</label>
+              <label htmlFor="description_en">{t('descriptionEnglish')}</label>
               <textarea
-                id="description"
-                name="description"
-                value={formData.description}
+                id="description_en"
+                name="description_en"
+                value={formData.description_en}
                 onChange={handleInputChange}
-                placeholder="Enter product description"
+                placeholder={t('enterDescriptionEnglish')}
                 rows="4"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="description_ar">{t('descriptionArabic')}</label>
+              <textarea
+                id="description_ar"
+                name="description_ar"
+                value={formData.description_ar}
+                onChange={handleInputChange}
+                placeholder={t('enterDescriptionArabic')}
+                rows="4"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="stock">{t('stockQuantity')}</label>
+              <input
+                type="number"
+                id="stock"
+                name="stock"
+                value={formData.stock}
+                onChange={handleInputChange}
+                placeholder={t('enterStockQuantity')}
+                min="0"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="minStockLevel">{t('minimumStockLevel')}</label>
+              <input
+                type="number"
+                id="minStockLevel"
+                name="minStockLevel"
+                value={formData.minStockLevel}
+                onChange={handleInputChange}
+                placeholder={t('enterMinimumStock')}
+                min="1"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="publisherEmail">{t('publisherEmail')}</label>
+              <input
+                type="email"
+                id="publisherEmail"
+                name="publisherEmail"
+                value={formData.publisherEmail}
+                onChange={handleInputChange}
+                placeholder={t('enterPublisherEmail')}
               />
             </div>
 
@@ -301,23 +393,24 @@ const AdminProducts = () => {
 
       {/* Products Table */}
       <div className="products-table-section">
-        <h2>All Products ({products.length})</h2>
+        <h2>{t('allProducts')} ({products.length})</h2>
         
         {products.length === 0 ? (
           <div className="no-products">
-            <p>No products found. Create your first product!</p>
+            <p>{t('noProductsFound')}</p>
           </div>
         ) : (
           <div className="products-table">
             <table>
               <thead>
                 <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Description</th>
-                  <th>Actions</th>
+                  <th>{t('image', 'Image')}</th>
+                  <th>{t('name')}</th>
+                  <th>{t('category')}</th>
+                  <th>{t('price')}</th>
+                  <th>{t('stock')}</th>
+                  <th>{t('description')}</th>
+                  <th>{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -331,7 +424,7 @@ const AdminProducts = () => {
                           className="product-thumbnail"
                         />
                       ) : (
-                        <div className="no-image">No image</div>
+                        <div className="no-image">{t('noImage')}</div>
                       )}
                     </td>
                     <td className="product-name">{product.name}</td>
@@ -339,29 +432,38 @@ const AdminProducts = () => {
                       {getCategoryName(product.categoryId)}
                     </td>
                     <td className="product-price">${product.price?.toFixed(2) || '0.00'}</td>
+                    <td className="product-stock">
+                      <span className={`stock-badge ${
+                        product.stock === 0 ? 'out-of-stock' : 
+                        product.stock <= (product.minStockLevel || 5) ? 'low-stock' : 
+                        'in-stock'
+                      }`}>
+                        {product.stock || 0} {product.stock === 1 ? t('copy') : t('copies')}
+                      </span>
+                    </td>
                     <td className="product-description">
-                      {product.description ? 
-                        (product.description.length > 50 ? 
-                          product.description.substring(0, 50) + '...' : 
-                          product.description
+                      {(product.description_en || product.description_ar || product.description) ? 
+                        ((product.description_en || product.description_ar || product.description).length > 50 ? 
+                          (product.description_en || product.description_ar || product.description).substring(0, 50) + '...' : 
+                          (product.description_en || product.description_ar || product.description)
                         ) : 
-                        'No description'
+                        t('noDescription', 'No description')
                       }
                     </td>
                     <td className="product-actions">
                       <button 
                         className="btn btn-sm btn-warning"
                         onClick={() => handleEdit(product)}
-                        title="Edit this product (opens form at top)"
+                        title={t('editProductTooltip')}
                       >
-                        ✏️ Edit
+                        {t('editAction')}
                       </button>
                       <button 
                         className="btn btn-sm btn-danger"
                         onClick={() => handleDelete(product._id)}
-                        title="Delete this product permanently"
+                        title={t('deleteProductTooltip')}
                       >
-                        🗑️ Delete
+                        {t('deleteAction')}
                       </button>
                     </td>
                   </tr>

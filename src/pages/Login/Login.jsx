@@ -7,6 +7,8 @@ import { useState } from "react";
 import { API_ENDPOINTS } from "../../config/api";
 // ADDED: Translation hook
 import { useTranslation } from "react-i18next";
+// ADDED: Notification modal for login promotions
+import NotificationModal from "../../components/NotificationModal/NotificationModal";
 
 const Login = () => {
   // ADDED: Translation hook
@@ -23,6 +25,9 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
+  // ADDED: Notification modal state
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,7 +52,14 @@ const Login = () => {
       );
 
       localStorage.setItem("token", response.data.token);
-      navigate("/home");
+      
+      // ADDED: Show notification modal for login promotions
+      setShowNotificationModal(true);
+      
+      // REMOVED: Auto-navigation - Let user control when to dismiss notifications
+      // setTimeout(() => {
+      //   navigate("/home");
+      // }, 500);
     } catch (err) {
       const backendMessage = err.response?.data?.message || "";
       const fieldErrors = { email: "", password: "" };
@@ -72,6 +84,16 @@ const Login = () => {
 
   return (
     <div className="login-page">
+      {/* ADDED: Notification modal for login promotions */}
+      <NotificationModal 
+        isOpen={showNotificationModal}
+        onClose={() => {
+          setShowNotificationModal(false);
+          navigate("/home");
+        }}
+        showOnLogin={true}
+      />
+      
       <div className="login-image" data-aos="zoom-out">
         <img src={img} alt="Login visual" />
       </div>

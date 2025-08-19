@@ -94,6 +94,19 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card">
+          <div className="stat-icon inventory">
+            <i className="fas fa-boxes"></i>
+          </div>
+          <div className="stat-content">
+            <h3>{stats.inventory || 0}</h3>
+            <p>{t('inventoryManagement')}</p>
+          </div>
+          <Link to="/admin/inventory" className="stat-link">
+            {t('stockManagement')}
+          </Link>
+        </div>
+
+        <div className="stat-card">
           <div className="stat-icon reviews">
             <i className="fas fa-star"></i>
           </div>
@@ -158,6 +171,10 @@ const AdminDashboard = () => {
             <i className="fas fa-plus"></i>
             {t('addNewProduct')}
           </Link>
+          <Link to="/admin/inventory" className="action-btn warning">
+            <i className="fas fa-boxes"></i>
+            {t('inventoryManagement')}
+          </Link>
           <Link to="/admin/reviews" className="action-btn warning">
             <i className="fas fa-eye"></i>
             {t('manageReviews')}
@@ -171,15 +188,15 @@ const AdminDashboard = () => {
 
       {/* Recent Activity */}
       <div className="recent-activity">
-        <h2>Recent Activity</h2>
+        <h2>{t('recentActivity')}</h2>
         <div className="activity-list">
           <div className="activity-item">
             <div className="activity-icon">
               <i className="fas fa-plus-circle text-green"></i>
             </div>
             <div className="activity-content">
-              <p>Database seeded with initial data</p>
-              <span className="activity-time">Today</span>
+              <p>{t('databaseSeededInitialData')}</p>
+              <span className="activity-time">{t('today')}</span>
             </div>
           </div>
           <div className="activity-item">
@@ -187,8 +204,8 @@ const AdminDashboard = () => {
               <i className="fas fa-cog text-blue"></i>
             </div>
             <div className="activity-content">
-              <p>Admin panel setup completed</p>
-              <span className="activity-time">Today</span>
+              <p>{t('adminPanelSetupCompleted')}</p>
+              <span className="activity-time">{t('today')}</span>
             </div>
           </div>
         </div>
