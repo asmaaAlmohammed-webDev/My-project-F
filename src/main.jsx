@@ -31,6 +31,7 @@ import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import "./i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
+import ChatWidget from "./components/ChatWidget/ChatWidget.jsx";
 
 const router = createBrowserRouter(
   [
@@ -107,12 +108,12 @@ function AppLoaderWrapper() {
 
   return loading ? <LoaderComponent /> : <RouterProvider router={router} />;
 }
-
 // render
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <I18nextProvider i18n={i18n}>
       <ScrollToTop />
+      <ChatWidget />
       <AppLoaderWrapper />
     </I18nextProvider>
   </StrictMode>

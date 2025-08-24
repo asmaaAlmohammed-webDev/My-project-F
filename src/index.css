@@ -173,8 +173,17 @@ body {
 .fade-out {
   opacity: 0;
 }
-
 /* End Fade Effect */
+
+/* Custom cursor.. */
+.cursor-custom-default {
+  cursor: url("./assets/cursor.svg"), auto;
+}
+.cursor-custom-default a,
+.cursor-custom-default button,
+.cursor-custom-default .cursor-pointer {
+  cursor: url("./assets/cursor-pointer.svg"), pointer !important;
+}
 
 /*Start Responsive*/
 @media (max-width: 1919px) {

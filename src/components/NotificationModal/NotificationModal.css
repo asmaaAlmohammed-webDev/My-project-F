@@ -182,14 +182,14 @@
 }
 
 /* Promotion Details */
-.promotion-details {
+/* .promotion-details {
   background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
   padding: 20px;
   border-radius: 12px;
   margin: 20px 0;
   color: white;
   text-align: center;
-}
+} */
 
 .discount-badge {
   display: inline-flex;
@@ -236,7 +236,7 @@
 .promo-value {
   font-size: 16px;
   font-weight: 900;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   background: rgba(255, 255, 255, 0.2);
   padding: 6px 12px;
   border-radius: 6px;
@@ -415,8 +415,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Mobile Responsive */

@@ -7,16 +7,20 @@ import Aos from "aos";
 
 const Layout = () => {
   const location = useLocation();
-  
+
   // Show promotions banner on specific pages
   const showPromotionsBanner = [
-    '/', 
-    '/home',
-    '/shop', 
-    '/profile', 
-    '/cart'
+    "/",
+    "/home",
+    "/shop",
+    "/profile",
+    "/cart",
   ].includes(location.pathname);
 
+  // Custom cursor..
+  useEffect(() => {
+    document.body.classList.add("cursor-custom-default");
+  }, []);
   useEffect(() => {
     Aos.init({
       duration: 1000,
@@ -25,11 +29,11 @@ const Layout = () => {
       once: false,
     });
   }, []);
-  
+
   return (
     <>
-      <Navbar />
       {showPromotionsBanner && <PromotionsBanner />}
+      <Navbar />
       <Outlet />
       <Footer />
     </>

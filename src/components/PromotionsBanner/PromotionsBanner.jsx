@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import PromotionService from '../../services/promotionService';
-import './PromotionsBanner.css';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import PromotionService from "../../services/promotionService";
+import "./PromotionsBanner.css";
+import { MdOutlineCancel } from "react-icons/md";
 
 const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
   const { t, i18n } = useTranslation();
@@ -9,7 +10,8 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
-  
+  const [isVisible, setIsVisible] = useState(true); // للتحكم بظهور البانر
+
   useEffect(() => {
     fetchPromotions();
   }, [orderAmount]);
@@ -20,7 +22,7 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
       const interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % promotions.length);
       }, 5000);
-      
+
       return () => clearInterval(interval);
     }
   }, [promotions.length]);
@@ -28,10 +30,10 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
   const fetchPromotions = async () => {
     try {
       setLoading(true);
-      
+
       // Check if user is logged in
-      const token = localStorage.getItem('token');
-      
+      const token = localStorage.getItem("token");
+
       if (token) {
         // User is logged in - get personalized promotions
         const response = await PromotionService.getUserPromotions(orderAmount);
@@ -44,14 +46,15 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
         setUserInfo(null);
       }
     } catch (error) {
-      console.error('Error fetching promotions:', error);
+      console.error("Error fetching promotions:", error);
       // If there's an error, try fallback to first-time buyer promotions
       try {
-        const fallbackResponse = await PromotionService.getFirstTimeBuyerPromotions();
+        const fallbackResponse =
+          await PromotionService.getFirstTimeBuyerPromotions();
         setPromotions(fallbackResponse.data?.promotions || []);
         setUserInfo(null);
       } catch (fallbackError) {
-        console.error('Fallback also failed:', fallbackError);
+        console.error("Fallback also failed:", fallbackError);
         setPromotions([]);
       }
     } finally {
@@ -84,31 +87,34 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
 
   const getLoyaltyTierDisplay = () => {
     if (!userInfo) return null;
-    
+
     const tierInfo = PromotionService.getLoyaltyTierInfo(userInfo.loyaltyTier);
-    
+
     return (
       <div className="loyalty-tier-display">
         <div className="tier-badge" style={{ backgroundColor: tierInfo.color }}>
           <span className="tier-name">{t(`loyaltyTier${tierInfo.name}`)}</span>
         </div>
         <div className="tier-info">
-          <span className="points">{userInfo.loyaltyPoints} {t('points')}</span>
+          <span className="points">
+            {userInfo.loyaltyPoints} {t("points")}
+          </span>
           {tierInfo.nextTier && (
             <span className="next-tier">
-              ${tierInfo.spending - userInfo.totalSpent} {t('toNextTier')}
+              ${tierInfo.spending - userInfo.totalSpent} {t("toNextTier")}
             </span>
           )}
         </div>
       </div>
     );
   };
+  if (!isVisible) return null; //
 
   if (loading) {
     return (
       <div className="promotions-banner loading">
         <div className="loading-spinner"></div>
-        <span>{t('loadingPromotions')}</span>
+        <span>{t("loadingPromotions")}</span>
       </div>
     );
   }
@@ -119,93 +125,109 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
 
   return (
     <div className={`promotions-banner ${i18n.dir()}`}>
+      <button className="banner-close-btn" onClick={() => setIsVisible(false)}>
+        {/* × */}
+        <MdOutlineCancel />
+      </button>
       {/* Loyalty Tier Display */}
       {userInfo && getLoyaltyTierDisplay()}
-      
+
       {/* Promotions Carousel */}
       <div className="promotions-carousel">
         <div className="carousel-container">
           {promotions.map((promotion, index) => (
             <div
               key={promotion._id}
-              className={`promotion-slide ${index === currentSlide ? 'active' : ''}`}
+              className={`promotion-slide ${
+                index === currentSlide ? "active" : ""
+              }`}
               onClick={() => handlePromotionClick(promotion)}
             >
               <div className="promotion-content">
                 <div className="promotion-icon">
-                  {promotion.type === 'first_time_buyer' && '🎉'}
-                  {promotion.type === 'loyalty_tier' && '👑'}
-                  {promotion.type === 'special_campaign' && '🔥'}
-                  {promotion.type === 'seasonal' && '🎊'}
-                  {promotion.type === 'bulk_discount' && '📦'}
+                  {promotion.type === "first_time_buyer" && "🎉"}
+                  {promotion.type === "loyalty_tier" && "👑"}
+                  {promotion.type === "special_campaign" && "🔥"}
+                  {promotion.type === "seasonal" && "🎊"}
+                  {promotion.type === "bulk_discount" && "📦"}
                 </div>
-                
+
                 <div className="promotion-details">
-                  <h3 className="promotion-title">{promotion.name}</h3>
-                  <p className="promotion-description">{promotion.description}</p>
-                  
-                  <div className="promotion-value">
-                    <span className="discount">{formatDiscountDisplay(promotion)}</span>
-                    {orderAmount > 0 && (
-                      <span className="savings">
-                        {t('save')} ${calculateSavings(promotion).toFixed(2)}
+                  <div className="desc-title-value">
+                    <h3 className="promotion-title">{promotion.name}</h3>
+                    <p className="promotion-description">
+                      {promotion.description}
+                    </p>
+
+                    <div className="promotion-value">
+                      <span className="discount">
+                        {formatDiscountDisplay(promotion)}
                       </span>
-                    )}
+                      {orderAmount > 0 && (
+                        <span className="savings">
+                          {t("save")} ${calculateSavings(promotion).toFixed(2)}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  
+
                   {promotion.promoCode && (
-                    <div className="promo-code">
-                      <span className="code-label">{t('code')}:</span>
+                    <div className="promo-code-banner">
+                      <span className="code-label">{t("code")}:</span>
                       <span className="code-value">{promotion.promoCode}</span>
                     </div>
                   )}
-                  
+
                   {promotion.minOrderAmount > 0 && (
                     <div className="minimum-order">
-                      {t('minimumOrder')}: ${promotion.minOrderAmount}
+                      {t("minimumOrder")}: ${promotion.minOrderAmount}
                     </div>
                   )}
                 </div>
-                
+
                 <div className="promotion-action">
                   <button className="apply-btn">
-                    {promotion.autoApply ? t('autoApplied') : t('applyNow')}
+                    {promotion.autoApply ? t("autoApplied") : t("applyNow")}
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        
+
         {/* Carousel Indicators */}
         {promotions.length > 1 && (
           <div className="carousel-indicators">
             {promotions.map((_, index) => (
               <button
                 key={index}
-                className={`indicator ${index === currentSlide ? 'active' : ''}`}
+                className={`indicator ${
+                  index === currentSlide ? "active" : ""
+                }`}
                 onClick={() => setCurrentSlide(index)}
               />
             ))}
           </div>
         )}
-        
+
         {/* Carousel Navigation */}
         {promotions.length > 1 && (
           <>
             <button
               className="carousel-nav prev"
-              onClick={() => setCurrentSlide((prev) => 
-                prev === 0 ? promotions.length - 1 : prev - 1
-              )}
+              onClick={() =>
+                setCurrentSlide((prev) =>
+                  prev === 0 ? promotions.length - 1 : prev - 1
+                )
+              }
             >
               ‹
             </button>
             <button
               className="carousel-nav next"
-              onClick={() => setCurrentSlide((prev) => 
-                (prev + 1) % promotions.length
-              )}
+              onClick={() =>
+                setCurrentSlide((prev) => (prev + 1) % promotions.length)
+              }
             >
               ›
             </button>
