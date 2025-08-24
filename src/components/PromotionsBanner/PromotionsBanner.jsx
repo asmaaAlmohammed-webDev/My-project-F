@@ -10,7 +10,7 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
-  const [isVisible, setIsVisible] = useState(true); // للتحكم بظهور البانر
+  const [isVisible, setIsVisible] = useState(true); // to banner
 
   useEffect(() => {
     fetchPromotions();
