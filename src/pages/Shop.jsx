@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Shop.css";
 import BookComponent from "../components/BookComponent/BookComponent";
@@ -14,6 +15,15 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Initialize search term from URL parameters
+  useEffect(() => {
+    const searchFromUrl = searchParams.get('search');
+    if (searchFromUrl) {
+      setSearchTerm(decodeURIComponent(searchFromUrl));
+    }
+  }, [searchParams]);
 
   // Fetch data from API
   useEffect(() => {
@@ -79,7 +89,22 @@ const Shop = () => {
 
   // Handle search input change
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    
+    // Update URL parameters
+    if (newSearchTerm) {
+      setSearchParams({ search: newSearchTerm });
+    } else {
+      setSearchParams({});
+    }
+  };
+
+  // Clear search and filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All");
+    setSearchParams({});
   };
 
   if (loading) {
@@ -198,12 +223,7 @@ const Shop = () => {
             <div className="no-books-message">
               <h3>{t("noBooksFound")}</h3>
               <p>{t("adjustSearch")}</p>
-              <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("All");
-                }}
-              >
+              <button onClick={clearFilters}>
                 {t("clearFilters")}
               </button>
             </div>

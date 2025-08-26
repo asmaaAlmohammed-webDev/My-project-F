@@ -1,0 +1,329 @@
+/* NewsBar Component Styles */
+.news-bar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid #f39c12;
+  margin-bottom: 20px;
+}
+
+.news-bar.loading {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.news-bar.error {
+  background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.news-bar-container {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  gap: 15px;
+}
+
+/* News Label */
+.news-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 14px;
+  min-width: fit-content;
+}
+
+.news-icon {
+  font-size: 16px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-3px); }
+  60% { transform: translateY(-2px); }
+}
+
+.news-title {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Scrolling Container */
+.news-scroll-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+}
+
+/* News Content */
+.news-content {
+  display: flex;
+  white-space: nowrap;
+  animation: scroll-rtl 30s linear infinite; /* Faster: reduced from 60s to 30s */
+  gap: 50px;
+  align-items: center;
+}
+
+/* Support for Arabic (RTL) scrolling */
+[dir="rtl"] .news-content {
+  animation: scroll-ltr 30s linear infinite; /* Faster: reduced from 60s to 30s */
+}
+
+@keyframes scroll-rtl {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes scroll-ltr {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* News Items */
+.news-item {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0 25px;
+  position: relative;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.news-item:not(:last-child)::after {
+  content: "★";
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f39c12;
+  font-size: 12px;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+/* Clickable Book Titles */
+.clickable-book-title {
+  background: none;
+  border: none;
+  color: #ffd700;
+  font-weight: 700;
+  font-size: inherit;
+  font-family: inherit;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  margin: 0 2px;
+}
+
+.clickable-book-title:hover {
+  color: #fff;
+  background: rgba(255, 215, 0, 0.2);
+  text-decoration-color: #ffd700;
+  transform: scale(1.05);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+.clickable-book-title:active {
+  transform: scale(0.98);
+  background: rgba(255, 215, 0, 0.3);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.6; transform: translateY(-50%) scale(1.1); }
+}
+
+/* Refresh Button */
+.news-refresh {
+  min-width: fit-content;
+}
+
+.refresh-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(180deg);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.refresh-btn:active {
+  transform: rotate(180deg) scale(0.95);
+}
+
+/* Loading and Error States */
+.loading-text,
+.error-text {
+  font-size: 15px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  animation: fadeInOut 3s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .news-bar-container {
+    padding: 0 15px;
+    gap: 10px;
+  }
+  
+  .news-label {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .news-title {
+    display: none; /* Hide title on mobile to save space */
+  }
+  
+  .news-item {
+    font-size: 14px;
+    padding: 0 20px;
+  }
+  
+  .refresh-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+  }
+  
+  .news-content {
+    animation-duration: 20s; /* Faster on mobile: reduced from 45s to 20s */
+  }
+  
+  .clickable-book-title {
+    font-size: 14px;
+    padding: 1px 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-bar {
+    padding: 10px 0;
+  }
+  
+  .news-bar-container {
+    padding: 0 10px;
+    gap: 8px;
+  }
+  
+  .news-label {
+    padding: 5px 10px;
+  }
+  
+  .news-item {
+    font-size: 13px;
+    padding: 0 15px;
+  }
+  
+  .news-content {
+    animation-duration: 15s; /* Fastest on small mobile: reduced from 40s to 15s */
+  }
+  
+  .clickable-book-title {
+    font-size: 13px;
+    padding: 1px 2px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .news-bar {
+    background: #000;
+    border-bottom-color: #fff;
+  }
+  
+  .news-label,
+  .refresh-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    border-color: #fff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .news-content {
+    animation: none;
+    transform: none;
+  }
+  
+  .news-icon,
+  .twinkle,
+  .bounce,
+  .fadeInOut {
+    animation: none;
+  }
+  
+  .refresh-btn:hover {
+    transform: none;
+  }
+  
+  .clickable-book-title:hover {
+    transform: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .news-bar {
+    display: none;
+  }
+}

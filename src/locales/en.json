@@ -601,5 +601,21 @@
   "points": "points",
   "toNextTier": "to next tier",
   "autoApplied": "Auto Applied",
-  "applyNow": "Apply Now"
+  "applyNow": "Apply Now",
+  "latestArrivals": "Latest Arrivals",
+  "latestBookNews": "Latest Book News",
+  "loadingLatestNews": "Loading latest book news...",
+  "failedToLoadNews": "Unable to load latest book news",
+  "refreshNews": "Refresh News",
+  "checkBackForNewArrivals": "Check back soon for exciting new book arrivals!",
+  "clickToSearchBook": "Click to search for this book",
+  "preferredCategory": "Your preferred category:",
+  "newBooks": "new books",
+  "viewBook": "View Book",
+  "personalizedRecommendations": "Personalized Recommendations",
+  "basedOnYourInterests": "Based on your reading interests",
+  "recommendationsMessage": "Based on your recent purchases, we found some books you might love:",
+  "loadingRecommendations": "Loading your recommendations...",
+  "exploreMore": "Explore More",
+  "maybeLater": "Maybe Later"
 }
