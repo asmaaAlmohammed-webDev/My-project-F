@@ -1,5 +1,5 @@
 import "./Hero.css";
-import img from "../../assets/imgs/bg.png";
+import img from "../../assets/imgs/hero/bg2-removebg-preview.png";
 import img2 from "./../../assets/imgs/pencil.png";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,9 @@ const Hero = () => {
           <img src={img2} alt="Girl with books" className="pencil-img" />
         </h1>
         <p>{t("exploreWorld")}</p>
-        <button className="explore-btn" onClick={handleExploreClick}>{t("exploreNow")}</button>
+        <button className="explore-btn-hero" onClick={handleExploreClick}>
+          {t("exploreNow")}
+        </button>
       </div>
 
       <div className="hero__image">
