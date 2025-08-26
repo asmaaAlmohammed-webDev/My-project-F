@@ -9,6 +9,8 @@ import { API_ENDPOINTS } from "../../config/api";
 import { useTranslation } from "react-i18next";
 // ADDED: Notification modal for login promotions
 import NotificationModal from "../../components/NotificationModal/NotificationModal";
+// ADDED: Personalized recommendations modal
+import PersonalizedRecommendationsModal from "../../components/PersonalizedRecommendationsModal/PersonalizedRecommendationsModal";
 
 const Login = () => {
   // ADDED: Translation hook
@@ -28,6 +30,8 @@ const Login = () => {
   
   // ADDED: Notification modal state
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  // ADDED: Recommendations modal state
+  const [showRecommendationsModal, setShowRecommendationsModal] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,16 +55,14 @@ const Login = () => {
         }
       );
 
+      console.log("Login successful:", response.data);
       localStorage.setItem("token", response.data.token);
       
-      // ADDED: Show notification modal for login promotions
+      // Test with NotificationModal only first
       setShowNotificationModal(true);
       
-      // REMOVED: Auto-navigation - Let user control when to dismiss notifications
-      // setTimeout(() => {
-      //   navigate("/home");
-      // }, 500);
     } catch (err) {
+      console.error("Login error:", err);
       const backendMessage = err.response?.data?.message || "";
       const fieldErrors = { email: "", password: "" };
 
@@ -84,14 +86,26 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      {/* ADDED: Notification modal for login promotions */}
+      {/* Notification Modal - Shows first on login */}
       <NotificationModal 
         isOpen={showNotificationModal}
         onClose={() => {
+          console.log("NotificationModal closing, checking for recommendations...");
           setShowNotificationModal(false);
-          navigate("/home");
+          // Show recommendations modal after notifications close
+          setShowRecommendationsModal(true);
         }}
         showOnLogin={true}
+      />
+      
+      {/* Personalized Recommendations Modal - Shows after notifications */}
+      <PersonalizedRecommendationsModal
+        isOpen={showRecommendationsModal}
+        onClose={() => {
+          console.log("PersonalizedRecommendationsModal closing, navigating to home");
+          setShowRecommendationsModal(false);
+          navigate("/home");
+        }}
       />
       
       <div className="login-image" data-aos="zoom-out">

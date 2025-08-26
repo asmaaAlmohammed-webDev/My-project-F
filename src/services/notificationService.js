@@ -50,10 +50,48 @@ export const getUnreadCount = async () => {
  */
 export const getLoginNotifications = async () => {
   try {
-    const response = await axios.get(API_ENDPOINTS.LOGIN_NOTIFICATIONS, {
+    // First try to get actual notifications
+    const notificationResponse = await axios.get(API_ENDPOINTS.LOGIN_NOTIFICATIONS, {
       headers: getAuthHeaders()
     });
-    return response.data.data.notifications;
+    
+    let notifications = notificationResponse.data.data.notifications || [];
+    
+    // If no notifications, try to get user promotions and convert them to notification format
+    if (notifications.length === 0) {
+      try {
+        const promotionResponse = await axios.get(API_ENDPOINTS.USER_PROMOTIONS, {
+          headers: getAuthHeaders()
+        });
+        
+        const promotions = promotionResponse.data.data.promotions || [];
+        
+        // Convert promotions to notification format
+        notifications = promotions
+          .filter(promo => promo.isActive && promo.isCurrentlyValid)
+          .map(promo => ({
+            _id: promo._id,
+            title: promo.name,
+            message: promo.description,
+            type: 'promotion',
+            priority: 'high',
+            createdAt: promo.createdAt,
+            actionText: 'View Details',
+            actionUrl: '/shop',
+            promotionData: {
+              promoCode: promo.promoCode,
+              discountPercentage: promo.discountType === 'percentage' ? promo.discountValue : null,
+              discountAmount: promo.discountType === 'fixed' ? promo.discountValue : null,
+              validUntil: promo.endDate,
+              minimumOrder: promo.minOrderAmount || 0
+            }
+          }));
+      } catch (promotionError) {
+        console.warn('Error fetching user promotions:', promotionError);
+      }
+    }
+    
+    return notifications;
   } catch (error) {
     console.error('Error fetching login notifications:', error);
     return [];

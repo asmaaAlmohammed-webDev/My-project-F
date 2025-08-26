@@ -627,6 +627,22 @@
   "toNextTier": "للوصول للمستوى التالي",
   "autoApplied": "مطبق تلقائياً",
   "applyNow": "تطبيق الآن",
+  "latestArrivals": "أحدث الوصولات",
+  "latestBookNews": "أخبار الكتب الحديثة",
+  "loadingLatestNews": "جاري تحميل أحدث أخبار الكتب...",
+  "failedToLoadNews": "فشل في تحميل أحدث أخبار الكتب",
+  "refreshNews": "تحديث الأخبار",
+  "checkBackForNewArrivals": "تابعنا قريباً لمشاهدة وصولات الكتب المثيرة!",
+  "clickToSearchBook": "انقر للبحث عن هذا الكتاب",
+  "preferredCategory": "فئتك المفضلة:",
+  "newBooks": "كتب جديدة",
+  "viewBook": "عرض الكتاب",
+  "personalizedRecommendations": "اقتراحات مخصصة لك",
+  "basedOnYourInterests": "بناءً على اهتماماتك في القراءة",
+  "recommendationsMessage": "بناءً على مشترياتك الأخيرة، وجدنا بعض الكتب التي قد تحبها:",
+  "loadingRecommendations": "جارٍ تحميل اقتراحاتك...",
+  "exploreMore": "استكشف المزيد",
+  "maybeLater": "ربما لاحقاً",
   
   "translationComingSoon": "الترجمة قريباً"
 

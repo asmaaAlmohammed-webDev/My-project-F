@@ -34,6 +34,9 @@ export const API_ENDPOINTS = {
   PRODUCTS: `${API_BASE_URL}/products`,
   CATEGORIES: `${API_BASE_URL}/categories`,
   
+  // ADDED: Newest books endpoint for news bar feature
+  NEWEST_BOOKS: `${API_BASE_URL}/products/newest`,
+  
   // Image upload endpoint
   IMAGE_UPLOAD: `${API_BASE_URL}/images/upload`,
   
@@ -70,7 +73,11 @@ export const API_ENDPOINTS = {
   VALIDATE_PROMOTION: `${API_BASE_URL}/promotions/validate`,
   FIRST_TIME_BUYER_PROMOTIONS: `${API_BASE_URL}/promotions/first-time-buyer`,
   LOYALTY_PROMOTIONS: `${API_BASE_URL}/promotions/loyalty`,
-  PROMOTION_ANALYTICS: `${API_BASE_URL}/promotions/analytics`
+  PROMOTION_ANALYTICS: `${API_BASE_URL}/promotions/analytics`,
+  
+  // ADDED: Recommendation system endpoints
+  MY_RECOMMENDATIONS: `${API_BASE_URL}/recommendations/my-recommendations`,
+  MARK_RECOMMENDATIONS_SEEN: `${API_BASE_URL}/recommendations/mark-seen`
 };
 
 export default API_CONFIG;

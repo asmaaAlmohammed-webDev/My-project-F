@@ -27,6 +27,7 @@ const NotificationModal = ({ isOpen, onClose, showOnLogin = false }) => {
   // Load notifications when modal opens
   useEffect(() => {
     if (isOpen) {
+      console.log('NotificationModal opened, loading notifications...');
       loadNotifications();
     }
   }, [isOpen]);
@@ -34,18 +35,12 @@ const NotificationModal = ({ isOpen, onClose, showOnLogin = false }) => {
   const loadNotifications = async () => {
     try {
       setLoading(true);
+      console.log('Fetching login notifications...');
       const loginNotifications = await getLoginNotifications();
+      console.log('Received notifications:', loginNotifications);
       
-      // Filter out dismissed notifications if this is a login modal
-      let filteredNotifications = loginNotifications;
-      if (showOnLogin) {
-        const dismissed = getDismissedNotifications();
-        filteredNotifications = loginNotifications.filter(
-          notification => !dismissed.has(notification._id)
-        );
-      }
-      
-      setNotifications(filteredNotifications);
+      // Show all notifications every time (no dismissal filtering)
+      setNotifications(loginNotifications);
       setCurrentIndex(0);
     } catch (error) {
       console.error('Error loading notifications:', error);
