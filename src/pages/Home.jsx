@@ -3,7 +3,7 @@
 import FeaturesSection from "../components/FeaturesSec/FeaturesSec";
 import Hero from "../components/Hero/Hero";
 import NewsBar from "../components/NewsBar/NewsBar";
-import NewArrivalsSec from "../components/NewArrivalsSec/NewArrivalsSec";
+//import NewArrivalsSec from "../components/NewArrivalsSec/NewArrivalsSec";
 import PopularBooksSec from "../components/PopularBooksSec/PopularBooksSec";
 
 const Home = () => {
@@ -12,7 +12,7 @@ const Home = () => {
       <Hero />
       <NewsBar />
       <PopularBooksSec />
-      <NewArrivalsSec />
+      {/* <NewArrivalsSec /> */}
       <FeaturesSection />
     </>
   );
