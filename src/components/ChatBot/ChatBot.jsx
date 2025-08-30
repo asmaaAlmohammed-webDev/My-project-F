@@ -3,6 +3,7 @@ import "./ChatBot.css";
 
 const keywordResponses = [
   {
+    key: "services",
     keywords: ["services", "offer", "خدمات", "تقدم"],
     response: {
       en: "We provide book purchasing in multiple ways, a wide variety of categories, and you can search your favorite books in the 'Shop' section. We also have a 'New Arrivals' section, a 'Popular Books' section, and discounts. If you have suggestions or feedback, please visit 'Contact Us' ✨",
@@ -10,20 +11,15 @@ const keywordResponses = [
     },
   },
   {
+    key: "buySteps",
     keywords: ["buy steps", "purchase steps", "خطوات شراء", "شراء كتاب"],
     response: {
       en: "Steps to buy a book: 1) Create an account. 2) Go to the Shop page and select a book. 3) Add it to your cart. 4) Review your cart, remove or update quantities. 5) Enter your address details. 6) Confirm the order. After confirmation, an invoice will show with your order details.",
       ar: "خطوات شراء كتاب: أولاً عليك تسجيل حساب ضمن الموقع ثم اذهب لصفحة Shop واختر كتاب وأضفه للسلة. اذهب للسلة، احذف كتاب أو عدل الكمية وأدخل تفاصيل عنوانك وأكد الطلب. بعد تأكيد الطلب ستظهر فاتورة تضم تفاصيل طلبك.",
     },
   },
-  // {
-  //   keywords: ["popular books", "famous books", "الأكثر شهرة", "كتب مشهورة"],
-  //   response: {
-  //     en: "Yes, we have a 'Popular Books' section in the Home page.",
-  //     ar: "نعم لدينا بصفحة Home.",
-  //   },
-  // },
   {
+    key: "contactAdmin",
     keywords: [
       "contact admin",
       "message admin",
@@ -37,6 +33,7 @@ const keywordResponses = [
     },
   },
   {
+    key: "discount",
     keywords: ["discount", "offers", "sales", "خصومات", "عروض", "حسومات"],
     response: {
       en: "Yes, we have a discounts and offers section. 🔸🔸",
@@ -44,27 +41,15 @@ const keywordResponses = [
     },
   },
   {
+    key: "search",
     keywords: ["search", "find book", "بحث", "ابحث عن كتاب"],
     response: {
       en: "Create an account, then go to the Shop section and search for your book.",
       ar: "سجل حساب بالموقع، ثم اذهب لصفحة Shop وابحث عن كتابك.",
     },
   },
-  // {
-  //   keywords: [
-  //     "shipping",
-  //     "delivery",
-  //     "international shipping",
-  //     "شحن",
-  //     "محلي",
-  //     "دولي",
-  //   ],
-  //   response: {
-  //     en: "Currently we only provide local shipping.",
-  //     ar: "حالياً نقدم محلي فقط.",
-  //   },
-  // },
   {
+    key: "delivery",
     keywords: ["delivery time", "مدة التوصيل", "الوقت", "التوصيل"],
     response: {
       en: "Delivery takes 1–2 days.",
@@ -72,20 +57,15 @@ const keywordResponses = [
     },
   },
   {
+    key: "cod",
     keywords: ["cash on delivery", "pay on delivery", "الدفع عند الاستلام"],
     response: {
       en: "Yes, cash on delivery is available.",
       ar: "نعم يمكنك.",
     },
   },
-  // {
-  //   keywords: ["children books", "kids books", "كتب أطفال"],
-  //   response: {
-  //     en: "Yes, we have a children's books section.",
-  //     ar: "نعم لدينا.",
-  //   },
-  // },
   {
+    key: "unavailable",
     keywords: ["unavailable books", "rare books", "طلبات", "كتب غير متوفرة"],
     response: {
       en: "Yes, you can send us a request message for unavailable books.",
@@ -93,6 +73,7 @@ const keywordResponses = [
     },
   },
   {
+    key: "rate",
     keywords: ["rate website", "review", "تقييم", "قيم الموقع"],
     response: {
       en: "Yes, you can rate the website out of 5 stars. Go to your profile and submit your rating.",
@@ -100,6 +81,7 @@ const keywordResponses = [
     },
   },
   {
+    key: "author",
     keywords: ["author search", "search by author", "اسم الكاتب", "ابحث كاتب"],
     response: {
       en: "Yes, you can search books by author name in the Shop page.",
@@ -107,6 +89,44 @@ const keywordResponses = [
     },
   },
 ];
+
+const questionsMap = {
+  services: {
+    ar: "ماهي الخدمات التي تقدمونها؟",
+    en: "What services do you offer?",
+  },
+  buySteps: {
+    ar: "ماهي خطوات شراء كتاب؟",
+    en: "What are the steps to buy a book?",
+  },
+  contactAdmin: {
+    ar: "كيف يمكنني ارسال رسالة للادارة؟",
+    en: "How can I send a message to the administration?",
+  },
+  discount: {
+    ar: "هل لديكم قسم للحسومات والعروض؟",
+    en: "Do you have a section for discounts and offers?",
+  },
+  search: {
+    ar: "كيف يمكنني البحث عن كتاب؟",
+    en: "How can I search for a book?",
+  },
+  delivery: {
+    ar: "كم تستغرق مدة التوصيل؟",
+    en: "How long does delivery take?",
+  },
+  cod: { ar: "هل يمكنني الدفع عند الاستلام؟", en: "Can I pay on delivery?" },
+  unavailable: {
+    ar: "هل تقبلون طلبات الكتب الغير متوفرة لديكم؟",
+    en: "Do you accept requests for unavailable books?",
+  },
+  rate: { ar: "هل يمكنني تقييم الموقع؟", en: "Can I rate the website?" },
+  author: {
+    ar: "هل يمكنني البحث عن كتاب من خلال اسم الكاتب وكيف؟",
+    en: "Can I search for a book by author name?",
+  },
+};
+
 export default function ChatBot({ isOpen, onClose }) {
   const [botLang, setBotLang] = useState("ar");
   const [messages, setMessages] = useState([]);
@@ -115,36 +135,8 @@ export default function ChatBot({ isOpen, onClose }) {
   const messagesEndRef = useRef(null);
 
   const suggestedQuestions = {
-    ar: [
-      "ماهي الخدمات التي تقدمونها؟",
-      "ماهي خطوات شراء كتاب؟",
-      // "هل لديكم قسم للكتب الاكثر شهرة؟",
-      "كيف يمكنني ارسال رسالة للادارة؟",
-      "هل لديكم قسم للحسومات والعروض؟",
-      "كيف يمكنني البحث عن كتاب؟",
-      // "هل تقدمون شحن دولي ام محلي فقط؟",
-      "كم تستغرق مدة التوصيل؟",
-      "هل يمكنني الدفع عند الاستلام؟",
-      // "هل لديكم قسم لكتب الاطفال؟",
-      "هل تقبلون طلبات الكتب الغير متوفرة لديكم؟",
-      "هل يمكنني تقييم الموقع؟",
-      "هل يمكنني البحث عن كتاب من خلال اسم الكاتب وكيف؟",
-    ],
-    en: [
-      "What services do you offer?",
-      "What are the steps to buy a book?",
-      // "Do you have a section for popular books?",
-      "How can I send a message to the administration?",
-      "Do you have a section for discounts and offers?",
-      "How can I search for a book?",
-      // "Do you provide international or only local shipping?",
-      "How long does delivery take?",
-      "Can I pay on delivery?",
-      // "Do you have a children's books section?",
-      "Do you accept requests for unavailable books?",
-      "Can I rate the website?",
-      "Can I search for a book by author name?",
-    ],
+    ar: Object.values(questionsMap).map((q) => q.ar),
+    en: Object.values(questionsMap).map((q) => q.en),
   };
 
   const scrollToBottom = () => {
@@ -154,32 +146,42 @@ export default function ChatBot({ isOpen, onClose }) {
     scrollToBottom();
   }, [messages]);
 
-  const findKeywordResponse = (text) => {
+  // 🔎 إيجاد المفتاح المناسب للسؤال
+  const findKeywordResponseKey = (text) => {
     const lower = text.toLowerCase();
     for (const item of keywordResponses) {
       for (const kw of item.keywords) {
         if (lower.includes(kw.toLowerCase())) {
-          return item.response[botLang];
+          return item.key;
         }
       }
     }
-    return botLang === "ar"
-      ? "عذراً، لم أفهم سؤالك. حاول صياغته بطريقة أخرى."
-      : "Sorry, I don’t have info about that. Can you rephrase?";
+    return null;
   };
 
   const sendMessage = () => {
     if (!input.trim() || isLoading) return;
-    const userMsg = { role: "user", content: input, timestamp: new Date() };
+
+    const key = findKeywordResponseKey(input);
+    const userMsg = {
+      role: "user",
+      key: key,
+      fallback: input,
+      timestamp: new Date(),
+    };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsLoading(true);
 
     setTimeout(() => {
-      const reply = findKeywordResponse(userMsg.content);
       const botMsg = {
         role: "assistant",
-        content: reply,
+        key: key,
+        fallback: key
+          ? null
+          : botLang === "ar"
+          ? "عذراً، لم أفهم سؤالك. حاول صياغته بطريقة أخرى."
+          : "Sorry, I don’t have info about that. Can you rephrase?",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMsg]);
@@ -254,7 +256,16 @@ export default function ChatBot({ isOpen, onClose }) {
                 msg.role === "user" ? "user" : "assistant"
               }`}
             >
-              <p>{msg.content}</p>
+              <p>
+                {msg.role === "assistant"
+                  ? msg.key
+                    ? keywordResponses.find((item) => item.key === msg.key)
+                        ?.response[botLang]
+                    : msg.fallback
+                  : msg.key
+                  ? questionsMap[msg.key][botLang]
+                  : msg.fallback}
+              </p>
               <span className="timestamp">
                 {msg.timestamp.toLocaleTimeString([], {
                   hour: "2-digit",
