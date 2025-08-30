@@ -16,13 +16,13 @@ const keywordResponses = [
       ar: "خطوات شراء كتاب: أولاً عليك تسجيل حساب ضمن الموقع ثم اذهب لصفحة Shop واختر كتاب وأضفه للسلة. اذهب للسلة، احذف كتاب أو عدل الكمية وأدخل تفاصيل عنوانك وأكد الطلب. بعد تأكيد الطلب ستظهر فاتورة تضم تفاصيل طلبك.",
     },
   },
-  {
-    keywords: ["popular books", "famous books", "الأكثر شهرة", "كتب مشهورة"],
-    response: {
-      en: "Yes, we have a 'Popular Books' section in the Home page.",
-      ar: "نعم لدينا بصفحة Home.",
-    },
-  },
+  // {
+  //   keywords: ["popular books", "famous books", "الأكثر شهرة", "كتب مشهورة"],
+  //   response: {
+  //     en: "Yes, we have a 'Popular Books' section in the Home page.",
+  //     ar: "نعم لدينا بصفحة Home.",
+  //   },
+  // },
   {
     keywords: [
       "contact admin",
@@ -50,20 +50,20 @@ const keywordResponses = [
       ar: "سجل حساب بالموقع، ثم اذهب لصفحة Shop وابحث عن كتابك.",
     },
   },
-  {
-    keywords: [
-      "shipping",
-      "delivery",
-      "international shipping",
-      "شحن",
-      "محلي",
-      "دولي",
-    ],
-    response: {
-      en: "Currently we only provide local shipping.",
-      ar: "حالياً نقدم محلي فقط.",
-    },
-  },
+  // {
+  //   keywords: [
+  //     "shipping",
+  //     "delivery",
+  //     "international shipping",
+  //     "شحن",
+  //     "محلي",
+  //     "دولي",
+  //   ],
+  //   response: {
+  //     en: "Currently we only provide local shipping.",
+  //     ar: "حالياً نقدم محلي فقط.",
+  //   },
+  // },
   {
     keywords: ["delivery time", "مدة التوصيل", "الوقت", "التوصيل"],
     response: {
@@ -78,13 +78,13 @@ const keywordResponses = [
       ar: "نعم يمكنك.",
     },
   },
-  {
-    keywords: ["children books", "kids books", "كتب أطفال"],
-    response: {
-      en: "Yes, we have a children's books section.",
-      ar: "نعم لدينا.",
-    },
-  },
+  // {
+  //   keywords: ["children books", "kids books", "كتب أطفال"],
+  //   response: {
+  //     en: "Yes, we have a children's books section.",
+  //     ar: "نعم لدينا.",
+  //   },
+  // },
   {
     keywords: ["unavailable books", "rare books", "طلبات", "كتب غير متوفرة"],
     response: {
@@ -118,14 +118,14 @@ export default function ChatBot({ isOpen, onClose }) {
     ar: [
       "ماهي الخدمات التي تقدمونها؟",
       "ماهي خطوات شراء كتاب؟",
-      "هل لديكم قسم للكتب الاكثر شهرة؟",
+      // "هل لديكم قسم للكتب الاكثر شهرة؟",
       "كيف يمكنني ارسال رسالة للادارة؟",
       "هل لديكم قسم للحسومات والعروض؟",
       "كيف يمكنني البحث عن كتاب؟",
-      "هل تقدمون شحن دولي ام محلي فقط؟",
+      // "هل تقدمون شحن دولي ام محلي فقط؟",
       "كم تستغرق مدة التوصيل؟",
       "هل يمكنني الدفع عند الاستلام؟",
-      "هل لديكم قسم لكتب الاطفال؟",
+      // "هل لديكم قسم لكتب الاطفال؟",
       "هل تقبلون طلبات الكتب الغير متوفرة لديكم؟",
       "هل يمكنني تقييم الموقع؟",
       "هل يمكنني البحث عن كتاب من خلال اسم الكاتب وكيف؟",
@@ -133,14 +133,14 @@ export default function ChatBot({ isOpen, onClose }) {
     en: [
       "What services do you offer?",
       "What are the steps to buy a book?",
-      "Do you have a section for popular books?",
+      // "Do you have a section for popular books?",
       "How can I send a message to the administration?",
       "Do you have a section for discounts and offers?",
       "How can I search for a book?",
-      "Do you provide international or only local shipping?",
+      // "Do you provide international or only local shipping?",
       "How long does delivery take?",
       "Can I pay on delivery?",
-      "Do you have a children's books section?",
+      // "Do you have a children's books section?",
       "Do you accept requests for unavailable books?",
       "Can I rate the website?",
       "Can I search for a book by author name?",
