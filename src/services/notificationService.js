@@ -50,6 +50,20 @@ export const getUnreadCount = async () => {
  */
 export const getLoginNotifications = async () => {
   try {
+    // Get user info to check role
+    const token = localStorage.getItem('token');
+    let userRole = 'USER'; // Default to USER
+    
+    if (token) {
+      try {
+        // Decode JWT to get user role
+        const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+        userRole = tokenPayload.role || 'USER';
+      } catch (decodeError) {
+        console.warn('Error decoding token:', decodeError);
+      }
+    }
+
     // First try to get actual notifications
     const notificationResponse = await axios.get(API_ENDPOINTS.LOGIN_NOTIFICATIONS, {
       headers: getAuthHeaders()
@@ -57,8 +71,8 @@ export const getLoginNotifications = async () => {
     
     let notifications = notificationResponse.data.data.notifications || [];
     
-    // If no notifications, try to get user promotions and convert them to notification format
-    if (notifications.length === 0) {
+    // Admin users should not see customer promotions, so skip the promotion fallback
+    if (notifications.length === 0 && userRole !== 'ADMIN') {
       try {
         const promotionResponse = await axios.get(API_ENDPOINTS.USER_PROMOTIONS, {
           headers: getAuthHeaders()
@@ -66,7 +80,7 @@ export const getLoginNotifications = async () => {
         
         const promotions = promotionResponse.data.data.promotions || [];
         
-        // Convert promotions to notification format
+        // Convert promotions to notification format for regular users only
         notifications = promotions
           .filter(promo => promo.isActive && promo.isCurrentlyValid)
           .map(promo => ({

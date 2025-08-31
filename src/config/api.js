@@ -5,7 +5,7 @@
 const API_CONFIG = {
   // CHANGED: Updated from port 7000 to 3001 to match backend server configuration
   // Backend server was moved to port 3001 to avoid conflicts with macOS Control Center
-  BASE_URL: "http://localhost:7000",
+  BASE_URL: "http://localhost:3001",
   API_VERSION: "v1.0.0"
 };
 
@@ -36,6 +36,10 @@ export const API_ENDPOINTS = {
   
   // ADDED: Newest books endpoint for news bar feature
   NEWEST_BOOKS: `${API_BASE_URL}/products/newest`,
+  
+  // ADDED: K-means similar products endpoint
+  SIMILAR_PRODUCTS: (productId) => `${API_BASE_URL}/products/${productId}/similar`,
+  PRODUCT_CLUSTERS_UPDATE: `${API_BASE_URL}/products/clusters/update`,
   
   // Image upload endpoint
   IMAGE_UPLOAD: `${API_BASE_URL}/images/upload`,

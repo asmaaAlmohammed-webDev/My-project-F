@@ -3,6 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Shop.css";
 import BookComponent from "../components/BookComponent/BookComponent";
+import BookDetail from "../components/BookDetail/BookDetail";
+import SimilarProducts from "../components/SimilarProducts/SimilarProducts";
 import { fetchProducts, fetchCategories } from "../services/productService";
 import { getProductImageUrl } from "../utils/imageUtils";
 import { FaSearch, FaFilter } from "react-icons/fa";
@@ -14,6 +16,8 @@ const Shop = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
+  const [isBookDetailOpen, setIsBookDetailOpen] = useState(false);
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -71,6 +75,66 @@ const Shop = () => {
     fetchData();
   }, [t]); // Re-fetch when language changes (t function changes)
 
+  // Handle book highlighting from URL parameters
+  useEffect(() => {
+    const bookId = searchParams.get('bookId');
+    if (bookId && books.length > 0) {
+      // Find the book with the matching ID
+      const targetBook = books.find(book => book._id === bookId);
+      if (targetBook) {
+        // Open the book detail modal directly
+        setSelectedBookForDetail(targetBook);
+        setIsBookDetailOpen(true);
+        
+        // Also scroll to the book after a short delay to ensure rendering
+        setTimeout(() => {
+          const bookElement = document.querySelector(`[data-book-id="${bookId}"]`);
+          if (bookElement) {
+            bookElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            });
+            // Add a highlight effect
+            bookElement.style.boxShadow = '0 0 20px rgba(52, 152, 219, 0.6)';
+            bookElement.style.transform = 'scale(1.02)';
+            bookElement.style.transition = 'all 0.3s ease';
+            
+            // Remove highlight after 3 seconds
+            setTimeout(() => {
+              bookElement.style.boxShadow = '';
+              bookElement.style.transform = '';
+            }, 3000);
+          }
+        }, 500);
+      }
+    }
+  }, [searchParams, books]);
+
+  // Listen for similar product navigation events
+  useEffect(() => {
+    const handleNavigateToBook = (event) => {
+      const newBook = event.detail;
+      if (newBook && newBook._id) {
+        // Update the URL with the new book ID
+        setSearchParams(prev => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set('bookId', newBook._id);
+          return newParams;
+        });
+        
+        // Open the book detail modal with the new book
+        setSelectedBookForDetail(newBook);
+        setIsBookDetailOpen(true);
+      }
+    };
+
+    window.addEventListener('navigateToBook', handleNavigateToBook);
+    
+    return () => {
+      window.removeEventListener('navigateToBook', handleNavigateToBook);
+    };
+  }, [setSearchParams]);
+
   // Filter books based on category and search term
   const filteredBooks = books.filter((book) => {
     const matchesCategory =
@@ -105,6 +169,18 @@ const Shop = () => {
     setSearchTerm("");
     setSelectedCategory("All");
     setSearchParams({});
+  };
+
+  // Handle book click for detail modal (main books grid)
+  const handleBookDetailClick = (book) => {
+    setSelectedBookForDetail(book);
+    setIsBookDetailOpen(true);
+  };
+
+  // Close book detail modal
+  const closeBookDetail = () => {
+    setIsBookDetailOpen(false);
+    setSelectedBookForDetail(null);
   };
 
   if (loading) {
@@ -207,17 +283,19 @@ const Shop = () => {
         <div className="books-grid">
           {filteredBooks.length > 0 ? (
             filteredBooks.map((book) => (
-              <BookComponent
-                key={book._id}
-                id={book._id}
-                title={book.title}
-                author={book.author}
-                category={book.category}
-                price={book.price}
-                coverImage={book.coverImage}
-                description={book.description}
-                product={book}
-              />
+              <div key={book._id} data-book-id={book._id}>
+                <BookComponent
+                  id={book._id}
+                  title={book.title}
+                  author={book.author}
+                  category={book.category}
+                  price={book.price}
+                  coverImage={book.coverImage}
+                  description={book.description}
+                  product={book}
+                  onBookClick={handleBookDetailClick}
+                />
+              </div>
             ))
           ) : (
             <div className="no-books-message">
@@ -230,6 +308,13 @@ const Shop = () => {
           )}
         </div>
       </div>
+
+      {/* Book Detail Modal */}
+      <BookDetail
+        book={selectedBookForDetail}
+        isOpen={isBookDetailOpen}
+        onClose={closeBookDetail}
+      />
     </div>
   );
 };

@@ -101,10 +101,14 @@ const Login = () => {
       {/* Personalized Recommendations Modal - Shows after notifications */}
       <PersonalizedRecommendationsModal
         isOpen={showRecommendationsModal}
-        onClose={() => {
-          console.log("PersonalizedRecommendationsModal closing, navigating to home");
+        onClose={(isBookNavigation = false) => {
+          console.log("PersonalizedRecommendationsModal closing, isBookNavigation:", isBookNavigation);
           setShowRecommendationsModal(false);
-          navigate("/home");
+          
+          // Only navigate to home if it's not a book navigation
+          if (!isBookNavigation) {
+            navigate("/home");
+          }
         }}
       />
       

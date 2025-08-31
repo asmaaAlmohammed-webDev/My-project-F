@@ -37,6 +37,9 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
 }
 
 .stat-card:hover {
@@ -74,6 +77,13 @@
 .stat-icon.requests { background: linear-gradient(135deg, #ef4444, #dc2626); }
 .stat-icon.users { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 
+.stat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .stat-content h3 {
   font-size: 2.5rem;
   font-weight: 700;
@@ -85,23 +95,29 @@
   color: #64748b;
   font-size: 1rem;
   margin: 0 0 1rem 0;
+  flex-grow: 1;
 }
 
 .stat-link {
   display: inline-block;
   background: #f1f5f9;
   color: #475569;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.25rem;
   border-radius: 6px;
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.2s ease;
+  border: 1px solid #e2e8f0;
+  margin-top: auto;
+  margin-bottom: 0;
+  align-self: flex-start;
 }
 
 .stat-link:hover {
   background: #e2e8f0;
   color: #334155;
+  border-color: #cbd5e1;
 }
 
 /* Quick Actions */

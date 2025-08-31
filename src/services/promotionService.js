@@ -66,6 +66,18 @@ class PromotionService {
     }
   }
 
+  // Get auto-applicable promotions for cart
+  static async getAutoPromotions(orderAmount = 0) {
+    try {
+      const response = await api.get(`${API_ENDPOINTS.PROMOTIONS}/auto?orderAmount=${orderAmount}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching auto promotions:', error);
+      // Return empty array as fallback
+      return { data: { autoPromotions: [] } };
+    }
+  }
+
   // Validate promotion code
   static async validatePromotion(promoCode, items, subtotal) {
     try {

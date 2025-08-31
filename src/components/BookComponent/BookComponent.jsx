@@ -2,12 +2,15 @@ import './BookComponent.css'
 import { TbShoppingBagPlus } from 'react-icons/tb';
 import { addToCart } from '../../utils/cartUtils';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 // UPDATED: Added title prop and improved prop handling for real API data
-const BookComponent = ({ author, category, price, description, coverImage, title, id, product }) => {
+const BookComponent = ({ author, category, price, description, coverImage, title, id, product, onBookClick, navigateToShop, showReviews = false }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     
-    const handleAddToCart = () => {
+    const handleAddToCart = (e) => {
+        e.stopPropagation(); // Prevent navigation when clicking add to cart
         // Create product object for cart
         const productForCart = product || {
             id: id,
@@ -27,10 +30,43 @@ const BookComponent = ({ author, category, price, description, coverImage, title
         alert(t('productAddedToCart'));
     };
 
+    const handleBookClick = () => {
+        // Check if this should navigate to shop (for home page components)
+        if (navigateToShop) {
+            navigate(`/shop?bookId=${id}`);
+            return;
+        }
+        
+        // Use custom click handler if provided (for shop page similar products or AI demo)
+        if (onBookClick) {
+            onBookClick(product || { 
+                _id: id,
+                id, 
+                title, 
+                name: title,
+                author, 
+                category, 
+                price, 
+                description, 
+                coverImage 
+            });
+        } else {
+            // Default behavior: scroll to similar products section (fallback)
+            window.scrollTo({ 
+                top: document.querySelector('.similar-products-section')?.offsetTop || 0, 
+                behavior: 'smooth' 
+            });
+        }
+    };
+
     return (
-        <div className='book-comp' data-aos="fade-right"
+        <div className='book-comp' 
+            data-aos="fade-right"
             data-aos-offset="400"
-            data-aos-easing="ease-in-sine">
+            data-aos-easing="ease-in-sine"
+            onClick={handleBookClick}
+            style={{ cursor: 'pointer' }}
+        >
 
             <div className="cover-book">
                 <img src={coverImage} alt='book-img' />

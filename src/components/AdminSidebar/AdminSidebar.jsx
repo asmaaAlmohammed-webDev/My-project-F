@@ -15,7 +15,8 @@ import {
   TbLogout,
   TbLanguage,
   TbMenu2,
-  TbDiscount
+  TbDiscount,
+  TbChartLine
 } from 'react-icons/tb';
 import { logoutAdmin } from '../../utils/adminAuth';
 
@@ -45,7 +46,13 @@ const AdminSidebar = ({ isCollapsed, toggleSidebar }) => {
       path: '/admin/dashboard',
       icon: TbDashboard,
       label: t('dashboard'),
-      description: t('overviewStatistics')
+      description: t('overviewDashboard')
+    },
+    {
+      path: '/admin/statistics',
+      icon: TbChartLine,
+      label: t('statistics'),
+      description: t('statisticsDesc')
     },
     {
       path: '/admin/categories',

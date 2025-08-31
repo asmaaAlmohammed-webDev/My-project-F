@@ -11,12 +11,8 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../config/api";
-import {
-  getCartItems,
-  updateCartItemQuantity,
-  removeFromCart,
-  clearCart,
-} from "../../utils/cartUtils";
+import { getCartItems, updateCartItemQuantity, removeFromCart, clearCart } from "../../utils/cartUtils";
+import PromotionService from "../../services/promotionService";
 import InvoiceViewer from "../../components/InvoiceViewer/InvoiceViewer";
 import "./Cart.css";
 
@@ -59,6 +55,16 @@ const CartPage = () => {
   // State for invoice viewer
   const [showInvoiceViewer, setShowInvoiceViewer] = useState(false);
 
+  // State for auto promotions
+  const [autoPromotions, setAutoPromotions] = useState([]);
+  const [promotionsLoading, setPromotionsLoading] = useState(false);
+
+  // State for manual promotions
+  const [manualPromotions, setManualPromotions] = useState([]);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoCodeLoading, setPromoCodeLoading] = useState(false);
+  const [promoCodeError, setPromoCodeError] = useState('');
+
   // Debounce timer for order history loading
   const [orderLoadTimer, setOrderLoadTimer] = useState(null);
 
@@ -79,7 +85,10 @@ const CartPage = () => {
   // Load cart from localStorage on component mount
   useEffect(() => {
     setCartItems(getCartItems());
-
+    
+    // Load manually applied promotions from localStorage
+    const savedPromotions = JSON.parse(localStorage.getItem('appliedPromotions') || '[]');
+    setManualPromotions(savedPromotions);
     // Load user's order history with debouncing to prevent rate limiting
     debouncedLoadOrderHistory();
 
@@ -98,6 +107,110 @@ const CartPage = () => {
       window.removeEventListener("cartUpdated", handleCartUpdate);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch auto promotions when cart changes
+  useEffect(() => {
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    if (subtotal > 0) {
+      fetchAutoPromotions(subtotal);
+    } else {
+      setAutoPromotions([]);
+    }
+  }, [cartItems]);
+
+  // Fetch auto-applicable promotions
+  const fetchAutoPromotions = async (orderAmount) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAutoPromotions([]);
+      return;
+    }
+
+    setPromotionsLoading(true);
+    try {
+      const response = await PromotionService.getAutoPromotions(orderAmount);
+      setAutoPromotions(response.data?.autoPromotions || []);
+    } catch (error) {
+      console.error('Error fetching auto promotions:', error);
+      setAutoPromotions([]);
+    } finally {
+      setPromotionsLoading(false);
+    }
+  };
+
+  // Apply promo code
+  const applyPromoCode = async () => {
+    if (!promoCode.trim()) {
+      setPromoCodeError('Please enter a promo code');
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setPromoCodeError('Please login to apply promo codes');
+      return;
+    }
+
+    // Check if promo code is already applied
+    const alreadyApplied = manualPromotions.some(p => 
+      p.promoCode && p.promoCode.toUpperCase() === promoCode.toUpperCase()
+    );
+    
+    if (alreadyApplied) {
+      setPromoCodeError('This promo code is already applied');
+      return;
+    }
+
+    setPromoCodeLoading(true);
+    setPromoCodeError('');
+    
+    try {
+      const response = await PromotionService.applyPromotion(
+        promoCode,
+        subtotal,
+        cartItems.map(item => ({ productId: item.id, amount: item.quantity, price: item.price }))
+      );
+      
+      if (response.status === 'success' && response.data) {
+        const promotion = response.data.promotion;
+        const newPromotion = {
+          _id: promotion.id,
+          name: promotion.name,
+          promoCode: promotion.promoCode,
+          discountType: promotion.discountType,
+          discountValue: promotion.discountValue,
+          maxDiscountAmount: promotion.maxDiscountAmount,
+          discountAmount: response.data.discountAmount,
+          appliedAt: new Date().toISOString()
+        };
+        
+        const updatedPromotions = [...manualPromotions, newPromotion];
+        setManualPromotions(updatedPromotions);
+        localStorage.setItem('appliedPromotions', JSON.stringify(updatedPromotions));
+        setPromoCode('');
+      }
+    } catch (error) {
+      console.error('Error applying promo code:', error);
+      setPromoCodeError(
+        error.response?.data?.message || 'Invalid or expired promo code'
+      );
+    } finally {
+      setPromoCodeLoading(false);
+    }
+  };
+
+  // Remove manual promotion
+  const removePromotion = (promotionId) => {
+    const updatedPromotions = manualPromotions.filter(p => p._id !== promotionId);
+    setManualPromotions(updatedPromotions);
+    localStorage.setItem('appliedPromotions', JSON.stringify(updatedPromotions));
+  };
+
+  // Clear all manual promotions
+  const clearAllPromotions = () => {
+    setManualPromotions([]);
+    localStorage.removeItem('appliedPromotions');
+  };
 
   // Note: Cart items are managed by cartUtils, no need to save here
   // localStorage management is handled in cartUtils.js functions
@@ -203,11 +316,25 @@ const CartPage = () => {
     0
   );
 
-  // الضريبة (10% فرضاً)
-  const tax = subtotal * 0.1;
+  // Calculate total discount from both auto and manual promotions
+  const autoDiscount = autoPromotions.reduce(
+    (sum, promo) => sum + (promo.discountAmount || 0),
+    0
+  );
+  
+  const manualDiscount = manualPromotions.reduce(
+    (sum, promo) => sum + (promo.discountAmount || 0),
+    0
+  );
+  
+  const totalDiscount = autoDiscount + manualDiscount;
+
+  // الضريبة (10% فرضاً) - applied after discount
+  const discountedSubtotal = Math.max(0, subtotal - totalDiscount);
+  const tax = discountedSubtotal * 0.1;
 
   // التكلفة الإجمالية
-  const total = subtotal + tax;
+  const total = discountedSubtotal + tax;
 
   // دالة حذف عنصر من السلة
   const removeItem = (id) => {
@@ -268,12 +395,28 @@ const CartPage = () => {
           amount: item.quantity,
           price: item.price,
         })),
-        subtotal: subtotal, ///////////////////
-        loyaltyPointsEarned: 0, /////////////
+        subtotal: subtotal, // Include subtotal for promotion calculations
         total: total,
         status: "wating", // Use valid enum value instead of "PENDING"
         methodePayment: paymentMethod, // Use selected payment method
         address: address, // Use the address from the form
+        appliedPromotions: [
+          // Auto-applied promotions
+          ...autoPromotions.map(promo => ({
+            promotionId: promo.promotion._id,
+            name: promo.promotion.name,
+            discountAmount: promo.discountAmount,
+            type: 'auto'
+          })),
+          // Manual promotions
+          ...manualPromotions.map(promo => ({
+            promotionId: promo._id,
+            name: promo.name,
+            promoCode: promo.promoCode,
+            discountAmount: promo.discountAmount,
+            type: 'manual'
+          }))
+        ]
       };
 
       // Create order via API
@@ -287,6 +430,10 @@ const CartPage = () => {
       // Success - clear cart and show message
       clearCart(); // Use utility function that dispatches cartUpdated event
       setCartItems([]); // Update local state
+      
+      // Clear applied promotions
+      clearAllPromotions();
+      
       setMessage(t("successOrder"));
 
       // Store the successful order ID for invoice download
@@ -521,6 +668,151 @@ const CartPage = () => {
                   <span>{t("subTotal")}</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
+                
+                {/* Auto Promotions Section */}
+                {promotionsLoading && (
+                  <div className="summary-row promotion-loading">
+                    <span>{t("loadingPromotions") || "Loading promotions..."}</span>
+                    <span>...</span>
+                  </div>
+                )}
+                
+                {autoPromotions.length > 0 && (
+                  <div className="promotions-section">
+                    <h4 style={{ margin: '10px 0 5px 0', fontSize: '14px', color: '#27ae60' }}>
+                      🎉 {t("autoAppliedPromotions") || "Auto Applied Promotions"}
+                    </h4>
+                    {autoPromotions.map((promo, index) => (
+                      <div key={index} className="summary-row promotion-discount">
+                        <span style={{ fontSize: '13px', color: '#27ae60' }}>
+                          {promo.promotion?.name || "Gold Member Discount"}
+                        </span>
+                        <span style={{ color: '#27ae60' }}>
+                          -${(promo.discountAmount || 0).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Manual Promotions Section */}
+                {manualPromotions.length > 0 && (
+                  <div className="promotions-section">
+                    <h4 style={{ margin: '10px 0 5px 0', fontSize: '14px', color: '#e67e22' }}>
+                      🏷️ {t("appliedPromoCodes") || "Applied Promo Codes"}
+                    </h4>
+                    {manualPromotions.map((promo, index) => (
+                      <div key={index} className="summary-row promotion-discount">
+                        <span style={{ fontSize: '13px', color: '#e67e22' }}>
+                          {promo.name} ({promo.promoCode})
+                          <button 
+                            onClick={() => removePromotion(promo._id)}
+                            style={{ 
+                              marginLeft: '5px', 
+                              background: 'none', 
+                              border: 'none', 
+                              color: '#e74c3c', 
+                              cursor: 'pointer',
+                              fontSize: '12px'
+                            }}
+                            title="Remove promotion"
+                          >
+                            ✖
+                          </button>
+                        </span>
+                        <span style={{ color: '#e67e22' }}>
+                          -${(promo.discountAmount || 0).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Promo Code Input Section */}
+                <div className="promo-code-section" style={{ margin: '15px 0' }}>
+                  <h4 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>
+                    {t("promoCode") || "Promo Code"}
+                  </h4>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1 }}>
+                      <input
+                        type="text"
+                        value={promoCode}
+                        onChange={(e) => {
+                          setPromoCode(e.target.value.toUpperCase());
+                          setPromoCodeError('');
+                        }}
+                        placeholder={t("enterPromoCode") || "Enter promo code"}
+                        style={{
+                          width: '100%',
+                          padding: '8px',
+                          border: promoCodeError ? '1px solid #e74c3c' : '1px solid #ddd',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}
+                        disabled={promoCodeLoading}
+                      />
+                      {promoCodeError && (
+                        <div style={{ color: '#e74c3c', fontSize: '12px', marginTop: '5px' }}>
+                          {promoCodeError}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={applyPromoCode}
+                      disabled={promoCodeLoading || !promoCode.trim()}
+                      style={{
+                        padding: '8px 16px',
+                        background: promoCodeLoading ? '#bdc3c7' : '#3498db',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: promoCodeLoading ? 'not-allowed' : 'pointer',
+                        fontSize: '14px',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {promoCodeLoading ? t("applying") || "Applying..." : t("apply") || "Apply"}
+                    </button>
+                  </div>
+                  {manualPromotions.length > 0 && (
+                    <button
+                      onClick={clearAllPromotions}
+                      style={{
+                        marginTop: '10px',
+                        padding: '5px 10px',
+                        background: '#e74c3c',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '12px'
+                      }}
+                    >
+                      {t("clearAllPromotions") || "Clear All Promo Codes"}
+                    </button>
+                  )}
+                </div>
+
+                {/* Total Discount Summary */}
+                {totalDiscount > 0 && (
+                  <div className="summary-row">
+                    <span style={{ fontWeight: 'bold', color: '#27ae60' }}>
+                      {t("totalDiscount") || "Total Discount"}
+                    </span>
+                    <span style={{ fontWeight: 'bold', color: '#27ae60' }}>
+                      -${totalDiscount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+                
+                {totalDiscount > 0 && (
+                  <div className="summary-row">
+                    <span style={{ fontWeight: 'bold' }}>{t("afterDiscount") || "After Discount"}</span>
+                    <span style={{ fontWeight: 'bold' }}>${discountedSubtotal.toFixed(2)}</span>
+                  </div>
+                )}
+                
                 <div className="summary-row">
                   <span>{t("tax")}</span>
                   <span>${tax.toFixed(2)}</span>

@@ -108,6 +108,7 @@ const PopularBooksSec = () => {
               coverImage={getProductImageUrl(book)} // Use proper image URL
               title={book.name} // Add book title
               product={book}
+              navigateToShop={true} // Enable navigation to shop page
             />
           </SwiperSlide>
         ))}

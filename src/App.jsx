@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
+import TestProductDetail from './pages/TestProductDetail';
+// import ProductDetail from './pages/ProductDetail/ProductDetail';
 import ContactUs from './pages/ContactUs';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
@@ -13,6 +15,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 import ProtectedRoute from './pages/ProtectedRoute';
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminStatistics from './pages/Admin/AdminStatistics';
 import './App.css';
 
 function App() {
@@ -41,10 +44,15 @@ function App() {
           } />
         </Route>
 
+        {/* Product Detail Route - Outside Layout for now */}
+        <Route path="/product/:id" element={<TestProductDetail />} />
+        <Route path="/test" element={<div style={{padding:'40px', textAlign:'center'}}><h1>🧪 Test Route Works!</h1></div>} />
+
         {/* Admin Routes - ADDED: Complete admin panel routing structure */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="statistics" element={<AdminStatistics />} />
           {/* TODO: Add remaining admin routes as components are created */}
           {/* 
           <Route path="categories" element={<AdminCategories />} />
