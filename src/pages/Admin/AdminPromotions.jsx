@@ -113,6 +113,23 @@ const AdminPromotions = () => {
       isActive: promotion.isActive
     });
     setShowForm(true);
+    
+    // Scroll to the form section to show the edit form
+    setTimeout(() => {
+      const formSection = document.getElementById('promotion-form-section');
+      if (formSection) {
+        formSection.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else {
+        // Fallback to scroll to top if form section not found
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 150); // Small delay to ensure form is rendered and DOM is updated
   };
 
   const handleDelete = async (promotionId) => {
@@ -245,7 +262,7 @@ const AdminPromotions = () => {
 
       {/* Create/Edit Form */}
       {showForm && (
-        <div className="promotion-form-section">
+        <div id="promotion-form-section" className="promotion-form-section">
           <h2>{editingPromotion ? t('editPromotion') : t('createNewPromotion')}</h2>
           <form onSubmit={handleSubmit} className="promotion-form">
             <div className="form-row">

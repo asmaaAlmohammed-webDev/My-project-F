@@ -1,14 +1,13 @@
 .promotions-banner {
-  /* margin: 0px auto 20px auto; */
-  position: fixed;
-  top: 0;
-  width: 100%;
+  margin: 100px auto 20px auto;
+  max-width: 1200px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   /* border-radius: 12px; */
   color: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
+  z-index: 10;
 }
 
 .promotions-banner.rtl {
@@ -99,29 +98,23 @@
 
 .carousel-container {
   position: relative;
-  height: 115px;
-  overflow: hidden;
-  border-radius: 8px;
-  padding: 25px;
-  background: rgba(255, 255, 255, 0.05);
+  width: 100%;
+  overflow: visible; /* Allow content to show */
 }
 
 .promotion-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
   opacity: 0;
-  transform: translateX(100%);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s ease-in-out;
   cursor: pointer;
-  gap: 20px;
+  padding: 10px 0; /* Add some vertical padding */
+  display: none; /* Hide by default */
 }
 
 .promotion-slide.active {
   opacity: 1;
   transform: translateX(0);
+  display: block; /* Show only active slide */
 }
 
 .promotion-slide:hover {
@@ -130,10 +123,9 @@
 
 .promotion-content {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  height: max-content;
-  padding: 0px 25px;
+  align-items: stretch; /* Change from center to stretch to avoid cutting text */
+  padding: 20px 25px;
+  gap: 20px;
 }
 
 .promotion-icon {
@@ -157,28 +149,21 @@
   flex-wrap: wrap;
   min-width: 0;
   margin-right: 15px;
-  padding: 10px 25px;
-}
-.promotion-details .desc-title-value {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
 }
 .promotion-title {
   font-size: 1.4rem;
   font-weight: bold;
-  /* margin: 30px 0 8px 0; */
-  /* color: white; */
-  white-space: nowrap;
+  margin: 0 0 8px 0;
+  color: white;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  animation: moveGradient 5s infinite linear;
-  background: linear-gradient(90deg, #16062e, #8420b7, #6a40a9, #4f1f60);
-  background-size: 200%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
 .promotion-description {
@@ -259,6 +244,8 @@
 
 .promotion-action {
   flex-shrink: 0;
+  display: flex;
+  align-items: center; /* Center the button vertically */
 }
 .apply-btn {
   background: linear-gradient(45deg, #4caf50, #66bb6a);
@@ -374,7 +361,7 @@
 @media (max-width: 768px) {
   .promotions-banner {
     padding: 20px;
-    margin: 70px 15px 15px 15px;
+    margin: 90px 15px 15px 15px;
   }
 
   .loyalty-tier-display {
@@ -393,7 +380,7 @@
   }
 
   .carousel-container {
-    height: 180px;
+    min-height: 180px;
   }
 
   .promotion-content {
@@ -401,7 +388,7 @@
     text-align: left;
     padding: 15px;
     gap: 15px;
-    height: max-content;
+    min-height: 180px;
   }
 
   .promotion-icon {
@@ -434,11 +421,11 @@
 @media (max-width: 480px) {
   .promotions-banner {
     padding: 15px;
-    margin: 65px 10px 10px 10px;
+    margin: 85px 10px 10px 10px;
   }
 
   .carousel-container {
-    height: 200px;
+    min-height: 200px;
   }
 
   .promotion-content {
@@ -446,6 +433,7 @@
     text-align: center;
     padding: 12px;
     gap: 12px;
+    min-height: 200px;
   }
 
   .promotion-details {

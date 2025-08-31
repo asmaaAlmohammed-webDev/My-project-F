@@ -116,10 +116,19 @@ const PersonalizedRecommendationsModal = ({
     handleClose();
   };
 
-  const handleBookClick = (bookTitle) => {
-    // Navigate to shop with search for specific book
-    navigate(`/shop?search=${encodeURIComponent(bookTitle)}`);
-    handleClose();
+  const handleBookClick = (bookId) => {
+    // Navigate to shop with bookId to highlight and open book detail modal (same as home page behavior)
+    navigate(`/shop?bookId=${bookId}`);
+    
+    // Mark recommendations as seen in backend
+    markRecommendationsSeen();
+    
+    // Close modal immediately without going through handleClose to avoid navigation conflict
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose(true); // Pass true to indicate book navigation, not home navigation
+      setIsClosing(false);
+    }, 300);
   };
 
   const isArabic = i18n.language === 'ar';
@@ -166,12 +175,12 @@ const PersonalizedRecommendationsModal = ({
             <div 
               key={book.id} 
               className="recommendation-book"
-              onClick={() => handleBookClick(book.title)}
+              onClick={() => handleBookClick(book.id)}
               role="button"
               tabIndex={0}
               onKeyPress={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  handleBookClick(book.title);
+                  handleBookClick(book.id);
                 }
               }}
             >

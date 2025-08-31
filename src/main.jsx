@@ -16,6 +16,7 @@ import Shop from "./pages/Shop.jsx";
 import CartPage from "./pages/Cart/Cart.jsx";
 import AdminLayout from "./pages/Admin/AdminLayout.jsx";
 import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
+import AdminStatistics from "./pages/Admin/AdminStatistics.jsx";
 import AdminCategories from "./pages/Admin/AdminCategories.jsx";
 import AdminCategoryForm from "./pages/Admin/AdminCategoryForm.jsx";
 import AdminProducts from "./pages/Admin/AdminProducts.jsx";
@@ -67,6 +68,7 @@ const router = createBrowserRouter(
       children: [
         { index: true, element: <AdminDashboard /> },
         { path: "dashboard", element: <AdminDashboard /> },
+        { path: "statistics", element: <AdminStatistics /> },
         // Real admin components
         { path: "categories", element: <AdminCategories /> },
         { path: "categories/new", element: <AdminCategoryForm /> },

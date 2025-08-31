@@ -21,8 +21,7 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
     if (promotions.length > 1) {
       const interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % promotions.length);
-      }, 5000);
-
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [promotions.length]);
@@ -36,7 +35,8 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
 
       if (token) {
         // User is logged in - get personalized promotions
-        const response = await PromotionService.getUserPromotions(orderAmount);
+        // Use a high orderAmount to show all promotions initially, not filtered by minimum order
+        const response = await PromotionService.getUserPromotions(999999);
         setPromotions(response.data?.promotions || []);
         setUserInfo(response.data?.userInfo || null);
       } else {
@@ -66,6 +66,11 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
     if (onPromotionSelect) {
       onPromotionSelect(promotion);
     }
+  };
+
+  const handleApplyClick = (e, promotion) => {
+    e.stopPropagation(); // Prevent event bubbling to parent slide
+    handlePromotionClick(promotion);
   };
 
   const formatDiscountDisplay = (promotion) => {
@@ -186,8 +191,12 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
                 </div>
 
                 <div className="promotion-action">
-                  <button className="apply-btn">
-                    {promotion.autoApply ? t("autoApplied") : t("applyNow")}
+                  <button 
+                    className="apply-btn"
+                    onClick={(e) => handleApplyClick(e, promotion)}
+                    disabled={promotion.autoApply}
+                  >
+                    {promotion.autoApply ? t('autoApplied') : t('applyNow')}
                   </button>
                 </div>
               </div>
