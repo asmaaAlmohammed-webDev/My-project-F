@@ -5,7 +5,7 @@
 const API_CONFIG = {
   // CHANGED: Updated from port 7000 to 3001 to match backend server configuration
   // Backend server was moved to port 3001 to avoid conflicts with macOS Control Center
-  BASE_URL: "http://localhost:3001",
+  BASE_URL: "http://localhost:7000",
   API_VERSION: "v1.0.0"
 };
 
