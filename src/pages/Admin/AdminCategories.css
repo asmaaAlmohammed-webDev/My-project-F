@@ -40,8 +40,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error Message */
@@ -255,9 +259,10 @@
   background-color: #f8f9fa;
 }
 
-.category-name {
+.category-name-dashboard {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-weight: 600;
-  color: #495057;
+  color: white;
 }
 
 .category-description {

@@ -23,7 +23,7 @@
   margin-bottom: 30px;
 }
 
-.stat-card {
+.state-card {
   background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: white;
   padding: 20px;
@@ -135,7 +135,7 @@
 }
 
 .order-id {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: 600;
   color: #7f8c8d;
 }
@@ -416,8 +416,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -425,12 +429,12 @@
   .orders-table {
     font-size: 14px;
   }
-  
+
   .orders-table th,
   .orders-table td {
     padding: 8px;
   }
-  
+
   .order-actions {
     flex-direction: column;
     gap: 4px;
@@ -441,44 +445,44 @@
   .admin-orders {
     padding: 16px;
   }
-  
+
   .orders-stats {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .stat-card {
     padding: 15px;
   }
-  
+
   .stat-card h3 {
     font-size: 1.5rem;
   }
-  
+
   .orders-controls {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
   }
-  
+
   .filter-section {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
   }
-  
+
   .order-modal {
     margin: 10px;
     max-height: 80vh;
   }
-  
+
   .order-info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .modal-header {
     padding: 15px;
   }
-  
+
   .modal-content {
     padding: 15px;
   }
@@ -488,16 +492,16 @@
   .orders-stats {
     grid-template-columns: 1fr;
   }
-  
+
   .orders-table table {
     font-size: 12px;
   }
-  
+
   .orders-table th,
   .orders-table td {
     padding: 6px 4px;
   }
-  
+
   .btn {
     padding: 4px 6px;
     font-size: 10px;
