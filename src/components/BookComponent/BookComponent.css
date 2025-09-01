@@ -63,6 +63,9 @@
   color: rgba(255, 0, 0, 0.74);
   font-size: 18px;
 }
+.book-comp .book-title {
+  color: #492c6c;
+}
 
 .book-comp .deatils .desc {
   color: var(--text2);
