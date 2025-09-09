@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 import SimilarProductsService from '../../services/similarProductsService';
 import BookComponent from '../BookComponent/BookComponent';
 import { getProductImageUrl } from '../../utils/imageUtils';
 import './SimilarProducts.css';
 
 const SimilarProducts = ({ productId, currentProduct, onProductClick }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
