@@ -6,6 +6,7 @@ import './ImageUpload.css';
 const ImageUpload = ({ 
   currentImage = '', 
   onImageChange, 
+  onError,
   label = 'Upload Image',
   required = false 
 }) => {
@@ -40,7 +41,17 @@ const ImageUpload = ({
       setPreview(imageUrl);
       
     } catch (error) {
-      alert(error.message);
+      console.error('Image upload error:', error);
+      const errorMessage = error.message || 'Failed to upload image';
+      
+      // Call onError callback if provided
+      if (onError) {
+        onError(error);
+      } else {
+        // Fallback to alert if no error handler provided
+        alert(errorMessage);
+      }
+      
       setPreview(getImagePath(currentImage));
     } finally {
       setUploading(false);

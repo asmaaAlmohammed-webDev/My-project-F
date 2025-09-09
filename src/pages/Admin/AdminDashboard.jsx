@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getCurrentUser } from '../../utils/adminAuth';
+import { API_ENDPOINTS } from '../../config/api';
+import axios from 'axios';
 import './AdminDashboard.css';
 // ADDED: Translation hook
 import { useTranslation } from 'react-i18next';
@@ -27,19 +29,59 @@ const AdminDashboard = () => {
         const user = getCurrentUser();
         setAdminUser(user);
 
-        // TODO: Fetch real statistics from API
-        // For now, using placeholder data
-        setStats({
-          categories: 6,
-          products: 16,
-          reviews: 0,
-          orders: 0,
-          requests: 0,
-          users: 1
-        });
+        // Get auth headers for API calls
+        const token = localStorage.getItem('token');
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
+
+        // Fetch real statistics from API endpoints
+        const [
+          categoriesResponse,
+          productsResponse,
+          reviewsResponse,
+          ordersResponse,
+          contactsResponse,
+          usersResponse
+        ] = await Promise.allSettled([
+          axios.get(API_ENDPOINTS.CATEGORIES, { headers }),
+          axios.get(API_ENDPOINTS.PRODUCTS, { headers }),
+          axios.get(API_ENDPOINTS.REVIEWS, { headers }),
+          axios.get(API_ENDPOINTS.ORDERS, { headers }),
+          axios.get(API_ENDPOINTS.CONTACT, { headers }),
+          axios.get(API_ENDPOINTS.USERS, { headers })
+        ]);
+
+        // Extract counts from responses, with fallbacks for failed requests
+        const stats = {
+          categories: categoriesResponse.status === 'fulfilled' ? 
+            (categoriesResponse.value.data.data?.length || categoriesResponse.value.data.results || 0) : 0,
+          products: productsResponse.status === 'fulfilled' ? 
+            (productsResponse.value.data.data?.length || productsResponse.value.data.results || 0) : 0,
+          reviews: reviewsResponse.status === 'fulfilled' ? 
+            (reviewsResponse.value.data.data?.length || reviewsResponse.value.data.results || 0) : 0,
+          orders: ordersResponse.status === 'fulfilled' ? 
+            (ordersResponse.value.data.data?.length || ordersResponse.value.data.results || 0) : 0,
+          requests: contactsResponse.status === 'fulfilled' ? 
+            (contactsResponse.value.data.data?.length || contactsResponse.value.data.results || 0) : 0,
+          users: usersResponse.status === 'fulfilled' ? 
+            (usersResponse.value.data.data?.length || usersResponse.value.data.results || 0) : 0
+        };
+
+        setStats(stats);
 
       } catch (error) {
         console.error('Error loading dashboard data:', error);
+        // Set fallback stats in case of major error
+        setStats({
+          categories: 0,
+          products: 0,
+          reviews: 0,
+          orders: 0,
+          requests: 0,
+          users: 0
+        });
       } finally {
         setLoading(false);
       }

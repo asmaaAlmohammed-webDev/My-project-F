@@ -18,7 +18,7 @@ const Shop = () => {
   const [error, setError] = useState(null);
   const [selectedBookForDetail, setSelectedBookForDetail] = useState(null);
   const [isBookDetailOpen, setIsBookDetailOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Initialize search term from URL parameters
@@ -41,24 +41,36 @@ const Shop = () => {
         ]);
 
         // Map backend product data to frontend format
-        const formattedBooks = productsData.map((product) => ({
-          _id: product._id,
-          id: product._id,
-          title: product.name,
-          name: product.name,
-          author: product.categoryId?.name || "Unknown Category",
-          price: product.price,
-          category: product.categoryId?.name || "Uncategorized",
-          coverImage: getProductImageUrl(product),
-          image: getProductImageUrl(product),
-          rating: 4.5,
-          description: product.description,
-        }));
+        const formattedBooks = productsData.map((product) => {
+          const rawCategory = product.categoryId?.name || "Uncategorized";
+          // Remove spaces for translation key
+          const categoryKey = 'category' + rawCategory.replace(/\s/g, '');
+          return {
+            _id: product._id,
+            id: product._id,
+            title: product.name,
+            name: product.name,
+            author:
+              i18n.language === "ar"
+                ? product.author_ar || product.author_en || rawCategory || "Unknown Category"
+                : product.author_en || product.author_ar || rawCategory || "Unknown Category",
+            price: product.price,
+            category: t(categoryKey) || rawCategory,
+            rawCategory,
+            coverImage: getProductImageUrl(product),
+            image: getProductImageUrl(product),
+            rating: 4.5,
+            description: product.description,
+          };
+        });
 
-        // Format categories with "All" option
+        // Format categories with "All" option, translated
         const formattedCategories = [
-          "All",
-          ...categoriesData.map((cat) => cat.name),
+          t("All"),
+          ...categoriesData.map((cat) => {
+            const key = 'category' + cat.name.replace(/\s/g, '');
+            return t(key) || cat.name;
+          }),
         ];
 
         setBooks(formattedBooks);
@@ -138,10 +150,10 @@ const Shop = () => {
   // Filter books based on category and search term
   const filteredBooks = books.filter((book) => {
     const matchesCategory =
-      selectedCategory === "All" || book.category === selectedCategory;
+      selectedCategory === t("All") || book.category === selectedCategory;
     const matchesSearch =
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (i18n.language === "ar" ? book.author_ar : book.author_en).toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.description?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -287,7 +299,7 @@ const Shop = () => {
                 <BookComponent
                   id={book._id}
                   title={book.title}
-                  author={book.author}
+                    author={i18n.language === "ar" ? book.author_ar : book.author_en}
                   category={book.category}
                   price={book.price}
                   coverImage={book.coverImage}

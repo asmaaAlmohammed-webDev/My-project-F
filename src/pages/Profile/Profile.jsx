@@ -76,7 +76,9 @@ const Profile = () => {
             },
           }
         );
-        setUserData(response.data.doc);
+        if (response.data?.doc) {
+          setUserData(response.data.doc);
+        }
       } catch (error) {
         console.error("Error fetching profile:", error);
         setMessage(t("failedFetchProfile"));
@@ -104,7 +106,9 @@ const Profile = () => {
           },
         }
       );
-      setUserData(response.data.doc);
+      if (response.data?.doc) {
+        setUserData(response.data.doc);
+      }
       setEditMode(false);
       setMessage(t("profileUpdatedSuccess"));
       setMessageType("success");
@@ -319,7 +323,7 @@ const Profile = () => {
               <label>{t("name")}</label>
               <input
                 type="text"
-                value={userData.name}
+                value={userData?.name || ''}
                 onChange={(e) =>
                   setUserData({ ...userData, name: e.target.value })
                 }
@@ -332,7 +336,7 @@ const Profile = () => {
               data-aos-duration="1500"
             >
               <label>{t("email")}</label>
-              <input type="email" value={userData.email} disabled />
+              <input type="email" value={userData?.email || ''} disabled />
             </div>
             <div
               className="form-group"
@@ -343,7 +347,7 @@ const Profile = () => {
               <label>{t("phone")}</label>
               <input
                 type="text"
-                value={userData.phone}
+                value={userData?.phone || ''}
                 onChange={(e) =>
                   setUserData({ ...userData, phone: e.target.value })
                 }
@@ -358,35 +362,35 @@ const Profile = () => {
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>{t("name")}:</strong> {userData.name}
+              <strong>{t("name")}:</strong> {userData?.name || ''}
             </p>
             <p
               data-aos="fade-down"
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>{t("email")}:</strong> {userData.email}
+              <strong>{t("email")}:</strong> {userData?.email || ''}
             </p>
             <p
               data-aos="fade-down"
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>{t("phone")}:</strong> {userData.phone}
+              <strong>{t("phone")}:</strong> {userData?.phone || ''}
             </p>
             <p
               data-aos="fade-down"
               data-aos-easing="linear"
               data-aos-duration="1500"
             >
-              <strong>Role:</strong> {userData.role}
+              <strong>Role:</strong> {userData?.role || ''}
             </p>
           </div>
         )}
       </div>
 
       {/* Admin Dashboard Access - Only show for ADMIN users */}
-      {userData.role === "ADMIN" && (
+      {userData?.role === "ADMIN" && (
         <div className="admin-section">
           <div className="admin-header">
             <h2>{t("adminPanelTitle")}</h2>
@@ -506,7 +510,7 @@ const Profile = () => {
       </div>
 
       {/* ADDED: Review Section - Only for regular users */}
-      {userData.role !== "ADMIN" && (
+      {userData?.role !== "ADMIN" && (
         <div className="review-section">
           <div className="review-header">
             <h2>{t("leaveReview")}</h2>
@@ -562,7 +566,7 @@ const Profile = () => {
       )}
 
       {/* ADDED: Contact Request Section - Only for regular users */}
-      {userData.role !== "ADMIN" && (
+      {userData?.role !== "ADMIN" && (
         <div className="contact-section">
           <div className="contact-header">
             <h2>{t("contactRequest")}</h2>
@@ -572,8 +576,8 @@ const Profile = () => {
                   setIsContactEditing(true);
                   // Pre-fill with user data
                   setContactData({
-                    name: userData.name,
-                    email: userData.email,
+                    name: userData?.name || '',
+                    email: userData?.email || '',
                     message: "",
                   });
                 }}

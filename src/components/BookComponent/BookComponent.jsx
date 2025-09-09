@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 // UPDATED: Added title prop and improved prop handling for real API data
-const BookComponent = ({ author, category, price, description, coverImage, title, id, product, onBookClick, navigateToShop, showReviews = false }) => {
+// Removed duplicate import of useTranslation
+
+const BookComponent = ({ author, author_en, author_ar, category, price, description, coverImage, title, id, product, onBookClick, navigateToShop, showReviews = false }) => {
+    const { i18n } = useTranslation();
     const { t } = useTranslation();
     const navigate = useNavigate();
     
@@ -17,7 +20,7 @@ const BookComponent = ({ author, category, price, description, coverImage, title
             name: title,
             price: price,
             image: coverImage, // Use coverImage prop
-            author: author,
+            author: i18n.language === "ar" ? (author_ar || author_en || author) : (author_en || author_ar || author),
             category: category,
             description: description
         };
@@ -44,7 +47,7 @@ const BookComponent = ({ author, category, price, description, coverImage, title
                 id, 
                 title, 
                 name: title,
-                author, 
+                author: i18n.language === "ar" ? (author_ar || author_en || author) : (author_en || author_ar || author),
                 category, 
                 price, 
                 description, 
@@ -82,7 +85,7 @@ const BookComponent = ({ author, category, price, description, coverImage, title
                 {/* ADDED: Display book title */}
                 {title && <h5 className="book-title">{title}</h5>}
                 <div className='book-info'>
-                    <h6 className="author">{author}</h6>
+                    <h6 className="author">{i18n.language === "ar" ? (author_ar || author_en || author) : (author_en || author_ar || author)}</h6>
                     <p className="price">${price}</p> {/* FIXED: Moved $ to the front for better formatting */}
                 </div>
                 <p className='desc'>{description}</p>

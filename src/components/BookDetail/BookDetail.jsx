@@ -10,7 +10,7 @@ import { checkUserProductReview } from '../../services/reviewService';
 import './BookDetail.css';
 
 const BookDetail = ({ book, isOpen, onClose }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('details');
   const [quantity, setQuantity] = useState(1);
   const [showAddReview, setShowAddReview] = useState(false);
@@ -43,8 +43,12 @@ const BookDetail = ({ book, isOpen, onClose }) => {
   };
 
   useEffect(() => {
+    // Only check user review for authenticated regular users
     if (isOpen && book && isAuthenticated() && !isAdmin()) {
       checkUserReview();
+    } else if (isOpen && book) {
+      // For non-authenticated users or admins, set default state
+      setUserReviewStatus({ hasReviewed: false, review: null });
     }
     
     // Always load reviews when modal opens, regardless of tab
@@ -76,10 +80,17 @@ const BookDetail = ({ book, isOpen, onClose }) => {
 
   const checkUserReview = async () => {
     try {
+      // Double-check authentication before making the API call
+      if (!isAuthenticated() || isAdmin()) {
+        setUserReviewStatus({ hasReviewed: false, review: null });
+        return;
+      }
+      
       const status = await checkUserProductReview(book._id);
       setUserReviewStatus(status);
     } catch (error) {
-      console.error('Error checking user review:', error);
+      // Silently handle errors and set default state
+      setUserReviewStatus({ hasReviewed: false, review: null });
     }
   };
 
@@ -135,7 +146,7 @@ const BookDetail = ({ book, isOpen, onClose }) => {
           </div>
           <div className="book-info">
             <h2 className="book-title">{book.title || book.name}</h2>
-            <p className="book-author">{t('author')}: {book.author}</p>
+            <p className="book-author">{t('author')}: {i18n.language === "ar" ? (book.author_ar || book.author_en || book.author) : (book.author_en || book.author_ar || book.author)}</p>
             <p className="book-category">{t('category')}: {book.category}</p>
             <div className="book-rating">
               <ReviewStars rating={reviewStats.averageRating} size="medium" showNumber={true} />

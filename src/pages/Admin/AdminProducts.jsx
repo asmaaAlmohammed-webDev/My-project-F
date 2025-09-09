@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchProducts, fetchCategories } from '../../services/productService';
+import { fetchProducts, fetchProductsForAdmin, fetchCategories } from '../../services/productService';
 import { getProductImageUrl } from '../../utils/imageUtils';
+import { getLocalizedContent } from '../../utils/languageUtils';
 import { API_ENDPOINTS } from '../../config/api';
 import axios from 'axios';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
@@ -19,6 +20,8 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
+    author_en: '',
+    author_ar: '',
     description_en: '',
     description_ar: '',
     price: '',
@@ -39,7 +42,7 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       const [productsData, categoriesData] = await Promise.all([
-        fetchProducts(),
+        fetchProductsForAdmin(), // CHANGED: Use admin endpoint to get description_en and description_ar
         fetchCategories()
       ]);
       setProducts(productsData);
@@ -101,18 +104,50 @@ const AdminProducts = () => {
   };
 
   const handleEdit = (product) => {
+    console.log('Editing product:', product); // Debug log to see the product structure
+    
     setEditingProduct(product);
-    setFormData({
-      name: product.name,
+    
+    // Extract categoryId properly - handle both populated and non-populated cases
+    let categoryId = '';
+    if (product.categoryId) {
+      if (typeof product.categoryId === 'string') {
+        // Direct string ID
+        categoryId = product.categoryId;
+      } else if (product.categoryId._id) {
+        // Populated object with _id
+        categoryId = product.categoryId._id;
+      } else if (product.categoryId.name) {
+        // Backend is populating category but excluding _id, so we need to find the category by name
+        const matchingCategory = categories.find(cat => cat.name === product.categoryId.name);
+        if (matchingCategory) {
+          categoryId = matchingCategory._id;
+          console.log('Found matching category by name:', matchingCategory.name, 'with ID:', categoryId);
+        }
+      }
+    }
+    
+    console.log('Final extracted categoryId:', categoryId); // Debug log
+    console.log('Description EN:', product.description_en); // Debug descriptions
+    console.log('Description AR:', product.description_ar); // Debug descriptions
+    
+    const formDataToSet = {
+      name: product.name || '',
+      author_en: product.author_en || '',
+      author_ar: product.author_ar || '',
       description_en: product.description_en || '',
       description_ar: product.description_ar || '',
-      price: product.price.toString(),
+      price: product.price ? product.price.toString() : '',
       image: product.image || '',
-      categoryId: product.categoryId?._id || product.categoryId,
-      stock: product.stock || 0,
-      minStockLevel: product.minStockLevel || 1,
+      categoryId: categoryId,
+      stock: product.stock !== undefined ? product.stock.toString() : '0',
+      minStockLevel: product.minStockLevel !== undefined ? product.minStockLevel.toString() : '1',
       publisherEmail: product.publisherEmail || ''
-    });
+    };
+    
+    console.log('Form data being set:', formDataToSet); // Debug complete form data
+    
+    setFormData(formDataToSet);
     setShowForm(true);
     
     // Scroll to top smoothly so user can see the edit form
@@ -149,13 +184,15 @@ const AdminProducts = () => {
   const resetForm = () => {
     setFormData({ 
       name: '', 
+      author_en: '',
+      author_ar: '',
       description_en: '', 
       description_ar: '', 
       price: '', 
       image: '', 
       categoryId: '',
-      stock: 0,
-      minStockLevel: 1,
+      stock: '',
+      minStockLevel: '',
       publisherEmail: ''
     });
     setEditingProduct(null);
@@ -284,6 +321,35 @@ const AdminProducts = () => {
               </div>
             </div>
 
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="author_en">{t('authorEnglish')} *</label>
+                <input
+                  type="text"
+                  id="author_en"
+                  name="author_en"
+                  value={formData.author_en}
+                  onChange={handleInputChange}
+                  required
+                  placeholder={t('enterAuthorEnglish')}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="author_ar">{t('authorArabic')} *</label>
+                <input
+                  type="text"
+                  id="author_ar"
+                  name="author_ar"
+                  value={formData.author_ar}
+                  onChange={handleInputChange}
+                  required
+                  placeholder={t('enterAuthorArabic')}
+                  dir="rtl"
+                />
+              </div>
+            </div>
+
             <div className="form-group">
               <label htmlFor="categoryId">{t('category')} *</label>
               <select
@@ -300,6 +366,12 @@ const AdminProducts = () => {
                   </option>
                 ))}
               </select>
+              {/* Debug info - remove after testing */}
+              {editingProduct && (
+                <small style={{color: '#666', fontSize: '11px'}}>
+                  Debug: Selected categoryId = "{formData.categoryId}" | Available categories: {categories.length}
+                </small>
+              )}
             </div>
 
             <div className="form-group">
@@ -404,7 +476,7 @@ const AdminProducts = () => {
             <table>
               <thead>
                 <tr>
-                  <th>{t('image', 'Image')}</th>
+                  <th>{t('image')}</th>
                   <th>{t('name')}</th>
                   <th>{t('category')}</th>
                   <th>{t('price')}</th>
@@ -442,13 +514,15 @@ const AdminProducts = () => {
                       </span>
                     </td>
                     <td className="product-description">
-                      {(product.description_en || product.description_ar || product.description) ? 
-                        ((product.description_en || product.description_ar || product.description).length > 50 ? 
-                          (product.description_en || product.description_ar || product.description).substring(0, 50) + '...' : 
-                          (product.description_en || product.description_ar || product.description)
-                        ) : 
-                        t('noDescription', 'No description')
-                      }
+                      {(() => {
+                        const description = getLocalizedContent(product, 'description');
+                        if (!description || description === 'No description available') {
+                          return t('noDescription');
+                        }
+                        return description.length > 50 ? 
+                          description.substring(0, 50) + '...' : 
+                          description;
+                      })()}
                     </td>
                     <td className="product-actions">
                       <button 

@@ -32,7 +32,7 @@ const SimilarProducts = ({ productId, currentProduct, onProductClick }) => {
           id: product._id,
           title: product.name,
           name: product.name,
-          author: product.categoryId?.name || 'Unknown Category',
+          author: i18n.language === "ar" ? (product.author_ar || product.author_en || product.categoryId?.name || 'Unknown Category') : (product.author_en || product.author_ar || product.categoryId?.name || 'Unknown Category'),
           category: product.categoryId?.name || 'Uncategorized',
           price: product.price,
           coverImage: getProductImageUrl(product),
@@ -101,7 +101,7 @@ const SimilarProducts = ({ productId, currentProduct, onProductClick }) => {
               <BookComponent
                 id={product._id}
                 title={product.title}
-                author={product.author}
+                author={i18n.language === "ar" ? (product.author_ar || product.author_en || product.author) : (product.author_en || product.author_ar || product.author)}
                 category={product.category}
                 price={product.price}
                 coverImage={product.coverImage}

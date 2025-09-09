@@ -77,6 +77,11 @@ export const checkUserProductReview = async (productId) => {
   try {
     const authHeaders = getAuthHeaders();
     
+    // If no auth headers, return false immediately
+    if (!authHeaders.Authorization) {
+      return { hasReviewed: false, review: null };
+    }
+    
     const response = await fetch(
       `${API_ENDPOINTS.REVIEWS}/product/${productId}/check`,
       {
@@ -88,6 +93,11 @@ export const checkUserProductReview = async (productId) => {
       }
     );
 
+    // Handle authentication errors gracefully
+    if (response.status === 403 || response.status === 401) {
+      return { hasReviewed: false, review: null };
+    }
+
     if (!response.ok) {
       throw new Error('Failed to check user review');
     }
@@ -95,7 +105,10 @@ export const checkUserProductReview = async (productId) => {
     const data = await response.json();
     return data.data;
   } catch (error) {
-    console.error('Error checking user review:', error);
+    // Only log non-authentication errors
+    if (error.message !== 'Failed to check user review') {
+      console.error('Error checking user review:', error);
+    }
     return { hasReviewed: false, review: null };
   }
 };

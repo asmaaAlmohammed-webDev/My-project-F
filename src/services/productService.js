@@ -39,6 +39,21 @@ export const fetchProducts = async () => {
 };
 
 /**
+ * Fetch all products for admin (without localization) - includes description_en and description_ar
+ * ADDED: For admin panel to get raw data with all language fields
+ */
+export const fetchProductsForAdmin = async () => {
+  try {
+    const headers = getAuthHeaders();
+    const response = await axios.get(`${API_ENDPOINTS.PRODUCTS}/all`, { headers });
+    return response.data.doc || response.data.products || [];
+  } catch (error) {
+    console.error('Error fetching admin products:', error);
+    return [];
+  }
+};
+
+/**
  * Fetch all categories from backend
  * UPDATED: No authentication required for browsing categories (public access)
  */

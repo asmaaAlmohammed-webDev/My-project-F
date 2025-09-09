@@ -277,7 +277,7 @@ const AdminProductForm = () => {
                 onChange={handleInputChange}
                 required
                 min="1"
-                placeholder="5"
+                placeholder={t('minStockLevelPlaceholder')}
               />
               <small className="form-help">{t('minStockLevelHelp')}</small>
             </div>
@@ -291,7 +291,7 @@ const AdminProductForm = () => {
               name="publisherEmail"
               value={formData.publisherEmail}
               onChange={handleInputChange}
-              placeholder="publisher@example.com"
+              placeholder={t('publisherEmailPlaceholder')}
             />
             <small className="form-help">{t('publisherEmailHelp')}</small>
           </div>

@@ -159,9 +159,15 @@ const PromotionsBanner = ({ orderAmount = 0, onPromotionSelect }) => {
 
                 <div className="promotion-details">
                   <div className="desc-title-value">
-                    <h3 className="promotion-title">{promotion.name}</h3>
+                    <h3 className="promotion-title">
+                      {t(`bannerPromotions.${promotion.name}`) !== `bannerPromotions.${promotion.name}` 
+                        ? t(`bannerPromotions.${promotion.name}`) 
+                        : promotion.name}
+                    </h3>
                     <p className="promotion-description">
-                      {promotion.description}
+                      {t(`bannerPromotionDesc.${promotion.name}`) !== `bannerPromotionDesc.${promotion.name}` 
+                        ? t(`bannerPromotionDesc.${promotion.name}`) 
+                        : promotion.description}
                     </p>
 
                     <div className="promotion-value">

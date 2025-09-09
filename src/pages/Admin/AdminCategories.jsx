@@ -15,9 +15,10 @@ const AdminCategories = () => {
   const [editingCategory, setEditingCategory] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
-    descrption: "", // Note: backend uses 'descrption' not 'description'
+    description: "", // FIXED: Use correct field name
     photo: "",
   });
+  const [imageUploadError, setImageUploadError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const { t } = useTranslation();
 
@@ -25,7 +26,12 @@ const AdminCategories = () => {
   const getCategoryImageUrl = (photo) => {
     if (!photo) return null;
 
-    // Define mapping for database categories to available images
+    // If it's already a full URL (Cloudinary), return as is
+    if (photo.startsWith('http://') || photo.startsWith('https://')) {
+      return photo;
+    }
+
+    // Define mapping for database categories to available images (for seeded data)
     const categoryImageMap = {
       "fiction.jpg": "fiction.png", // Fiction -> fiction.png
       "romance.jpg": "romance.png", // Romance -> romance.png (book_1)
@@ -42,14 +48,14 @@ const AdminCategories = () => {
       "religious.jpg": "religious.png",
     };
 
-    // Check if we have a mapped image for this category
+    // Check if we have a mapped image for this category (for seeded data)
     const mappedImage = categoryImageMap[photo];
     if (mappedImage) {
-      return `http://localhost:7000/img/static/${mappedImage}`;
+      return `http://localhost:3001/img/static/${mappedImage}`;
     }
 
-    // Try the original filename
-    return `http://localhost:7000/img/static/${photo}`;
+    // Try the original filename from local static folder
+    return `http://localhost:3001/img/static/${photo}`;
   };
 
   // Function to translate category names
@@ -118,8 +124,21 @@ const AdminCategories = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setImageUploadError(null);
 
     try {
+      // Validate required fields
+      if (!formData.name.trim()) {
+        throw new Error(t('categoryNameRequired'));
+      }
+
+      // Prepare data for submission
+      const submitData = {
+        name: formData.name.trim(),
+        description: formData.description.trim(), // FIXED: Use correct field name
+        photo: formData.photo || '', // Allow empty photo
+      };
+
       const token = localStorage.getItem("token");
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -130,12 +149,12 @@ const AdminCategories = () => {
         // Update existing category
         await axios.patch(
           `${API_ENDPOINTS.CATEGORIES}/${editingCategory._id}`,
-          formData,
+          submitData,
           { headers }
         );
       } else {
         // Create new category
-        await axios.post(API_ENDPOINTS.CATEGORIES, formData, { headers });
+        await axios.post(API_ENDPOINTS.CATEGORIES, submitData, { headers });
       }
 
       // Reload categories and reset form
@@ -143,7 +162,8 @@ const AdminCategories = () => {
       resetForm();
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || t("failedToSaveCategory"));
+      const errorMessage = err.response?.data?.message || err.message || t("failedToSaveCategory");
+      setError(errorMessage);
       console.error("Error saving category:", err);
     } finally {
       setSubmitting(false);
@@ -154,10 +174,11 @@ const AdminCategories = () => {
     setEditingCategory(category);
     setFormData({
       name: category.name,
-      descrption: category.descrption || "",
+      description: category.description || "", // FIXED: Use correct field name
       photo: category.photo || "",
     });
     setShowForm(true);
+    setImageUploadError(null);
 
     // Scroll to top smoothly so user can see the edit form
     window.scrollTo({
@@ -190,9 +211,10 @@ const AdminCategories = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: "", descrption: "", photo: "" });
+    setFormData({ name: "", description: "", photo: "" }); // FIXED: Use correct field name
     setEditingCategory(null);
     setShowForm(false);
+    setImageUploadError(null);
   };
 
   const handleInputChange = (e) => {
@@ -203,10 +225,20 @@ const AdminCategories = () => {
   };
 
   const handleImageChange = (imageUrl) => {
+    setImageUploadError(null);
+    
+    // Store the full Cloudinary URL instead of extracting filename
+    // This ensures newly uploaded images can be displayed correctly
     setFormData({
       ...formData,
-      photo: imageUrl,
+      photo: imageUrl, // Store the full Cloudinary URL
     });
+  };
+
+  // Enhanced image error handling
+  const handleImageUploadError = (error) => {
+    setImageUploadError(error.message);
+    console.error('Image upload error:', error);
   };
 
   if (loading) {
@@ -262,20 +294,27 @@ const AdminCategories = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="descrption">{t("categoryDescription")}</label>
+              <label htmlFor="description">{t("categoryDescription")}</label>
               <textarea
-                id="descrption"
-                name="descrption"
-                value={formData.descrption}
+                id="description"
+                name="description"
+                value={formData.description}
                 onChange={handleInputChange}
                 placeholder={t("categoryDescription")}
                 rows="3"
               />
             </div>
 
+            {imageUploadError && (
+              <div className="error-message">
+                {t('imageUploadError')}: {imageUploadError}
+              </div>
+            )}
+
             <ImageUpload
               currentImage={formData.photo}
               onImageChange={handleImageChange}
+              onError={handleImageUploadError}
               label={t("categoryPhoto")}
               required={false}
             />
@@ -331,8 +370,8 @@ const AdminCategories = () => {
                       {translateCategoryName(category.name)}
                     </td>
                     <td className="category-description">
-                      {category.descrption
-                        ? translateCategoryDescription(category.descrption)
+                      {category.description // FIXED: Use correct field name
+                        ? translateCategoryDescription(category.description)
                         : t("noDescription")}
                     </td>
                     <td className="category-photo">
