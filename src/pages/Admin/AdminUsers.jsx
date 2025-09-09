@@ -44,6 +44,11 @@ const AdminUsers = () => {
 
       const response = await axios.get(API_ENDPOINTS.USERS, { headers });
       console.log('Users API Response:', response.data); // Debug log
+      console.log('User lastLoginDate fields:', response.data.doc?.map(u => ({ 
+        name: u.name, 
+        lastLoginDate: u.lastLoginDate, 
+        updatedAt: u.updatedAt 
+      }))); // Debug login dates
       setUsers(response.data.doc || []);
       setError(null);
     } catch (err) {
@@ -146,7 +151,8 @@ const AdminUsers = () => {
       users: users.filter(u => u.role === 'USER').length,
       admins: users.filter(u => u.role === 'ADMIN').length,
       activeToday: users.filter(u => {
-        const lastLogin = new Date(u.updatedAt);
+        if (!u.lastLoginDate) return false; // Skip users who never logged in
+        const lastLogin = new Date(u.lastLoginDate);
         const today = new Date();
         return lastLogin.toDateString() === today.toDateString();
       }).length,
@@ -258,7 +264,7 @@ const AdminUsers = () => {
                     <th>{t('phone')}</th>
                     <th>{t('role')}</th>
                     <th>{t('joined')}</th>
-                    <th>{t('lastActivity')}</th>
+                    <th>{t('lastLogin')}</th>
                     <th>{t('actions')}</th>
                   </tr>
                 </thead>
@@ -292,7 +298,7 @@ const AdminUsers = () => {
                         {formatDate(user.createdAt)}
                       </td>
                       <td className="user-activity">
-                        {formatDate(user.updatedAt)}
+                        {user.lastLoginDate ? formatDate(user.lastLoginDate) : t('neverLoggedIn')}
                       </td>
                       <td className="user-actions">
                         <button 
@@ -371,7 +377,7 @@ const AdminUsers = () => {
                     <h3>{t('accountInformation')}</h3>
                     <p><strong>{t('userID')}:</strong> {selectedUser._id}</p>
                     <p><strong>{t('joined')}:</strong> {formatDate(selectedUser.createdAt)}</p>
-                    <p><strong>{t('lastActivity')}:</strong> {formatDate(selectedUser.updatedAt)}</p>
+                    <p><strong>{t('lastLogin')}:</strong> {selectedUser.lastLoginDate ? formatDate(selectedUser.lastLoginDate) : t('neverLoggedIn')}</p>
                     <p><strong>{t('accountStatus')}:</strong> 
                       <span className="status-active">{t('active')}</span>
                     </p>

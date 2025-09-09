@@ -54,7 +54,7 @@ const BookCategories = () => {
           id: product._id, // Add id field for cart compatibility
           title: product.name,
           name: product.name, // Add name field for cart compatibility
-          author: product.categoryId?.name || "Unknown Category", // Using category as author for consistency
+          author: i18n.language === "ar" ? (product.author_ar || product.author_en || product.categoryId?.name || "Unknown Category") : (product.author_en || product.author_ar || product.categoryId?.name || "Unknown Category"),
           price: product.price,
           category: product.categoryId?.name || "Uncategorized",
           coverImage: getProductImageUrl(product),

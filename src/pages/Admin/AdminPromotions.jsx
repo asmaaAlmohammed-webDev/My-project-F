@@ -8,6 +8,7 @@ const AdminPromotions = () => {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showLoyaltyTiers, setShowLoyaltyTiers] = useState(false);
   const [editingPromotion, setEditingPromotion] = useState(null);
   const [analytics, setAnalytics] = useState(null);
   const [filters, setFilters] = useState({
@@ -196,6 +197,251 @@ const AdminPromotions = () => {
     }).format(amount);
   };
 
+  // Loyalty Tier Data
+  const loyaltyTiers = {
+    en: [
+      {
+        tier: 'bronze',
+        title: '🥉 Bronze',
+        spending: '$0 - $199',
+        benefits: [
+          '1 point per dollar spent',
+          '5% discount on special occasions',
+          'Free shipping on orders over $50',
+          'Basic promotional notifications'
+        ],
+        color: 'linear-gradient(135deg, #cd7f32, #8b5a2b)'
+      },
+      {
+        tier: 'silver',
+        title: '🥈 Silver',
+        spending: '$200 - $499',
+        benefits: [
+          '1.5 points per dollar spent',
+          '10% discount on special occasions',
+          'Free shipping on orders over $30',
+          'Early access to promotions',
+          'Priority customer service'
+        ],
+        color: 'linear-gradient(135deg, #c0c0c0, #a8a8a8)'
+      },
+      {
+        tier: 'gold',
+        title: '🥇 Gold',
+        spending: '$500 - $999',
+        benefits: [
+          '2 points per dollar spent',
+          '15% discount on special occasions',
+          'Free shipping always',
+          'Monthly exclusive offers',
+          'Free returns for life',
+          'Special birthday gift'
+        ],
+        color: 'linear-gradient(135deg, #ffd700, #ffb347)'
+      },
+      {
+        tier: 'platinum',
+        title: '💎 Platinum',
+        spending: '$1000+',
+        benefits: [
+          '3 points per dollar spent',
+          '20% discount on special occasions',
+          'Free express shipping always',
+          'VIP exclusive offers',
+          'Personal account manager',
+          'Access to limited edition products',
+          'Invitations to special events'
+        ],
+        color: 'linear-gradient(135deg, #e5e4e2, #d3d3d3)'
+      }
+    ],
+    ar: [
+      {
+        tier: 'bronze',
+        title: '🥉 البرونزي',
+        spending: '0 - 199 دولار',
+        benefits: [
+          'نقطة لكل دولار منفق',
+          'خصم 5% على المناسبات',
+          'شحن مجاني عند 50 دولار',
+          'إشعارات العروض الأساسية'
+        ],
+        color: 'linear-gradient(135deg, #cd7f32, #8b5a2b)'
+      },
+      {
+        tier: 'silver',
+        title: '🥈 الفضي',
+        spending: '200 - 499 دولار',
+        benefits: [
+          '1.5 نقطة لكل دولار منفق',
+          'خصم 10% على المناسبات',
+          'شحن مجاني عند 30 دولار',
+          'وصول مبكر للعروض',
+          'خدمة عملاء أولوية'
+        ],
+        color: 'linear-gradient(135deg, #c0c0c0, #a8a8a8)'
+      },
+      {
+        tier: 'gold',
+        title: '🥇 الذهبي',
+        spending: '500 - 999 دولار',
+        benefits: [
+          '2 نقطة لكل دولار منفق',
+          'خصم 15% على المناسبات',
+          'شحن مجاني دائماً',
+          'عروض حصرية شهرية',
+          'إرجاع مجاني مدى الحياة',
+          'هدية عيد ميلاد خاصة'
+        ],
+        color: 'linear-gradient(135deg, #ffd700, #ffb347)'
+      },
+      {
+        tier: 'platinum',
+        title: '💎 البلاتيني',
+        spending: '1000+ دولار',
+        benefits: [
+          '3 نقاط لكل دولار منفق',
+          'خصم 20% على المناسبات',
+          'شحن سريع مجاني دائماً',
+          'عروض VIP حصرية',
+          'مدير حساب شخصي',
+          'وصول للمنتجات المحدودة',
+          'دعوات لفعاليات خاصة'
+        ],
+        color: 'linear-gradient(135deg, #e5e4e2, #d3d3d3)'
+      }
+    ]
+  };
+
+  // Loyalty Tiers Section Component
+  const LoyaltyTiersSection = () => {
+    const currentTiers = loyaltyTiers[i18n.language] || loyaltyTiers.en;
+    
+    return (
+      <div className="loyalty-tiers-section">
+        <div className="loyalty-tiers-header">
+          <h2>
+            {i18n.language === 'ar' ? 
+              '🏆 نظام الولاء المتدرج' : 
+              '🏆 Loyalty Tier System'
+            }
+          </h2>
+          <p>
+            {i18n.language === 'ar' ? 
+              'نظام الولاء يقسم العملاء إلى أربع مستويات بناءً على إجمالي الإنفاق، حيث يحصل كل مستوى على مزايا وعروض حصرية' :
+              'The loyalty system divides customers into four levels based on total spending, where each level receives exclusive benefits and offers'
+            }
+          </p>
+        </div>
+        
+        <div className="loyalty-tiers-grid">
+          {currentTiers.map((tier, index) => (
+            <div 
+              key={tier.tier} 
+              className={`loyalty-tier-card ${tier.tier}`}
+              style={{ background: tier.color }}
+            >
+              <div className="tier-header">
+                <h3 className="tier-title">{tier.title}</h3>
+                <div className="tier-spending">{tier.spending}</div>
+              </div>
+              
+              <div className="tier-benefits">
+                <h4>
+                  {i18n.language === 'ar' ? 'المزايا:' : 'Benefits:'}
+                </h4>
+                <ul>
+                  {tier.benefits.map((benefit, idx) => (
+                    <li key={idx}>{benefit}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="tier-badge">
+                {i18n.language === 'ar' ? 
+                  `المستوى ${index + 1}` : 
+                  `Tier ${index + 1}`
+                }
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="loyalty-system-info">
+          <div className="info-card">
+            <h4>
+              {i18n.language === 'ar' ? 
+                '🎯 كيف يعمل النظام' : 
+                '🎯 How the System Works'
+              }
+            </h4>
+            <ul>
+              <li>
+                {i18n.language === 'ar' ? 
+                  'يتم حساب النقاط تلقائياً مع كل عملية شراء' :
+                  'Points are calculated automatically with each purchase'
+                }
+              </li>
+              <li>
+                {i18n.language === 'ar' ? 
+                  'ترقية المستوى تتم تلقائياً عند الوصول للحد المطلوب' :
+                  'Tier upgrades happen automatically when reaching the required spending'
+                }
+              </li>
+              <li>
+                {i18n.language === 'ar' ? 
+                  'العروض الخاصة تطبق تلقائياً حسب مستوى الولاء' :
+                  'Special offers apply automatically based on loyalty level'
+                }
+              </li>
+              <li>
+                {i18n.language === 'ar' ? 
+                  'إشعارات فورية عند الترقية أو العروض الجديدة' :
+                  'Instant notifications for upgrades or new offers'
+                }
+              </li>
+            </ul>
+          </div>
+          
+          <div className="info-card">
+            <h4>
+              {i18n.language === 'ar' ? 
+                '📊 إحصائيات النظام' : 
+                '📊 System Statistics'
+              }
+            </h4>
+            <div className="stats-mini-grid">
+              <div className="mini-stat">
+                <span className="mini-stat-number">4</span>
+                <span className="mini-stat-label">
+                  {i18n.language === 'ar' ? 'مستويات' : 'Levels'}
+                </span>
+              </div>
+              <div className="mini-stat">
+                <span className="mini-stat-number">15+</span>
+                <span className="mini-stat-label">
+                  {i18n.language === 'ar' ? 'مزايا' : 'Benefits'}
+                </span>
+              </div>
+              <div className="mini-stat">
+                <span className="mini-stat-number">3x</span>
+                <span className="mini-stat-label">
+                  {i18n.language === 'ar' ? 'نقاط مضاعفة' : 'Max Points'}
+                </span>
+              </div>
+              <div className="mini-stat">
+                <span className="mini-stat-number">20%</span>
+                <span className="mini-stat-label">
+                  {i18n.language === 'ar' ? 'أقصى خصم' : 'Max Discount'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading && promotions.length === 0) {
     return (
       <div className="admin-promotions-loading">
@@ -209,12 +455,23 @@ const AdminPromotions = () => {
     <div className={`admin-promotions ${i18n.dir()}`}>
       <div className="admin-promotions-header">
         <h1>{t('promotionsManagement')}</h1>
-        <button 
-          className="btn btn-primary"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? t('cancel') : t('createNewPromotion')}
-        </button>
+        <div className="header-actions">
+          <button 
+            className="btn btn-info"
+            onClick={() => setShowLoyaltyTiers(!showLoyaltyTiers)}
+          >
+            {showLoyaltyTiers ? 
+              (i18n.language === 'ar' ? 'إخفاء مستويات الولاء' : 'Hide Loyalty Tiers') : 
+              (i18n.language === 'ar' ? 'عرض مستويات الولاء' : 'Show Loyalty Tiers')
+            }
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? t('cancel') : t('createNewPromotion')}
+          </button>
+        </div>
       </div>
 
       {/* Analytics Dashboard */}
@@ -260,6 +517,9 @@ const AdminPromotions = () => {
         </div>
       )}
 
+      {/* Loyalty Tiers Section */}
+      {showLoyaltyTiers && <LoyaltyTiersSection />}
+
       {/* Create/Edit Form */}
       {showForm && (
         <div id="promotion-form-section" className="promotion-form-section">
@@ -279,18 +539,18 @@ const AdminPromotions = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="type">{t('promotionType')}</label>
+                <label htmlFor="type">{t('promotionType') || 'Promotion Type'}</label>
                 <select
                   id="type"
                   name="type"
                   value={formData.type}
                   onChange={handleInputChange}
                 >
-                  <option value="first_time_buyer">{t('firstTimeBuyer')}</option>
-                  <option value="loyalty_tier">{t('loyaltyTier')}</option>
-                  <option value="special_campaign">{t('specialCampaign')}</option>
-                  <option value="seasonal">{t('seasonal')}</option>
-                  <option value="bulk_discount">{t('bulkDiscount')}</option>
+                  <option value="first_time_buyer">{t('firstTimeBuyer') || 'First Time Buyer'}</option>
+                  <option value="loyalty_tier">{t('loyaltyTier') || 'Loyalty Tier'}</option>
+                  <option value="special_campaign">{t('specialCampaign') || 'Special Campaign'}</option>
+                  <option value="seasonal">{t('seasonal') || 'Seasonal'}</option>
+                  <option value="bulk_discount">{t('bulkDiscount') || 'Bulk Discount'}</option>
                 </select>
               </div>
             </div>
@@ -310,16 +570,16 @@ const AdminPromotions = () => {
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="discountType">{t('discountType')}</label>
+                <label htmlFor="discountType">{t('discountType') || 'Discount Type'}</label>
                 <select
                   id="discountType"
                   name="discountType"
                   value={formData.discountType}
                   onChange={handleInputChange}
                 >
-                  <option value="percentage">{t('percentage')}</option>
-                  <option value="fixed_amount">{t('fixedAmount')}</option>
-                  <option value="free_shipping">{t('freeShipping')}</option>
+                  <option value="percentage">{t('percentage') || 'Percentage'}</option>
+                  <option value="fixed_amount">{t('fixedAmount') || 'Fixed Amount'}</option>
+                  <option value="free_shipping">{t('freeShipping') || 'Free Shipping'}</option>
                 </select>
               </div>
               <div className="form-group">
@@ -358,14 +618,14 @@ const AdminPromotions = () => {
 
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="promoCode">{t('promoCode')}</label>
+                <label htmlFor="promoCode">{t('promoCode') || 'Promo Code'}</label>
                 <input
                   type="text"
                   id="promoCode"
                   name="promoCode"
                   value={formData.promoCode}
                   onChange={handleInputChange}
-                  placeholder={t('leaveEmptyForAuto')}
+                  placeholder={t('leaveEmptyForAuto') || 'Leave empty for auto-apply'}
                   style={{ textTransform: 'uppercase' }}
                 />
               </div>
@@ -422,35 +682,35 @@ const AdminPromotions = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="targetAudience">{t('targetAudience')}</label>
+                <label htmlFor="targetAudience">{t('targetAudience') || 'Target Audience'}</label>
                 <select
                   id="targetAudience"
                   name="targetAudience"
                   value={formData.targetAudience}
                   onChange={handleInputChange}
                 >
-                  <option value="all">{t('allCustomers')}</option>
-                  <option value="new_customers">{t('newCustomers')}</option>
-                  <option value="returning_customers">{t('returningCustomers')}</option>
-                  <option value="loyalty_tier">{t('loyaltyTierCustomers')}</option>
+                  <option value="all">{t('allCustomers') || 'All Customers'}</option>
+                  <option value="new_customers">{t('newCustomers') || 'New Customers'}</option>
+                  <option value="returning_customers">{t('returningCustomers') || 'Returning Customers'}</option>
+                  <option value="loyalty_tier">{t('loyaltyTierCustomers') || 'Loyalty Tier Customers'}</option>
                 </select>
               </div>
             </div>
 
             {formData.targetAudience === 'loyalty_tier' && (
               <div className="form-group">
-                <label htmlFor="loyaltyTierRequired">{t('requiredLoyaltyTier')}</label>
+                <label htmlFor="loyaltyTierRequired">{t('requiredLoyaltyTier') || 'Required Loyalty Tier'}</label>
                 <select
                   id="loyaltyTierRequired"
                   name="loyaltyTierRequired"
                   value={formData.loyaltyTierRequired}
                   onChange={handleInputChange}
                 >
-                  <option value="">{t('selectTier')}</option>
-                  <option value="bronze">{t('bronze')}</option>
-                  <option value="silver">{t('silver')}</option>
-                  <option value="gold">{t('gold')}</option>
-                  <option value="platinum">{t('platinum')}</option>
+                  <option value="">{t('selectTier') || 'Select Tier'}</option>
+                  <option value="bronze">{t('bronze') || 'Bronze'}</option>
+                  <option value="silver">{t('silver') || 'Silver'}</option>
+                  <option value="gold">{t('gold') || 'Gold'}</option>
+                  <option value="platinum">{t('platinum') || 'Platinum'}</option>
                 </select>
               </div>
             )}
@@ -586,28 +846,29 @@ const AdminPromotions = () => {
                     </td>
                     <td className="promotion-type">
                       <span className={`type-badge ${promotion.type}`}>
-                        {t(promotion.type)}
+                        {t(promotion.type) || t('promotion')}
                       </span>
                     </td>
                     <td className="promotion-discount">
                       {PromotionService.formatDiscountDisplay(
                         promotion.discountType,
                         promotion.discountValue,
-                        promotion.maxDiscountAmount
+                        promotion.maxDiscountAmount,
+                        t
                       )}
                     </td>
                     <td className="promotion-code">
                       {promotion.promoCode ? (
                         <code>{promotion.promoCode}</code>
                       ) : (
-                        <span className="auto-apply">{t('autoApply')}</span>
+                        <span className="auto-apply">{t('autoApply') || t('autoApplied')}</span>
                       )}
                     </td>
                     <td className="promotion-usage">
                       <div className="usage-stats">
                         <span>{promotion.currentUsageCount}</span>
                         {promotion.totalUsageLimit && (
-                          <span>/ {promotion.totalUsageLimit}</span>
+                          <span> / {promotion.totalUsageLimit}</span>
                         )}
                       </div>
                     </td>
@@ -618,7 +879,7 @@ const AdminPromotions = () => {
                       </div>
                     </td>
                     <td className="promotion-status">
-                      <span className={`status-badge ${promotion.isActive ? 'active' : 'inactive'}`}>
+                      <span className={`status-badge ${promotion.isActive ? 'active' : 'inactive'}`}> 
                         {promotion.isActive ? t('active') : t('inactive')}
                       </span>
                     </td>

@@ -102,7 +102,7 @@ const NewArrivalsSec = () => {
             <BookComponent
               // UPDATED: Map backend data structure to component props
               id={book._id}
-              author={book.categoryId?.name || "Unknown Author"} // Using category as author for now
+              author={i18n.language === "ar" ? (book.author_ar || book.author_en || book.categoryId?.name || "Unknown Author") : (book.author_en || book.author_ar || book.categoryId?.name || "Unknown Author")}
               category={book.categoryId?.name || "Unknown Category"}
               price={book.price}
               description={book.description}

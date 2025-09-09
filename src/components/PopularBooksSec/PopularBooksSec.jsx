@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 const PopularBooksSec = () => {
   // ADDED: Translation hook
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // ADDED: State management for real API data
   const [popularBooks, setPopularBooks] = useState([]);
@@ -101,7 +101,7 @@ const PopularBooksSec = () => {
             <BookComponent
               // UPDATED: Map backend data structure to component props
               id={book._id}
-              author={book.categoryId?.name || "Unknown Author"} // Using category as author for now
+              author={i18n.language === "ar" ? (book.author_ar || book.author_en || book.categoryId?.name || "Unknown Author") : (book.author_en || book.author_ar || book.categoryId?.name || "Unknown Author")}
               category={book.categoryId?.name || "Unknown Category"}
               price={book.price}
               description={book.description}
